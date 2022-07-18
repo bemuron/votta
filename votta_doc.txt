@@ -1,0 +1,3 @@
+Votta Doc
+
+- change mysql port from 3308 to 3306

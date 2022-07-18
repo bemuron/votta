@@ -1,0 +1,30 @@
+/*to make the date picker appear above the modal not under*/
+#ui-datepicker-div  {
+    z-index: 2000 !important;
+}
+
+/*place table captions at the top of the table*/
+caption { 
+    caption-side:top; }
+
+.ui-autocomplete {
+    z-index: 20000 !important;
+}
+
+/*.autocomplete-suggestions {
+    overflow: auto;
+    border: 1px solid #CBD3DD;
+    background: #FFF;
+}*/
+
+/*ul.ui-autocomplete.ui-menu{width:400px}
+
+ 
+    targets the first result's <a> element, 
+    remove the a at the end to target the li itself 
+
+ul.ui-autocomplete.ui-menu li:first-child a{
+    color:blue;
+}*/
+
+
