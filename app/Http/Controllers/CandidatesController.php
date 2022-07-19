@@ -43,23 +43,36 @@ class CandidatesController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'elections_dropdown' => 'required',
-            'postName' => 'required|max:191',
-            'postDescription' => 'required|max:255',
+            'candidate_election_dropdown' => 'required',
+            'candidate_position_dropdown' => 'required',
+            'candidateImg' => 'required|image|dimensions:width=288,height=288',
+            'candidateDescription' => 'required|max:3000',
+            'candidate_name_dropdown' => 'required'
         ]);
 
-        $user_id = auth()->user()->id;
-        $name = request()->input('postName');
-        $desc = request()->input('postDescription');
-        $election_id = request()->input('elections_dropdown');
+        if (request()->hasFile('candidateImg')) {
+            $imgName = request()->file('candidateImg')->getClientOriginalName();
+            $imgFile = request()->file('candidateImg');
 
-        $insertRes = DB::table('posts')->insertGetId(array('name' => $name,'description' => $desc, 
-            'election_id' => $election_id,'created_at' => now()));
-        if($insertRes){
-            return redirect()->back()->with("success","Elective position created successfully");
+            //move the file to the right folder
+            if($imgFile->move(base_path('public/images/candidates/'), $imgName)){
+                $insertRes = DB::table('candidates')->insertGetId(array('description' => $validated['candidateDescription'],
+                'user_id' => $validated['candidate_name_dropdown'], 'election_id' => $validated['candidate_election_dropdown'], 
+                'post_id' => $validated['candidate_position_dropdown'], 'image' => $imgName, 
+                'created_at' => date('Y-m-d H:i:s')));
+
+                if($insertRes){
+                    return redirect()->back()->with("success","Candidate created successfully");
+                }else{
+                    return redirect()->back()->with("error","Failed to create candidate");
+                }
+            }
+
         }else{
-            return redirect()->back()->with("error","Failed to create position");
+            return redirect()->back()->with("error","File not found");
         }
+
+        
     }
 
     /**
@@ -102,10 +115,27 @@ class CandidatesController extends Controller
 
      foreach($autocomplate as $autocomplate){
 
-         $response[] = array("value"=>$autocomplate->id,"label"=>$autocomplate->category_name);
+         $response[] = array("value"=>$autocomplate->id,"label"=>$autocomplate->name);
 
      }
         return response()->json($response);
+    }
+
+    //get the list of all candidates
+    //to show in the datatables
+    public function getAllCandidates(){
+        if (request()->ajax()) {
+            return DB::table('candidates')
+            ->select('candidates.id','posts.name AS post_name',
+                'candidates.image','elections.name AS election_name',
+                    'candidates.description','candidates.created_at','users.name AS candidate_name')
+            ->join('users', 'candidates.user_id', '=', 'users.id')
+            ->join('posts', 'posts.id', '=', 'candidates.post_id')
+            ->join('elections', 'elections.id', '=', 'candidates.election_id')
+            ->orderBy('candidates.created_at','desc')
+            ->get();
+        }
+        
     }
 
     /**

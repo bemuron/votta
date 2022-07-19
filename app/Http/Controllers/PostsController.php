@@ -52,6 +52,42 @@ class PostsController extends Controller
         
     }
 
+    //get the list of election posts given the election id
+    public function getElectionPositionsList($election_id)
+    {
+        $keyword = request()->input('keyword');
+        $searchQuery = trim($keyword);
+        
+        if($searchQuery == ''){
+            $autocomplate = DB::table('posts')
+            ->select('posts.id','posts.name AS post_name')
+            ->where('posts.election_id', '=', $election_id)         
+            ->limit(10)       
+            ->orderby('posts.name','asc')      
+            ->get();
+
+        }else{
+            $autocomplate = DB::table('posts')
+            ->select('posts.id','posts.name AS post_name')
+            ->where([
+                ['posts.name', 'like', '%' .$searchQuery . '%'],
+                ['posts.election_id', '=', $election_id]
+            ])        
+            ->limit(10)
+            ->orderby('posts.name','asc')     
+            ->get();
+      }
+      
+      $response = array();
+
+     foreach($autocomplate as $autocomplate){
+
+         $response[] = array("value"=>$autocomplate->id,"label"=>$autocomplate->post_name);
+
+     }
+        return response()->json($response);
+    }
+
     //get single post details by id
     public function getPostDetails($postId){
         

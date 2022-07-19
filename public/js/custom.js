@@ -139,6 +139,50 @@ function getDate( element ) {
     return date;
   }
 
+//populate the datatable with elections when the edit button is clicked
+$('#edit-candidate-tab').click(function(){
+    //display the elections created
+    if ($.fn.DataTable.isDataTable('#candidates_table')) {
+        $('#candidates_table').DataTable().destroy();
+    }
+    $('#candidates_table tbody').empty();
+    $('#candidates_table').DataTable({
+        //responsive: true,
+        processing: true,
+        //serverSide: true,
+        order: [],
+        ajax: {
+            url: "/candidates/table-list",
+            dataSrc: function (json) {
+                //console.log(json.length);
+            var return_data = new Array();
+            for(var i=0;i< json.length; i++){
+                return_data.push({
+                  action: displayCandidatesActionButtons(json[i].id),
+                  candidate_name: json[i].candidate_name,
+                  election_name: json[i].election_name,
+                  post_name: json[i].post_name,
+                  description: json[i].description,
+                  image: displayCandidateImage(json[i].image),
+                  created_at: formatDate(json[i].created_at)
+                });
+                
+            }
+                return return_data;
+            }
+        },
+        columns: [
+        {data: 'candidate_name'},
+        {data: 'election_name'},
+        {data: 'post_name'},
+        {data: 'description'},
+        {data: 'image', orderable: false, searchable: false},
+        {data: 'created_at'},
+        {data: 'action', orderable: false, searchable: false}
+        ]
+    });
+});
+
   //populate the datatable with elections when the edit button is clicked
   $('#edit-election-tab').click(function(){
   //display the elections created
@@ -159,35 +203,35 @@ $('#elections_table').DataTable({
           for(var i=0;i< json.length; i++){
             return_data.push({
               action: displayActionButtons(json[i].id),
-              name: json[i].name,
-              description: json[i].description,
-              status: json[i].status,
-              start_date: formatDate(json[i].start_date),
-              end_date: formatDate(json[i].end_date),
-              image: displayImage(json[i].image),
-              image_big: displayImage(json[i].image_big),
-              created_at: formatDate(json[i].created_at),
-              created_by: json[i].created_by
-            });
-            
+                name: json[i].name,
+                description: json[i].description,
+                status: json[i].status,
+                start_date: formatDate(json[i].start_date),
+                end_date: formatDate(json[i].end_date),
+                image: displayImage(json[i].image),
+                image_big: displayImage(json[i].image_big),
+                created_at: formatDate(json[i].created_at),
+                created_by: json[i].created_by
+              });
+              
+            }
+            return return_data;
           }
-          return return_data;
-        }
-    },
-    columns: [
-    {data: 'name'},
-    {data: 'status'},
-    {data: 'start_date'},
-    {data: 'end_date'},
-    {data: 'description'},
-    {data: 'image', orderable: false, searchable: false},
-    {data: 'image_big', orderable: false, searchable: false},
-    {data: 'created_at'},
-    {data: 'created_by'},
-    {data: 'action', orderable: false, searchable: false}
-    ]
-});
-});
+      },
+      columns: [
+      {data: 'name'},
+      {data: 'status'},
+      {data: 'start_date'},
+      {data: 'end_date'},
+      {data: 'description'},
+      {data: 'image', orderable: false, searchable: false},
+      {data: 'image_big', orderable: false, searchable: false},
+      {data: 'created_at'},
+      {data: 'created_by'},
+      {data: 'action', orderable: false, searchable: false}
+      ]
+  });
+  });
 
 //format the date
 function formatDate(dateToFormat){
@@ -201,10 +245,26 @@ function displayImage(imgeName){
     return imgTag
 }
 
+//display candidate image
+function displayCandidateImage(imgeName){
+    var imgTag = "<img src='images/candidates/"+imgeName+"' width='100'>";
+    return imgTag
+}
+
 //display action buttons
 function displayActionButtons(electionId){
     var actions =  "<a href='#edit_election_modal' class='btn btn-outline-dark' onclick='getElectionDetails("+electionId+")' id='edit-election' data-id='"+electionId+"'>Edit</a>"+
     "<a href='#delete_election_modal' class='btn btn-outline-danger' onclick='confirmElectionDelete("+electionId+")' id='delete-election' data-id='"+electionId+"' data-toggle='modal' data-animation='effect-scale'>Delete</a>";
+
+    return actions;
+}
+
+//display action buttons for candidates list
+function displayCandidatesActionButtons(candidateId){
+    var actions =  "<div class='btn-toolbar'> <div> "+
+    "<a href='#edit_candidate_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getCandidateDetails("+candidateId+")' id='edit-candidate' data-id='"+candidateId+"'>Edit</a>"+
+    "<a href='#delete_candidate_modal' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmCandidateDelete("+candidateId+")' id='delete-candidate' data-id='"+candidateId+"' data-toggle='modal' data-animation='effect-scale'>Delete</a>"+
+    "</div></div>";
 
     return actions;
 }
@@ -497,9 +557,9 @@ function savePostEdit(){
     });
 }
 
-//the select for the candidates when adding an asset
+//the select for the candidates when adding a candidate to an election
 $('#candidate_name_dropdown').select2({
-    placeholder: 'Choose one',
+    placeholder: 'Select Candidate',
     searchInputPlaceholder: 'Search candidate',
     ajax: {
         url: '/election-candidates-list',
@@ -525,3 +585,99 @@ $('#candidate_name_dropdown').select2({
         cache: true
     }
 });
+
+//the select for the elections when adding a candidate to a election
+$('#candidate_election_dropdown').select2({
+    placeholder: 'Select election',
+    searchInputPlaceholder: 'Search election',
+    ajax: {
+        url: '/elections-dropdown',
+        dataType: 'json',
+        delay: 250,
+        data: function (data) {
+            //_token: CSRF_TOKEN;
+            return {
+                keyword: data.term // search term
+            };
+        },
+        processResults: function (response) {
+            return {
+                results: $.map(response, function (item) {
+                    return {
+                        text: item.name,
+                        //slug: item.slug,
+                        id: item.id
+                    };
+                })
+            };
+        },
+        cache: true
+    }
+});
+
+$('#candidate_position_dropdown').select2({
+    placeholder: 'Select position',
+    searchInputPlaceholder: 'Search position',
+    ajax: {
+        url: '/positions-dropdown',
+        dataType: 'json',
+        delay: 250,
+        data: function (data) {
+            //_token: CSRF_TOKEN;
+            return {
+                keyword: data.term // search term
+            };
+        },
+        processResults: function (response) {
+            return {
+                results: $.map(response, function (item) {
+                    return {
+                        text: item.name,
+                        //slug: item.slug,
+                        id: item.id
+                    };
+                })
+            };
+        },
+        cache: true
+    }
+});
+
+//get the id of the selected election id 
+//use it to get the positions in that election
+function getSelectedElection(event){
+    var electonId = event.target.value;
+    
+    //unselect previously selected
+    $('#candidate_position_dropdown').val(0);
+    
+    $('#candidate_position_dropdown').select2({
+      placeholder: 'Select election',
+      searchInputPlaceholder: 'Search election',
+      //minimumInputLength: 2,
+        //tags: [],
+        ajax: {
+            url: "/positions-dropdown/"+electonId,
+            dataType: 'json',
+            delay: 250,
+            data: function (data) {
+                //_token: CSRF_TOKEN;
+                return {
+                    keyword: data.term // search term
+                };
+            },
+            processResults: function (response) {
+                return {
+                    results: $.map(response, function (item) {
+                        return {
+                            text: item.label,
+                            //slug: item.slug,
+                            id: item.value
+                        };
+                    })
+                };
+            }
+            //cache: true
+        }
+    });
+}

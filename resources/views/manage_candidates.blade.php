@@ -42,7 +42,7 @@
 
               <div class="input-group mg-b-10">
                 <div class="input-group-prepend">
-                    <select id="candidate_name_dropdown" name="candidate_name_dropdown" class="custom-select select2">
+                    <select id="candidate_name_dropdown" name="candidate_name_dropdown" class="custom-select select2" style="width: 100%">
                     </select>
                 </div>
               </div>
@@ -53,7 +53,7 @@
 
           <div class="input-group mg-b-10">
               <div class="input-group-prepend">
-                  <select id="candidate_election_dropdown" name="candidate_election_dropdown" class="custom-select">
+                  <select id="candidate_election_dropdown" name="candidate_election_dropdown" class="custom-select" onchange="getSelectedElection(event)"style="width: 100%">
                   </select>
               </div>
             </div>
@@ -64,7 +64,7 @@
 
           <div class="input-group mg-b-10">
             <div class="input-group-prepend">
-                <select id="candidate_position_dropdown" name="candidate_position_dropdown" class="custom-select">
+                <select id="candidate_position_dropdown" name="candidate_position_dropdown" class="custom-select" style="width: 100%">
                 </select>
             </div>
           </div>
@@ -193,6 +193,26 @@
         </div>
       </div>
     </div>
+
+<!-- modal to confirm with user if they want to delete the candidate -->
+<div class="modal fade" id="delete_candidate_modal" tabindex="-1" role="dialog" aria-labelledby="confirmCanDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content tx-14">
+      <div class="modal-header">
+        <h6 class="modal-title" id="confirmCanDeleteLabel">Confirm Delete</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteCandidateConfirmText"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary tx-13" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="deleteCandidateBtn"class="btn btn-success" data-bs-dismiss="modal"> Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <!-- modal to confirm with user if they want to vote -->
 <div class="modal fade" id="confirmVoteModal" tabindex="-1" role="dialog" aria-labelledby="confirmVoteLabel" aria-hidden="true">

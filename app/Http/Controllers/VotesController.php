@@ -45,9 +45,6 @@ class VotesController extends Controller
             $result = $this->getWhoUserVoted($electionId, $postId, $voterId);
             return $result;
         }
-        
-                    
-
     }
 
     //check if user already voted

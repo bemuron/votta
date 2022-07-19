@@ -53,6 +53,9 @@ Route::get('/election-candidates-list', [CandidatesController::class, 'getCandid
 //get posts list for table
 Route::get('/posts/table-list', [PostsController::class, 'getAllPosts']);
 
+//get election positions for dropdown
+Route::get('/positions-dropdown/{election_id}', [PostsController::class, 'getElectionPositionsList']);
+
 //get post details for edit
 Route::get('/edit-post-details/{postId}', [PostsController::class, 'getPostDetails']);
 
@@ -82,6 +85,9 @@ Route::post('/create-candidate', [CandidatesController::class, 'store'])->name('
 
 //get elections list for table
 Route::get('/elections/table-list', [ElectionsController::class, 'getAllElections'])->name('election_results');
+
+//get candidates list for table
+Route::get('/candidates/table-list', [CandidatesController::class, 'getAllCandidates']);
 
 //get election details for edit
 Route::get('/edit-election-details/{electionId}', [ElectionsController::class, 'getElectionDetails']);
