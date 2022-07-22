@@ -74,7 +74,7 @@
             <label for="candidateImg" class="mg-b-0 col-form-label fw-bold text-md-right">
               {{ __('Candidate Image 288 X 288 for best results') }} <span class="text-danger">*</span></label>
 
-            <div class="col-md-6">
+            <div class="wd-md-50p">
                 <input id="candidateImg" type="file" class="form-control" name="candidateImg">
             </div>
         </div>
@@ -127,7 +127,7 @@
             </button>
           </div>
           <div class="modal-body">
-              <div id="canFormValErr" class="alert alert-danger d-none">
+              <div id="editCanFormValErr" class="alert alert-danger d-none">
               </div>
 
           @if (session('success'))
@@ -138,57 +138,62 @@
             <form id="editCandidateForm" method="POST"  enctype="multipart/form-data">
               @csrf
               <div class="form-group col">
-                <label for="candidateName" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Candidate Name') }} <span class="text-danger">*</span></label>
+                <label for="edit_candidate_name_dropdown" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Candidate Name') }} <span class="text-danger">*</span></label>
 
-                  <div class="wd-md-50p">
-                    <input type="text" class="form-control" required placeholder="Candidate name" value="{{ old('candidateName') }}" id="candidateName" name="candidateName">
+                <div class="input-group mg-b-10">
+                  <div class="input-group-prepend">
+                      <select id="edit_candidate_name_dropdown" name="edit_candidate_name_dropdown" class="custom-select" style="width: 100%"></select>
                   </div>
+                </div>
+                <input id="editCandidateRecordId" type="hidden" name="editCandidateRecordId">
               </div>
 
               <div class="form-group col">
-                <label for="candidate_election_dropdown" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Select the election') }} <span class="text-danger">*</span></label>
+                <label for="edit_candidate_election_dropdown" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Select the election') }} <span class="text-danger">*</span></label>
 
                 <div class="input-group mg-b-10">
-                    <div class="input-group-prepend">
-                        <select id="candidate_election_dropdown" name="candidate_election_dropdown" class="custom-select">
-                        </select>
-                    </div>
+                  <div class="input-group-prepend">
+                      <select id="edit_candidate_election_dropdown" name="edit_candidate_election_dropdown" class="custom-select" onchange="getSelectedElectionEdit(event)"style="width: 100%">
+                      </select>
                   </div>
+                </div>
               </div>
 
               <div class="form-group col">
-                <label for="candidate_position_dropdown" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Select the position') }} <span class="text-danger">*</span></label>
+                <label for="edit_candidate_position_dropdown" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Select the position') }} <span class="text-danger">*</span></label>
 
                 <div class="input-group mg-b-10">
-                    <div class="input-group-prepend">
-                        <select id="candidate_position_dropdown" name="candidate_position_dropdown" class="custom-select">
-                        </select>
-                    </div>
+                  <div class="input-group-prepend">
+                      <select id="edit_candidate_position_dropdown" name="edit_candidate_position_dropdown" class="custom-select" style="width: 100%">
+                      </select>
                   </div>
+                </div>
               </div>
 
               <div class="form-group col mt-3">
-                  <label for="candidateImg" class="col-md-4 col-form-label fw-bold text-md-right">
+                  <label for="editCandidateImg" class="col-form-label fw-bold text-md-right">
                     {{ __('Candidate Image 288 X 288 for best results') }} <span class="text-danger">*</span></label>
 
-                  <div class="col-md-6">
-                      <input id="candidateImg" type="file" class="form-control" name="candidateImg">
+                  <div class="wd-md-50p">
+                      <input id="editCandidateImg" type="file" class="form-control" name="editCandidateImg">
                   </div>
+
+                  <div class="col-md-4 mt-3" id="CandidateImgDisplay"></div>
               </div>
             
               <div class="form-group col mt-3">
-                  <label for="candidateDescription" class="mg-b-0 col-form-label fw-bold text-md-right">
+                  <label for="editCandidateDescription" class="mg-b-0 col-form-label fw-bold text-md-right">
                       {{ __('Candidate Description') }} <span class="text-danger">*</span>
                   </label>
 
                   <div class="mg-b-0">
-                      <textarea id="candidateDescription" class="form-control" value="{{ old('candidateDescription') }}" name="candidateDescription" rows="5" cols="10" required placeholder="Brief description"></textarea>
+                      <textarea id="editCandidateDescription" class="form-control" value="{{ old('editCandidateDescription') }}" name="editCandidateDescription" rows="5" cols="10" required placeholder="Brief description"></textarea>
                   </div>
               </div>
             </form>
           </div>
           <div class="modal-footer">
-          <button type="button" id="saveEditCandidateBtn" onclick="saveCandidateEdit()" class="btn btn-success">Save Changes</button>
+          <button type="button" id="saveEditCandidateBtn" class="btn btn-success">Save Changes</button>
           </div>
         </div>
       </div>
@@ -214,44 +219,24 @@
   </div>
 </div>
 
-    <!-- modal to confirm with user if they want to vote -->
-<div class="modal fade" id="confirmVoteModal" tabindex="-1" role="dialog" aria-labelledby="confirmVoteLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-    <div class="modal-content tx-14">
-      <div class="modal-header">
-        <h6 class="modal-title" id="confirmVoteLabel">Confirmation</h6>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p id="confirmText"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary tx-13" data-bs-dismiss="modal">Close</button>
-        <button type="button" id="voteBtn"class="btn btn-success" data-bs-dismiss="modal" onclick="voteCandidate( )">Vote</button>
-      </div>
-    </div>
-  </div>
-</div>
-
     <!-- modal to inform user they already voted -->
-<div class="modal fade" id="alreadyVotedModal" tabindex="-1" role="dialog" aria-labelledby="alreadyVotedLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-    <div class="modal-content tx-14">
-      <div class="modal-header">
-        <h6 class="modal-title" id="alreadyVotedLabel">You already voted</h6>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p id="alreadyVotedText"></p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary tx-13" data-bs-dismiss="modal">OK</button>
+    <div class="modal fade" id="alreadyVotedModal" tabindex="-1" role="dialog" aria-labelledby="alreadyVotedLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content tx-14">
+          <div class="modal-header">
+            <h6 class="modal-title" id="alreadyVotedLabel">You already voted</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p id="alreadyVotedText"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary tx-13" data-bs-dismiss="modal">OK</button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
 <!-- Alert message for user to show vote cast successfully-->
 <div id="voteSuccessAlert" class="modal alert-success h-auto  fade show alert-dismissible" role="document">

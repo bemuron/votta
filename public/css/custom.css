@@ -11,6 +11,11 @@ caption {
     z-index: 20000 !important;
 }
 
+/*to make the select 2 dropdown appear above the modal not under*/
+ .select2-container{
+  z-index:2000;
+} 
+
 /*.autocomplete-suggestions {
     overflow: auto;
     border: 1px solid #CBD3DD;

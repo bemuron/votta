@@ -3,6 +3,7 @@ var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 var mElectionPosId = 0;
 var mElectionId = 0;
 var mCandidateId = 0;
+var mIsAlertOn = false;
 
 //get the candidates's details and display
 function getCandidateDetails(canId, electionId, clickedButton){
@@ -139,8 +140,8 @@ function getDate( element ) {
     return date;
   }
 
-//populate the datatable with elections when the edit button is clicked
-$('#edit-candidate-tab').click(function(){
+  //get all the election candidates
+  function getElectionCandidates(){
     //display the elections created
     if ($.fn.DataTable.isDataTable('#candidates_table')) {
         $('#candidates_table').DataTable().destroy();
@@ -181,6 +182,11 @@ $('#edit-candidate-tab').click(function(){
         {data: 'action', orderable: false, searchable: false}
         ]
     });
+  }
+
+//populate the datatable with candidates when the edit button is clicked
+$('#edit-candidate-tab').click(function(){
+    getElectionCandidates();
 });
 
   //populate the datatable with elections when the edit button is clicked
@@ -262,8 +268,8 @@ function displayActionButtons(electionId){
 //display action buttons for candidates list
 function displayCandidatesActionButtons(candidateId){
     var actions =  "<div class='btn-toolbar'> <div> "+
-    "<a href='#edit_candidate_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getCandidateDetails("+candidateId+")' id='edit-candidate' data-id='"+candidateId+"'>Edit</a>"+
-    "<a href='#delete_candidate_modal' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmCandidateDelete("+candidateId+")' id='delete-candidate' data-id='"+candidateId+"' data-toggle='modal' data-animation='effect-scale'>Delete</a>"+
+    "<a href='#edit_candidate_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getElectionCandidateDetails("+candidateId+")' id='edit-candidate' data-id='"+candidateId+"'>Edit</a>"+
+    "<a href='#delete_candidate_modal' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmElectionCandidateDelete("+candidateId+")' id='delete-candidate' data-id='"+candidateId+"' data-toggle='modal' data-animation='effect-scale'>Delete</a>"+
     "</div></div>";
 
     return actions;
@@ -298,6 +304,36 @@ function getElectionDetails(electionId){
             $("#editBigImg").html('<img src="' + electionBigImg + '" alt="Card image" width="200" height="200"/>');
 
             $('#edit_election_modal').modal("show");
+            
+        }
+    });
+}
+
+//get the candidate details for the user to edit
+function getElectionCandidateDetails(candidateId){
+    var candidateName = document.getElementById("edit_candidate_name_dropdown");
+    var electionName = document.getElementById("edit_candidate_election_dropdown");
+    var candidatePosition = document.getElementById("edit_candidate_position_dropdown");
+    var candidateImage = document.getElementById("editCandidateImg");
+    var candidateDescription = document.getElementById("editCandidateDescription");
+    var recordId = document.getElementById("editCandidateRecordId");
+    var imgpath = "images/candidates/";
+    var canImg;
+    $("#electFormValErr").addClass('d-none');
+
+    $.get("/edit-candidate-details/"+candidateId, function(data) {
+        if(data !== null){
+            recordId.value = data.id;
+            canImg = imgpath+data.image;
+
+            candidateDescription.value = data.description;
+            $('#edit_candidate_name_dropdown').append($("<option />").val(data.user_id).text(data.candidate_name));
+            $('#edit_candidate_position_dropdown').append($("<option />").val(data.post_id).text(data.post_name));
+            $('#edit_candidate_election_dropdown').append($("<option />").val(data.election_id).text(data.election_name));
+
+            $("#CandidateImgDisplay").html('<img src="' + canImg + '" alt="Card image" width="200" height="200"/>');
+
+            $('#edit_candidate_modal').modal("show");
             
         }
     });
@@ -423,7 +459,7 @@ function saveElectionEdit(){
         },
         error: function(data){
             var errors = data.responseJSON;
-            console.log(errors);
+            //console.log(errors);
             $.each(errors, function (key, value) {
                 $('#electFormValErr').append(value);
                 $("#electFormValErr").removeClass('d-none');
@@ -434,6 +470,104 @@ function saveElectionEdit(){
           }
     });
 }
+
+//handle candidate details edit
+$('#saveEditCandidateBtn').on('click', function (e) {
+    e.preventDefault();
+    
+    var candidateID = $("#edit_candidate_name_dropdown").val();
+    var electionID = $("#edit_candidate_election_dropdown").val();
+    var postionID = $("#edit_candidate_position_dropdown").val();
+    var recordID = $("#editCandidateRecordId").val();
+    // Get form
+    var form = $("#editCandidateForm")[0];
+
+    // Create an FormData object
+    var data = new FormData(form);
+
+    data.append("candidate_id", candidateID);
+    data.append("election_id", electionID);
+    data.append("position_id", postionID);
+    data.append("record_id", recordID);
+    
+    // disabled the submit button
+    $("#saveEditCandidateBtn").prop("disabled", true);
+    
+    $.ajax({
+        url: "/edit-candidate",
+        enctype: "multipart/form-data",
+        type: 'post',
+        processData: false,
+        contentType: false,
+        cache: false,
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        //dataType: 'json',
+        data: data,
+        success: function(data) {
+            //console.log(data);
+            //$('.alert').alert('close');
+            
+            if(data.success){
+                getElectionCandidates();
+                $("#saveEditCandidateBtn").prop("disabled", false);
+                // mIsAlertOn = true;
+
+                // $('#custom-alert').addClass('custom-alert success');
+                // $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                // $('#custom-alert').show();
+                
+                document.getElementById("editCandidateForm").reset();
+                document.getElementById("editCandidateRecordId").value = "";
+                $("#edit_candidate_modal").modal("hide");
+                
+            }
+            if(data.error){
+                mIsAlertOn = true;
+
+                // $('#custom-alert').addClass('custom-alert');
+                // $('#alert-msg').html("<i class='fas fa-times-circle'></i> "+data.error);
+                // $('#custom-alert').show();
+            }
+            
+        },
+        error: function (e) {
+            let responseHtml = '';
+            var errors = e.responseJSON.errors;
+            
+            responseHtml = '<div class="alert alert-danger">';
+            
+            $.each( errors , function( key, value ) {
+                responseHtml += '<p> * ' + value + '</p>';
+            });
+            responseHtml += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> </div>';
+            
+            $("#editCanFormValErr").html( responseHtml );
+            $("#electFormValErr").removeClass('d-none');
+            document.querySelector('#editCanFormValErr').scrollIntoView({
+                behavior: 'smooth'
+            });
+            
+          $("#saveEditCandidateBtn").prop("disabled", false);
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+    
+    //hide the alert
+setTimeout(function() {
+    if(mIsAlertOn === true){
+        $('#custom-alert').fadeOut('fast');
+        $('#custom-alert').removeClass('custom-alert info');
+        $('#custom-alert').removeClass('custom-alert warning');
+        $('#custom-alert').removeClass('custom-alert success');
+        $('#custom-alert').removeClass('custom-alert');
+    }
+}, 5000); // <-- time in milliseconds
+    
+});
 
 //populate the elections dropdown dropdown
 var cur_drpdwn = $("#elections_dropdown");
@@ -586,6 +720,35 @@ $('#candidate_name_dropdown').select2({
     }
 });
 
+//the select for the candidates when editing a candidate to an election
+$('#edit_candidate_name_dropdown').select2({
+    placeholder: 'Select Candidate',
+    searchInputPlaceholder: 'Search candidate',
+    ajax: {
+        url: '/election-candidates-list',
+        dataType: 'json',
+        delay: 250,
+        data: function (data) {
+            //_token: CSRF_TOKEN;
+            return {
+                keyword: data.term // search term
+            };
+        },
+        processResults: function (response) {
+            return {
+                results: $.map(response, function (item) {
+                    return {
+                        text: item.label,
+                        //slug: item.slug,
+                        id: item.value
+                    };
+                })
+            };
+        },
+        cache: true
+    }
+});
+
 //the select for the elections when adding a candidate to a election
 $('#candidate_election_dropdown').select2({
     placeholder: 'Select election',
@@ -615,7 +778,66 @@ $('#candidate_election_dropdown').select2({
     }
 });
 
+//the select for the elections when editing a candidate to a election
+$('#edit_candidate_election_dropdown').select2({
+    placeholder: 'Select election',
+    searchInputPlaceholder: 'Search election',
+    ajax: {
+        url: '/elections-dropdown',
+        dataType: 'json',
+        delay: 250,
+        data: function (data) {
+            //_token: CSRF_TOKEN;
+            return {
+                keyword: data.term // search term
+            };
+        },
+        processResults: function (response) {
+            return {
+                results: $.map(response, function (item) {
+                    return {
+                        text: item.name,
+                        //slug: item.slug,
+                        id: item.id
+                    };
+                })
+            };
+        },
+        cache: true
+    }
+});
+
+//position dropdown when adding a candidate
 $('#candidate_position_dropdown').select2({
+    placeholder: 'Select position',
+    searchInputPlaceholder: 'Search position',
+    ajax: {
+        url: '/positions-dropdown',
+        dataType: 'json',
+        delay: 250,
+        data: function (data) {
+            //_token: CSRF_TOKEN;
+            return {
+                keyword: data.term // search term
+            };
+        },
+        processResults: function (response) {
+            return {
+                results: $.map(response, function (item) {
+                    return {
+                        text: item.name,
+                        //slug: item.slug,
+                        id: item.id
+                    };
+                })
+            };
+        },
+        cache: true
+    }
+});
+
+//position dropdown when adding a candidate
+$('#edit_candidate_position_dropdown').select2({
     placeholder: 'Select position',
     searchInputPlaceholder: 'Search position',
     ajax: {
@@ -652,8 +874,48 @@ function getSelectedElection(event){
     $('#candidate_position_dropdown').val(0);
     
     $('#candidate_position_dropdown').select2({
-      placeholder: 'Select election',
-      searchInputPlaceholder: 'Search election',
+      placeholder: 'Select position',
+      searchInputPlaceholder: 'Search position',
+      //minimumInputLength: 2,
+        //tags: [],
+        ajax: {
+            url: "/positions-dropdown/"+electonId,
+            dataType: 'json',
+            delay: 250,
+            data: function (data) {
+                //_token: CSRF_TOKEN;
+                return {
+                    keyword: data.term // search term
+                };
+            },
+            processResults: function (response) {
+                return {
+                    results: $.map(response, function (item) {
+                        return {
+                            text: item.label,
+                            //slug: item.slug,
+                            id: item.value
+                        };
+                    })
+                };
+            }
+            //cache: true
+        }
+    });
+}
+
+//get the id of the selected election id 
+//use it to get the positions in that election
+function getSelectedElectionEdit(event){
+    var electonId = event.target.value;
+    console.log('election id', electonId);
+    
+    //unselect previously selected
+    $('#edit_candidate_position_dropdown').val(0);
+    
+    $('#edit_candidate_position_dropdown').select2({
+      placeholder: 'Select position',
+      searchInputPlaceholder: 'Search position',
       //minimumInputLength: 2,
         //tags: [],
         ajax: {

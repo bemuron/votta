@@ -83,11 +83,17 @@ Route::post('/create-position', [PostsController::class, 'store'])->name('create
 //route to create a new candidate
 Route::post('/create-candidate', [CandidatesController::class, 'store'])->name('create_candidate');
 
+//route to edit a candidate
+Route::post('/edit-candidate', [CandidatesController::class, 'update'])->name('edit_candidate');
+
 //get elections list for table
 Route::get('/elections/table-list', [ElectionsController::class, 'getAllElections'])->name('election_results');
 
 //get candidates list for table
 Route::get('/candidates/table-list', [CandidatesController::class, 'getAllCandidates']);
+
+//get candidate details for edit
+Route::get('/edit-candidate-details/{candidateId}', [CandidatesController::class, 'getCandidateDetails']);
 
 //get election details for edit
 Route::get('/edit-election-details/{electionId}', [ElectionsController::class, 'getElectionDetails']);

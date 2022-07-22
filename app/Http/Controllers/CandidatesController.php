@@ -75,6 +75,23 @@ class CandidatesController extends Controller
         
     }
 
+    //get single candidate details by id
+    public function getCandidateDetails($candidateId){
+        
+        return DB::table('candidates')
+        ->select('candidates.id','posts.name AS post_name','candidates.post_id',
+                'candidates.user_id',
+                'candidates.image','elections.name AS election_name','candidates.election_id',
+                'candidates.description','candidates.created_at','users.name AS candidate_name')
+        ->join('users', 'candidates.user_id', '=', 'users.id')
+        ->join('posts', 'posts.id', '=', 'candidates.post_id')
+        ->join('elections', 'elections.id', '=', 'candidates.election_id')
+            ->where([
+                ['candidates.id', '=', $candidateId]
+            ]) 
+            ->first();
+    }
+
     /**
      * Display the specified resource.
      *
@@ -98,16 +115,16 @@ class CandidatesController extends Controller
         if($searchQuery == ''){
             $autocomplate = DB::table('users')
             ->select('id','name')
-            ->limit(10)       
-            ->orderby('name','asc')      
+            ->limit(10)
+            ->orderby('name','asc')
             ->get();
 
         }else{
             $autocomplate = DB::table('users')
             ->select('id','name')
-            ->where('name', 'like', '%' .$searchQuery . '%')        
+            ->where('name', 'like', '%' .$searchQuery . '%')
             ->limit(10)
-            ->orderby('name','asc')     
+            ->orderby('name','asc')
             ->get();
       }
       
@@ -144,9 +161,9 @@ class CandidatesController extends Controller
      * @param  \App\Models\Candidates  $candidates
      * @return \Illuminate\Http\Response
      */
-    public function edit(Candidates $candidates)
+    public function edit()
     {
-        //
+        
     }
 
     /**
@@ -156,9 +173,50 @@ class CandidatesController extends Controller
      * @param  \App\Models\Candidates  $candidates
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Candidates $candidates)
+    public function update(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'election_id' => 'required',
+            'position_id' => 'required',
+            'record_id' => 'required',
+            'editCandidateImg' => 'image|dimensions:width=288,height=288',
+            'editCandidateDescription' => 'required|max:3000',
+            'candidate_id' => 'required'
+        ]);
+
+        if (request()->hasFile('editCandidateImg')) {
+            $imgName = request()->file('editCandidateImg')->getClientOriginalName();
+            $imgFile = request()->file('editCandidateImg');
+
+            //move the file to the right folder
+            if($imgFile->move(base_path('public/images/candidates/'), $imgName)){
+
+                $updateRes = DB::table('candidates')
+                ->where('id', $validated['record_id'])
+                ->update(array('user_id' => $validated['candidate_id'], 'election_id' => $validated['election_id'],
+                'post_id' => $validated['position_id'], 'image' => $imgName,
+                'updated_at' => date('Y-m-d H:i:s'),'description' => $validated['editCandidateDescription']));
+
+                if($updateRes){
+                    return response()->json(['success'=>'Candidate updated successfully.']);
+                }else{
+                    return response()->json(["error","Failed to update candidate"]);
+                }
+            }
+
+        }else{
+            $updateRes = DB::table('candidates')
+                ->where('id', $validated['record_id'])
+                ->update(array('user_id' => $validated['candidate_id'], 'election_id' => $validated['election_id'],
+                'post_id' => $validated['position_id'],
+                'updated_at' => date('Y-m-d H:i:s'),'description' => $validated['editCandidateDescription']));
+
+                if($updateRes){
+                    return response()->json(['success'=>'Candidate updated successfully.']);
+                }else{
+                    return response()->json(["error","Failed to update candidate"]);
+                }
+        }
     }
 
     /**

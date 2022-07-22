@@ -194,28 +194,28 @@
               </div>
 
               <div class="form-group col mt-3">
-                  <label for="editElectionThumbImg" class="col-md-4 col-form-label fw-bold text-md-right">
+                  <label for="editElectionThumbImg" class="col-form-label fw-bold text-md-right">
                     {{ __('Thumbnail Image 288 X 288 for best results') }} <span class="text-danger">*</span></label>
 
-                  <div class="col-md-6">
+                  <div class="wd-md-50p">
                       <input id="editElectionThumbImg" type="file" class="form-control" name="editElectionThumbImg">
                       <span class="error text-danger d-none"></span>
                   </div>
 
-                  <div id="editThumbImg"></div>
+                  <div class=" mt-3" id="editThumbImg"></div>
               </div>
 
               <div class="form-group col mt-3">
-                  <label for="editElectionBigImg" class="col-md-4 col-form-label fw-bold text-md-right">
+                  <label for="editElectionBigImg" class="col-form-label fw-bold text-md-right">
                     {{ __('Big Image 1100 X 281 for best results') }} <span class="text-danger">*</span>
                   </label>
 
-                  <div class="col-md-6">
+                  <div class="wd-md-50p">
                       <input id="editElectionBigImg" type="file" class="form-control" name="editElectionBigImg">
                       <span class="error text-danger d-none"></span>
                   </div>
 
-                  <div id="editBigImg"></div>
+                  <div class="mt-3" id="editBigImg"></div>
               </div>
             
               <div class="form-group col mt-3">
