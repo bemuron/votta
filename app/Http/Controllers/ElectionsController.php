@@ -50,6 +50,29 @@ class ElectionsController extends Controller
         return view('add_election');
     }
 
+    public function showCurrentElections()
+    {
+        $electionsList = $this->getCurElections();
+        return view('ongoing_elections',compact('electionsList'));
+    }
+
+    //get the list of ongoing elections
+    private function getCurElections(){
+        
+        return DB::table('elections')
+            ->select('id',
+                    'name','end_date',
+                    DB::raw("IF(LENGTH(description) <= 40, description,
+                            CONCAT(LEFT(description, 40), '...')) AS description"), 
+                    'image')
+            ->where([
+                ['end_date', '>', NOW()],
+                ['status', '=', 1]
+            ]) 
+            ->orderBy('end_date','asc')
+            ->get();
+    }
+
     /**
      * Store a newly created resource in storage.
      * save a new election/poll details to the db
@@ -144,6 +167,7 @@ class ElectionsController extends Controller
             ->select('id',
                     'name',
                     'description', 
+                    'end_date',
                     'image',
                     'image_big')
             ->where([
@@ -163,11 +187,10 @@ class ElectionsController extends Controller
     //get all the candidates in this election
     public function getElectionCandidtates($electionId){
         return DB::table('candidates')
-                ->select('candidates.id','users.name','candidates.post_id','candidates.user_id',
+                ->select('candidates.id','candidates.candidate_name as name','candidates.post_id',
                 DB::raw("IF(LENGTH(candidates.description) <= 40, candidates.description,
                             CONCAT(LEFT(candidates.description, 40), '...')) AS description"),
                 'posts.name AS post_name','candidates.image','candidates.election_id')
-                ->join('users', 'candidates.user_id', '=', 'users.id')
                 ->join('posts', 'posts.id', '=', 'candidates.post_id')
                 ->join('elections', 'elections.id', '=', 'candidates.election_id')
                 ->where([
@@ -179,10 +202,9 @@ class ElectionsController extends Controller
     //get a single candidate's details
     public function getCandidtateDetails($candidateId, $electionId){
         return DB::table('candidates')
-                ->select('candidates.id','users.name',
+                ->select('candidates.id','candidates.candidate_name as name',
                 'candidates.description','posts.name AS post_name',
                 'candidates.image','candidates.election_id','candidates.post_id')
-                ->join('users', 'candidates.user_id', '=', 'users.id')
                 ->join('posts', 'posts.id', '=', 'candidates.post_id')
                 ->join('elections', 'elections.id', '=', 'candidates.election_id')
                 ->where([
@@ -204,17 +226,6 @@ class ElectionsController extends Controller
                 ['id', '=', $electionId]
             ]) 
             ->first();
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Elections  $elections
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Elections $elections)
-    {
-        //
     }
 
     /**

@@ -33,7 +33,7 @@ class HomeController extends Controller
         
         return DB::table('elections')
             ->select('id',
-                    'name',
+                    'name','end_date',
                     DB::raw("IF(LENGTH(description) <= 40, description,
                             CONCAT(LEFT(description, 40), '...')) AS description"), 
                     'image')

@@ -6,7 +6,7 @@ var mCandidateId = 0;
 var mIsAlertOn = false;
 
 //get the candidates's details and display
-function getCandidateDetails(canId, electionId, clickedButton){
+function getCandidateDetails(canId, electionId, postId, clickedButton){
     var candidateName = document.getElementById("canName");
     var candidatePost = document.getElementById("canPost");
     var candidateDets = document.getElementById("canDets");
@@ -27,10 +27,10 @@ function getCandidateDetails(canId, electionId, clickedButton){
 
                 $('#canDetailsModal').modal("show");
             }else{
-                //mElectionPosId = postId;
+                mElectionPosId = postId;
                 mElectionId = electionId;
                 mCandidateId = canId;
-                confirmVoteText.innerHTML = "Confirm casting your vote for "+data.name+" for the position of "+data.post_name;
+                confirmVoteText.innerHTML = "Confirm casting your vote for <strong>"+data.name+"</strong>"+ " for the position of <strong>"+data.post_name+"</strong>";
                 $('#confirmVoteModal').modal("show");
             }
             
@@ -40,8 +40,8 @@ function getCandidateDetails(canId, electionId, clickedButton){
     //console.log("jQuery "+ (jQuery ? $().jquery : "NOT") +" loaded");
 }
 
-//cast a vote for a candiatet
-function voteCandidate(canId, electionId, postId){
+//cast a vote for a candidate
+function voteCandidate(){
     var alreadyVotedText = document.getElementById("alreadyVotedText");
 
     $.ajax({
@@ -50,12 +50,16 @@ function voteCandidate(canId, electionId, postId){
         //dataType: 'json',
         data: {
             _token: CSRF_TOKEN,
-            candidate_id: canId,
-            election_id: electionId,
-            post_id: postId
+            candidate_id: mCandidateId,
+            election_id: mElectionId,
+            post_id: mElectionPosId
         },
         success: function(data) {
             if(data == 1){
+                mElectionPosId = 0;
+                mElectionId = 0;
+                mCandidateId = 0;
+                
                 $("#voteSuccessAlert").fadeTo(2000, 5000).slideUp(500, function(){
                     $("#voteSuccessAlert").slideUp(500);
                 });
@@ -70,7 +74,7 @@ function voteCandidate(canId, electionId, postId){
                     $("#voteFailedAlert").slideUp(500);
                 });
             }else if(data.name != null ){
-                alreadyVotedText.innerHTML = "You already voted "+data.name+" for the position of "+data.post_name;
+                alreadyVotedText.innerHTML = "You already voted "+data.name+" for the position of <strong>"+data.post_name+"</strong>";
                 $('#alreadyVotedModal').modal("show");
                 document.getElementById("votePromptBtn").innerHTML = 'You already voted';
                 document.getElementById("votePromptBtn").disabled = true; 
@@ -82,7 +86,12 @@ function voteCandidate(canId, electionId, postId){
                 });
             }
 
-        }
+        },
+        error: function (e) {
+            let responseHtml = '';
+            var errors = e.responseJSON.errors;
+            
+        },
     });
 }
 
@@ -184,14 +193,9 @@ function getDate( element ) {
     });
   }
 
-//populate the datatable with candidates when the edit button is clicked
-$('#edit-candidate-tab').click(function(){
-    getElectionCandidates();
-});
-
-  //populate the datatable with elections when the edit button is clicked
-  $('#edit-election-tab').click(function(){
-  //display the elections created
+  //get all elections
+  function getAllElections(){
+      //display the elections created
   if ($.fn.DataTable.isDataTable('#elections_table')) {
     $('#elections_table').DataTable().destroy();
 }
@@ -237,6 +241,17 @@ $('#elections_table').DataTable({
       {data: 'action', orderable: false, searchable: false}
       ]
   });
+  }
+
+//populate the datatable with candidates when the edit button is clicked
+$('#edit-candidate-tab').click(function(){
+    getElectionCandidates();
+});
+
+  //populate the datatable with elections when the edit button is clicked
+  $('#edit-election-tab').click(function(){
+    //display the elections created
+    getAllElections();
   });
 
 //format the date
@@ -259,8 +274,10 @@ function displayCandidateImage(imgeName){
 
 //display action buttons
 function displayActionButtons(electionId){
-    var actions =  "<a href='#edit_election_modal' class='btn btn-outline-dark' onclick='getElectionDetails("+electionId+")' id='edit-election' data-id='"+electionId+"'>Edit</a>"+
-    "<a href='#delete_election_modal' class='btn btn-outline-danger' onclick='confirmElectionDelete("+electionId+")' id='delete-election' data-id='"+electionId+"' data-toggle='modal' data-animation='effect-scale'>Delete</a>";
+    var actions =  "<div class='btn-toolbar'> <div> "+
+    "<a href='#edit_election_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getElectionDetails("+electionId+")' id='edit-election' data-id='"+electionId+"'><i class='bi bi-pencil-square'></i> </a> "+
+    "<a href='#delete_election_modal' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmElectionDelete("+electionId+")' id='delete-election' data-id='"+electionId+"' data-toggle='modal' data-animation='effect-scale'> <i class='bi bi-trash'></i></a>"+
+    "</div></div>";
 
     return actions;
 }
@@ -268,8 +285,8 @@ function displayActionButtons(electionId){
 //display action buttons for candidates list
 function displayCandidatesActionButtons(candidateId){
     var actions =  "<div class='btn-toolbar'> <div> "+
-    "<a href='#edit_candidate_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getElectionCandidateDetails("+candidateId+")' id='edit-candidate' data-id='"+candidateId+"'>Edit</a>"+
-    "<a href='#delete_candidate_modal' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmElectionCandidateDelete("+candidateId+")' id='delete-candidate' data-id='"+candidateId+"' data-toggle='modal' data-animation='effect-scale'>Delete</a>"+
+    "<a href='#edit_candidate_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getElectionCandidateDetails("+candidateId+")' id='edit-candidate' data-id='"+candidateId+"'> Edit </a> "+
+    "<a href='#delete_candidate_modal' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmElectionCandidateDelete("+candidateId+")' id='delete-candidate' data-id='"+candidateId+"' data-toggle='modal' data-animation='effect-scale'> Delete </a>"+
     "</div></div>";
 
     return actions;
@@ -311,7 +328,7 @@ function getElectionDetails(electionId){
 
 //get the candidate details for the user to edit
 function getElectionCandidateDetails(candidateId){
-    var candidateName = document.getElementById("edit_candidate_name_dropdown");
+    var candidateName = document.getElementById("editCandidateName");
     var electionName = document.getElementById("edit_candidate_election_dropdown");
     var candidatePosition = document.getElementById("edit_candidate_position_dropdown");
     var candidateImage = document.getElementById("editCandidateImg");
@@ -327,7 +344,7 @@ function getElectionCandidateDetails(candidateId){
             canImg = imgpath+data.image;
 
             candidateDescription.value = data.description;
-            $('#edit_candidate_name_dropdown').append($("<option />").val(data.user_id).text(data.candidate_name));
+            candidateName.value = data.candidate_name;
             $('#edit_candidate_position_dropdown').append($("<option />").val(data.post_id).text(data.post_name));
             $('#edit_candidate_election_dropdown').append($("<option />").val(data.election_id).text(data.election_name));
 
@@ -371,52 +388,8 @@ function deleteElection(electionId){
 
                 $('#delete_election_modal').modal("hide");
 
-                    //display the elections created
-                    if ($.fn.DataTable.isDataTable('#elections_table')) {
-                        $('#elections_table').DataTable().destroy();
-                    }
-                    $('#elections_table tbody').empty();
-                    $('#elections_table').DataTable({
-                        //responsive: true,
-                        processing: true,
-                        //serverSide: true,
-                        order: [],
-                        ajax: {
-                            url: "/elections/table-list",
-                            dataSrc: function (json) {
-                                //console.log(json.length);
-                            var return_data = new Array();
-                            for(var i=0;i< json.length; i++){
-                                return_data.push({
-                                action: displayActionButtons(json[i].id),
-                                name: json[i].name,
-                                description: json[i].description,
-                                status: json[i].status,
-                                start_date: formatDate(json[i].start_date),
-                                end_date: formatDate(json[i].end_date),
-                                image: displayImage(json[i].image),
-                                image_big: displayImage(json[i].image_big),
-                                created_at: formatDate(json[i].created_at),
-                                created_by: json[i].created_by
-                                });
-                                
-                            }
-                            return return_data;
-                            }
-                        },
-                        columns: [
-                        {data: 'name'},
-                        {data: 'status'},
-                        {data: 'start_date'},
-                        {data: 'end_date'},
-                        {data: 'description'},
-                        {data: 'image', orderable: false, searchable: false},
-                        {data: 'image_big', orderable: false, searchable: false},
-                        {data: 'created_at'},
-                        {data: 'created_by'},
-                        {data: 'action', orderable: false, searchable: false}
-                        ]
-                    });
+                //display the elections created
+                getAllElections();
             }else{
                 //console.log(data);
                 //alert("Somethng went wrong, details not saved");
@@ -464,8 +437,6 @@ function saveElectionEdit(){
                 $('#electFormValErr').append(value);
                 $("#electFormValErr").removeClass('d-none');
                 document.getElementById("electFormValErr").scrollIntoView();
-                //console.log(key+" "+value.errors);
-                
             });
           }
     });
@@ -475,7 +446,7 @@ function saveElectionEdit(){
 $('#saveEditCandidateBtn').on('click', function (e) {
     e.preventDefault();
     
-    var candidateID = $("#edit_candidate_name_dropdown").val();
+    //var candidateID = $("#edit_candidate_name_dropdown").val();
     var electionID = $("#edit_candidate_election_dropdown").val();
     var postionID = $("#edit_candidate_position_dropdown").val();
     var recordID = $("#editCandidateRecordId").val();
@@ -485,12 +456,12 @@ $('#saveEditCandidateBtn').on('click', function (e) {
     // Create an FormData object
     var data = new FormData(form);
 
-    data.append("candidate_id", candidateID);
+    //data.append("candidate_id", candidateID);
     data.append("election_id", electionID);
     data.append("position_id", postionID);
     data.append("record_id", recordID);
     
-    // disabled the submit button
+    // disable the submit button
     $("#saveEditCandidateBtn").prop("disabled", true);
     
     $.ajax({
@@ -626,8 +597,11 @@ $('#edit-posts-tab').click(function(){
 
   //display posts table action buttons
 function displayPostsActionButtons(postId){
-    var actions =  "<a href='#' class='btn btn-outline-success' onclick='getPostDetails("+postId+")' id='edit-post' data-id='"+postId+"'>Edit</a>"+
-    "<a href='#delete_post_modal' class='btn btn-outline-danger' id='delete-post' data-id='"+postId+"' data-toggle='modal' data-animation='effect-scale'>Delete</a>";
+
+    var actions =  "<div class='btn-toolbar'> <div> "+
+    "<a href='#' class='btn btn-xs btn-outline-dark btn-icon' onclick='getPostDetails("+postId+")' id='edit-post' data-id='"+postId+"'> <i class='bi bi-pencil-square'></i> </a> "+
+    "<a href='#delete_post_modal' class='btn btn-xs btn-outline-danger btn-icon' id='delete-post' data-id='"+postId+"' data-toggle='modal' data-animation='effect-scale'> <i class='bi bi-trash'></i> </a>"+
+    "</div></div>";
 
     return actions;
 }
@@ -671,6 +645,7 @@ function savePostEdit(){
             //console.log(data);
             if(data != null || data > 0){
                     mElectionId = 0;
+                    mElectionPosId = 0;
                     $("#edit_posts_modal").modal("hide");
                     document.getElementById('editPostsForm').reset();
                 }else{

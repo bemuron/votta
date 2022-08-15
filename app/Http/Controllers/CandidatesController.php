@@ -47,7 +47,7 @@ class CandidatesController extends Controller
             'candidate_position_dropdown' => 'required',
             'candidateImg' => 'required|image|dimensions:width=288,height=288',
             'candidateDescription' => 'required|max:3000',
-            'candidate_name_dropdown' => 'required'
+            'candidateName' => 'required'
         ]);
 
         if (request()->hasFile('candidateImg')) {
@@ -57,7 +57,7 @@ class CandidatesController extends Controller
             //move the file to the right folder
             if($imgFile->move(base_path('public/images/candidates/'), $imgName)){
                 $insertRes = DB::table('candidates')->insertGetId(array('description' => $validated['candidateDescription'],
-                'user_id' => $validated['candidate_name_dropdown'], 'election_id' => $validated['candidate_election_dropdown'], 
+                'candidate_name' => $validated['candidateName'], 'election_id' => $validated['candidate_election_dropdown'], 
                 'post_id' => $validated['candidate_position_dropdown'], 'image' => $imgName, 
                 'created_at' => date('Y-m-d H:i:s')));
 
@@ -80,10 +80,9 @@ class CandidatesController extends Controller
         
         return DB::table('candidates')
         ->select('candidates.id','posts.name AS post_name','candidates.post_id',
-                'candidates.user_id',
+                'candidates.candidate_name',
                 'candidates.image','elections.name AS election_name','candidates.election_id',
-                'candidates.description','candidates.created_at','users.name AS candidate_name')
-        ->join('users', 'candidates.user_id', '=', 'users.id')
+                'candidates.description','candidates.created_at')
         ->join('posts', 'posts.id', '=', 'candidates.post_id')
         ->join('elections', 'elections.id', '=', 'candidates.election_id')
             ->where([
@@ -145,8 +144,7 @@ class CandidatesController extends Controller
             return DB::table('candidates')
             ->select('candidates.id','posts.name AS post_name',
                 'candidates.image','elections.name AS election_name',
-                    'candidates.description','candidates.created_at','users.name AS candidate_name')
-            ->join('users', 'candidates.user_id', '=', 'users.id')
+                    'candidates.description','candidates.created_at','candidates.candidate_name')
             ->join('posts', 'posts.id', '=', 'candidates.post_id')
             ->join('elections', 'elections.id', '=', 'candidates.election_id')
             ->orderBy('candidates.created_at','desc')
@@ -181,7 +179,7 @@ class CandidatesController extends Controller
             'record_id' => 'required',
             'editCandidateImg' => 'image|dimensions:width=288,height=288',
             'editCandidateDescription' => 'required|max:3000',
-            'candidate_id' => 'required'
+            'editCandidateName' => 'required|max:50'
         ]);
 
         if (request()->hasFile('editCandidateImg')) {
@@ -193,7 +191,7 @@ class CandidatesController extends Controller
 
                 $updateRes = DB::table('candidates')
                 ->where('id', $validated['record_id'])
-                ->update(array('user_id' => $validated['candidate_id'], 'election_id' => $validated['election_id'],
+                ->update(array('candidate_name' => $validated['editCandidateName'], 'election_id' => $validated['election_id'],
                 'post_id' => $validated['position_id'], 'image' => $imgName,
                 'updated_at' => date('Y-m-d H:i:s'),'description' => $validated['editCandidateDescription']));
 

@@ -1,17 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- election image -->
-<div class="container">
-  <h3>Manage Elections</h3>
-  <!-- <h5>Stats</h5> -->
+<div class="breadcrumbs d-flex align-items-center" style="background-image: url('/images/img/manage-elections-header.jpg');">
+  <div class="container position-relative d-flex flex-column align-items-center">
 
-  <ul class="nav nav-tabs" id="manageElectionsTab" role="tablist">
+    <h2>Manage Elections</h2>
+  </div>
+</div>
+
+<div class="container mt-5">
+
+  <ul class="nav nav-tabs nav-justified" id="manageElectionsTab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="create-election-tab" data-bs-toggle="tab" href="#create-election" role="tab" aria-controls="create-election" aria-selected="true">Create</a>
+      <a class="nav-link active" id="create-election-tab" data-bs-toggle="tab" href="#create-election" role="tab" aria-controls="create-election" aria-selected="true"><i class="bi bi-plus-square"></i>&nbsp; Create</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="edit-election-tab" data-bs-toggle="tab" href="#edit-election" role="tab" aria-controls="edit-election" aria-selected="false">Edit</a>
+      <a class="nav-link" id="edit-election-tab" data-bs-toggle="tab" href="#edit-election" role="tab" aria-controls="edit-election" aria-selected="false"><i class="bi bi-pencil-square"></i>&nbsp; Edit</a>
     </li>
   </ul>
   <div class="tab-content bd bd-gray-300 bd-t-0 pd-20" id="myTabContent">
@@ -109,7 +113,6 @@
     </form>
     </div>
     <div class="tab-pane fade" id="edit-election" role="tabpanel" aria-labelledby="edit-election-tab">
-      <h6>Manage elections</h6>
       <table id="elections_table" class="table table-sm caption-top table-striped">
         <thead>
           <tr>

@@ -1,17 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- election image -->
-<div class="container">
-  <h3>Manage Election Positions</h3>
-  <!-- <h5>Stats</h5> -->
+<div class="breadcrumbs d-flex align-items-center" style="background-image: url('/images/img/manage-positions-header.jpg');">
+  <div class="container position-relative d-flex flex-column align-items-center">
 
-  <ul class="nav nav-tabs" id="managePostsTab" role="tablist">
+    <h2>Manage Election Positions</h2>
+  </div>
+</div>
+
+<div class="container mt-5">
+
+  <ul class="nav nav-tabs nav-justified" id="managePostsTab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="create-posts-tab" data-bs-toggle="tab" href="#create-posts" role="tab" aria-controls="create-posts" aria-selected="true">Create</a>
+      <a class="nav-link active" id="create-posts-tab" data-bs-toggle="tab" href="#create-posts" role="tab" aria-controls="create-posts" aria-selected="true"><i class="bi bi-plus-square"></i>&nbsp;  Create</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="edit-posts-tab" data-bs-toggle="tab" href="#edit-posts" role="tab" aria-controls="edit-posts" aria-selected="false">Edit</a>
+      <a class="nav-link" id="edit-posts-tab" data-bs-toggle="tab" href="#edit-posts" role="tab" aria-controls="edit-posts" aria-selected="false"> <i class="bi bi-pencil-square"></i>&nbsp;  Edit</a>
     </li>
   </ul>
   <div class="tab-content bd bd-gray-300 bd-t-0 pd-20" id="myTabContent">
@@ -67,7 +71,6 @@
     </form>
     </div>
     <div class="tab-pane fade" id="edit-posts" role="tabpanel" aria-labelledby="edit-posts-tab">
-      <h6>Manage Posts</h6>
       <table id="posts_table" class="table table-sm caption-top table-striped">
         <thead>
           <tr>

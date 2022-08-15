@@ -1,74 +1,144 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- Carousel -->
-<div id="demo" class="carousel slide" data-bs-ride="carousel">
 
-  <!-- Indicators/dots -->
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
-    <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
-    <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
-  </div>
-  
-  <!-- The slideshow/carousel -->
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="https://via.placeholder.com/1100x281" alt="Los Angeles" class="d-block w-100">
-      <div class="carousel-caption">
-        <h3>Los Angeles</h3>
-        <p>We had such a great time in LA!</p>
-      </div>
-    </div>
-    <div class="carousel-item">
-      <img src="https://via.placeholder.com/1100x281" alt="Chicago" class="d-block w-100">
-      <div class="carousel-caption">
-        <h3>Chicago</h3>
-        <p>Thank you, Chicago!</p>
-      </div> 
-    </div>
-    <div class="carousel-item">
-      <img src="{{ asset('images/elections/votta.jpg') }}" alt="New York" class="d-block w-100"
-      >
-      <div class="carousel-caption">
-        <h3>New York</h3>
-        <p>We love the Big Apple!</p>
-      </div>  
-    </div>
-  </div>
-  
-  <!-- Left and right controls/icons -->
-  <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
-</div>
+<!-- ======= Hero Section ======= -->
+<section id="hero" class="hero d-flex align-items-center">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12">
+          <h2 class="d-flex justify-content-center" data-aos="fade-up">Your Vote Your Voice</h2>
+          <blockquote data-aos="fade-up" data-aos-delay="100">
+            <h3>Votta Online voting system makes handling of voting or election polls easy. 
+              Quickly set up elections and candidates and have users vote. View results of polls.</h3>
+          </blockquote>
+          <div class="d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
+            <a href="{{ route('login') }}" class="btn-get-started">Get Started</a>
+          </div>
 
-<!-- <hr class="mg-t-50 mg-b-40"> -->
-
-<div class="container mt-5">
-  <h3>Ongoing Elections</h3>
-  <div class="row row-xs">
-  @foreach( $electionsList as $election )
-  <div class="col-6 col-sm-4 col-md-3 col-xl">
-      <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="{{ asset('images/elections/'.$election->image ) }}" alt="Card image" style="width:100%">
-        <div class="card-body">
-          <h4 class="card-title">{{ $election->name }}</h4>
-          <p class="card-text">{{ $election->description }}</p>
-          <form method="GET" action="{{ route('election_details') }}">
-            <input type="hidden" class="form-control" id="election_id" name="election_id" value="{{ $election->id }}">
-            <!-- <a href="#" class="btn btn-outline-info" id="{{ $election->id }}">View</a> -->
-            <button type="submit" id="election_button" class="btn btn-info">
-                {{ __(' View') }}
-            </button>
-          </form> 
         </div>
       </div>
-    </div><!-- col -->
-    @endforeach
-  </div><!-- row -->
-</div>
+    </div>
+  </section><!-- End Hero Section -->
+
+  <!-- ======= Our Services Section ======= -->
+  <section id="services-list" class="services-list">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Features</h2>
+
+        </div>
+
+        <div class="row gy-5">
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon flex-shrink-0"><i class="bi bi-person-plus" style="color: #f57813;"></i></div>
+            <div>
+              <h4 class="title"><a href="#" class="stretched-link">User Management</a></h4>
+              <p class="description">As admin you can add, delete, edit all users in the system.</p>
+            </div>
+          </div>
+          <!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="200">
+            <div class="icon flex-shrink-0"><i class="bi bi-check2-square" style="color: #15a04a;"></i></div>
+            <div>
+              <h4 class="title"><a href="#" class="stretched-link">Elections Management</a></h4>
+              <p class="description">Create, edit, update, delete elections. Set start and end dates. Add candidates to an election</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="300">
+            <div class="icon flex-shrink-0"><i class="bi bi-person-check" style="color: #d90769;"></i></div>
+            <div>
+              <h4 class="title"><a href="#" class="stretched-link">Candidate Management</a></h4>
+              <p class="description">Remove candidates from elections. Add candidates to several elections.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="400">
+            <div class="icon flex-shrink-0"><i class="bi bi-card-checklist" style="color: #15bfbc;"></i></div>
+            <div>
+              <h4 class="title"><a href="#" class="stretched-link">Elective Postions</a></h4>
+              <p class="description">Add many elective positions, assign them to different elections.</p>
+            </div>
+          </div><!-- End Service Item -->
+
+          <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="500">
+            <div class="icon flex-shrink-0"><i class="bi bi-123" style="color: #f5cf13;"></i></div>
+            <div>
+              <h4 class="title"><a href="#" class="stretched-link">Voting Results</a></h4>
+              <p class="description">View results of elections as users vote</p>
+            </div>
+          </div><!-- End Service Item -->
+
+        </div>
+
+      </div>
+    </section><!-- End Our Services Section -->
+
+    <section id="recent-posts" class="recent-posts pt-0">
+      <div class="container" data-aos="fade-up">
+
+      <div class="section-header p-0">
+        <h2>Ongoing Elections</h2>
+      </div>
+
+      <div class="d-flex justify-content-end mb-2">
+        <a href="{{ route('ongoing_elections') }}">View All Elections</a> <i class="bi bi-arrow-right"></i>
+      </div>
+
+      <div class="row gy-5">
+
+      @php
+          $electionCount = 0;
+      @endphp
+      @foreach( $electionsList as $election )
+        @if ($electionCount < 4)
+
+        <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+          <div class="post-box">
+            <div class="post-img"><img src="{{ asset('images/elections/'.$election->image ) }}" class="img-fluid" alt=""></div>
+            <h3 class="post-title">{{ $election->name }}</h3>
+            <div class="meta">
+              <span class="post-date"><i class="bi bi-clock"></i> {{ date_format(date_create($election->end_date), "d-M-Y") }}</span>
+              <!-- <span class="post-author"> / Julia Parker</span> -->
+            </div>
+            <p>{{ $election->description }}</p>
+            <form method="GET" action="{{ route('election_details') }}">
+              <input type="hidden" class="form-control" id="election_id" name="election_id" value="{{ $election->id }}">
+              <button type="submit" id="election_button" class="btn btn-info">
+                  {{ __(' View') }} <i class="bi bi-arrow-right"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        @endif
+        @php
+          $electionCount++;
+        @endphp
+        
+        @endforeach
+
+        </div>
+
+      </div>
+    </section><!-- End Blog Section -->
+
+    <!-- ======= Call To Action Section ======= -->
+    <section id="call-to-action" class="call-to-action">
+      <div class="container" data-aos="fade-up">
+        <div class="row justify-content-center">
+          <div class="col-lg-6 text-center">
+          <blockquote class="blockquote">
+            <p>"Regardless of who wins, an election should be a time for optimism and fresh approaches."</p>
+            </blockquote>
+            <h4 class="text-white">Gary Johnson</h4>
+            <a class="cta-btn" href="{{ route('login') }}">{{ __('Get Started') }}</a>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Call To Action Section -->
 @endsection

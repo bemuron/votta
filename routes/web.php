@@ -37,6 +37,9 @@ Route::get('/candidate-details/{candidateId}/{electionId}', [ElectionsController
 //cast a vote for a candidate
 Route::post('/vote-candidate', [VotesController::class, 'voteCandidtate']);
 
+//all current elections
+Route::get('/ongoing-elections', [ElectionsController::class, 'showCurrentElections'])->name('ongoing_elections');
+
 //admin pages
 //manage elections
 Route::get('/manage-elections', [ElectionsController::class, 'index'])->name('manage_elections');
@@ -66,10 +69,10 @@ Route::post('/save-edit-post-details/{postId}', [PostsController::class, 'update
 Route::get('/manage-candidates', [CandidatesController::class, 'index'])->name('manage_candidates');
 
 //manage users
-Route::get('/manage-users', [UsersController::class, 'index'])->name('manage_users');
+//Route::get('/manage-users', [UsersController::class, 'index'])->name('manage_users');
 
 //view election results
-Route::get('/election-results', [VotesController::class, 'index'])->name('election_results');
+Route::get('/election-results', [VotesController::class, 'index'])->name('voting_results');
 
 //route to create a new election
 Route::post('/create-election', [ElectionsController::class, 'store'])->name('create_election');

@@ -1,41 +1,63 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- election image -->
-<div class="container">
-  <h3>{{ $electionDetails->name }}</h3>
-  <p>{{ $electionDetails->description }}</p>
-  
-  <img src="{{ asset('images/elections/'.$electionDetails->image_big ) }}" class="d-block w-100">
+<div class="breadcrumbs d-flex align-items-center" style="background-image: url('{{ asset('images/elections/'.$electionDetails->image_big ) }}');">
+  <div class="container position-relative d-flex flex-column align-items-center">
+
+    <h2>{{ $electionDetails->name }}</h2>
+    <p class="tx-white" >{{ $electionDetails->description }}</p>
+    <p class="tx-white" ><i class="bi bi-clock"></i> <time datetime="2022-01-01">{{ date_format(date_create($electionDetails->end_date), "d-M-Y") }}</time></p>
+  </div>
 </div>
 
 <!-- <hr class="mg-t-50 mg-b-40"> -->
 
 <div class="container mt-5">
   <h4>Candidates</h4>
-  <div class="row row-xs">
+  <section id="blog" class="blog p-0">
+      <div class="container p-0" data-aos="fade-up">
+
+      <div class="row gy-5 posts-list">
   @foreach( $electionCandidates as $candidate )
-  <div class="col-6 col-sm-4 col-md-3 col-xl">
-      <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="{{ asset('images/candidates/'.$candidate->image ) }}" alt="Card image" style="width:100%">
-        <div class="card-body">
-          <h4 class="card-title">{{ $candidate->name }}</h4>
-          <h5 class="card-title">Postion: {{ $candidate->post_name }}</h5>
-          <p class="card-text">{{ $candidate->description }}</p>
-          <button type="button" class="btn btn-outline-info" onclick="getCandidateDetails( {{ $candidate->id }}, {{ $candidate->election_id }}, 1 )"  id="{{ $candidate->id }}">View</button>
+
+  <div class="col-lg-3">
+    <article class="d-flex flex-column">
+
+      <div class="post-img">
+        <img src="{{ asset('images/candidates/'.$candidate->image ) }}" alt="" class="img-fluid">
+      </div>
+
+      <h2 class="title m-0">
+      {{ $candidate->name }}
+      </h2>
+      <h6 class="m-0"><strong>Postion:</strong> {{ $candidate->post_name }}</h6>
+
+      <div class="content m-0 p-0">
+        <p>
+        {{ $candidate->description }}
+        </p>
+      </div>
+
+      <div class="read-more mt-auto align-self-start">
+          <button type="button" id="{{ $candidate->id }}" class="btn btn-outline-info" onclick="getCandidateDetails( {{ $candidate->id }}, {{ $candidate->election_id }}, {{ $candidate->post_id }}, 1 )">
+              {{ __(' View') }}
+          </button>
           @guest
           @if (Route::has('login'))
-          <!-- <a href="{{ route('login') }}" class="ps-2">Log in to vote</a> -->
-          <button type="button" class="btn btn-outline-success" id="votePromptBtn" onclick="getCandidateDetails( {{ $candidate->id }}, {{ $candidate->election_id }}, 2 )" >Vote</button>
+          <a href="{{ route('login') }}" class="ps-2">Log in to vote</a>
           @endif
           @else
-          <button type="button" class="btn btn-outline-success" onclick="getCandidateDetails( {{ $candidate->id }}, {{ $candidate->election_id }}, 2 )" >Vote</button>
+          <button type="button" class="btn btn-outline-success" id="votePromptBtn" onclick="getCandidateDetails( {{ $candidate->id }}, {{ $candidate->election_id }}, {{ $candidate->post_id }}, 2 )" > Vote <i class="bi bi-box-arrow-in-down"></i></button>
           @endguest
-        </div>
       </div>
-    </div><!-- col -->
+
+    </article>
+  </div>
     @endforeach
-  </div><!-- row -->
+    </div><!-- End blog posts list -->
+
+</div>
+</section><!-- End Blog Section -->
 </div>
 
 <!-- modal to show the candidates details -->
@@ -84,7 +106,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary tx-13" data-bs-dismiss="modal">Close</button>
-        <button type="button" id="voteBtn"class="btn btn-success" data-bs-dismiss="modal" onclick="voteCandidate( {{ $candidate->id }}, {{ $candidate->election_id }}, {{ $candidate->post_id }} )">Vote</button>
+        <button type="button" id="voteBtn"class="btn btn-success" data-bs-dismiss="modal" onclick="voteCandidate( {{ $candidate->id }}, {{ $candidate->election_id }}, {{ $candidate->post_id }} )">Vote <i class="bi bi-box-arrow-in-down"></i></button>
       </div>
     </div>
   </div>

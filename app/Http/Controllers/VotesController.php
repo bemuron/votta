@@ -59,12 +59,11 @@ class VotesController extends Controller
             ->first();
     }
 
-    //check who user voted for a particular position
+    //check which user voted for a particular position
     public function getWhoUserVoted($electionId, $postId, $voterId){
         return DB::table('votes')
-                ->select('users.name','posts.name AS post_name')
+                ->select('candidates.candidate_name AS name','posts.name AS post_name')
                 ->join('candidates', 'candidates.id', '=', 'votes.candidate_id')
-                ->join('users', 'candidates.user_id', '=', 'users.id')
                 ->join('posts', 'posts.id', '=', 'candidates.post_id')
                 ->where([
                     ['posts.id', '=', $postId],
@@ -75,6 +74,53 @@ class VotesController extends Controller
                 ->first();
     }
 
+    //get all the elections
+    public function getAllElections(){
+        return DB::table('elections')
+            ->select('id',
+                    'name',
+                    'end_date', 
+                    'image')
+            ->where([
+                ['status', '=', 1]
+                    ])
+            ->orderBy('end_date','desc')
+            ->get();
+    }
+
+    //get all posts
+    public function getAllPosts(){
+        
+        return DB::table('posts')
+        ->select('posts.id','posts.election_id','posts.name AS post_name','posts.description')
+            ->get();
+    }
+
+    //get candidates and their results
+    public function getAllCandidatesElectionResults(){
+        $resArr = array();
+        $highestVotes = 0;
+        $isWinner = false;
+
+        return DB::table('candidates')
+        ->select('candidates.id','candidates.post_id',
+                DB::raw("COALESCE( (select COUNT(voter_id) from votta.votes where candidates.id = votes.candidate_id), 0 ) AS total_votes"),
+                'candidates.image','candidates.election_id',
+                'candidates.candidate_name')
+        ->join('posts', 'posts.id', '=', 'candidates.post_id')
+        ->join('elections', 'elections.id', '=', 'candidates.election_id')
+        ->groupBy('candidates.id')
+        ->get();
+
+        // for ($r = 0; $r < count($results); $r++){
+        //     if($results[$r]->total_votes > $highestVotes){
+        //         $highestVotes = $results[$r]->total_votes;
+        //     }
+        //     array_push($resArr,$results[$r]->branch_code);
+        // }
+        
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -82,7 +128,11 @@ class VotesController extends Controller
      */
     public function index()
     {
-        //
+        $electionsList = $this->getAllElections();
+        $postsList = $this->getAllPosts();
+        $electionResults = $this->getAllCandidatesElectionResults();
+        //dd($electionResults);
+        return view('voting_results',compact('electionsList','postsList','electionResults'));
     }
 
     /**

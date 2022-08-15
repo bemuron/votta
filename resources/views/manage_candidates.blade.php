@@ -1,17 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- election image -->
-<div class="container">
-  <h3>Manage Candidates</h3>
-  <!-- <h5>Stats</h5> -->
+<!-- election image-->
+<div class="breadcrumbs d-flex align-items-center" style="background-image: url('/images/img/manage-candidates-header.jpg');">
+  <div class="container position-relative d-flex flex-column align-items-center">
 
-  <ul class="nav nav-tabs" id="manageCandidatesTab" role="tablist">
+    <h2>Manage Candidates</h2>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <ul class="nav nav-tabs nav-justified" id="manageCandidatesTab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active" id="create-candidate-tab" data-bs-toggle="tab" href="#create-candidate" role="tab" aria-controls="create-candidate" aria-selected="true">Create</a>
+      <a class="nav-link active" id="create-candidate-tab" data-bs-toggle="tab" href="#create-candidate" role="tab" aria-controls="create-candidate" aria-selected="true"> <strong> <i class="bi bi-person-plus"></i> &nbsp; Create</strong></a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" id="edit-candidate-tab" data-bs-toggle="tab" href="#edit-candidate" role="tab" aria-controls="edit-candidate" aria-selected="false">Edit</a>
+      <a class="nav-link" id="edit-candidate-tab" data-bs-toggle="tab" href="#edit-candidate" role="tab" aria-controls="edit-candidate" aria-selected="false"><strong><i class="bi bi-pencil-square"></i>&nbsp;   Edit</strong></a>
     </li>
   </ul>
   <div class="tab-content bd bd-gray-300 bd-t-0 pd-20" id="myTabContent">
@@ -38,14 +42,17 @@
         @csrf
         
         <div class="form-group col">
-            <label for="candidate_name_dropdown" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Candidate Name') }} <span class="text-danger">*</span></label>
+            <label for="candidateName" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Candidate Name') }} <span class="text-danger">*</span></label>
 
-              <div class="input-group mg-b-10">
+            <div class="wd-md-50p">
+              <input type="text" class="form-control" required placeholder="Candidate name" value="{{ old('candidateName') }}" id="candidateName" name="candidateName">
+            </div>
+              <!-- <div class="input-group mg-b-10">
                 <div class="input-group-prepend">
                     <select id="candidate_name_dropdown" name="candidate_name_dropdown" class="custom-select select2" style="width: 100%">
                     </select>
                 </div>
-              </div>
+              </div> -->
         </div>
 
         <div class="form-group col">
@@ -95,7 +102,6 @@
     </div>
 
     <div class="tab-pane fade" id="edit-candidate" role="tabpanel" aria-labelledby="edit-candidate-tab">
-      <h6>Manage candidates</h6>
       <table id="candidates_table" class="table table-sm caption-top table-striped">
         <thead>
           <tr>
@@ -140,10 +146,8 @@
               <div class="form-group col">
                 <label for="edit_candidate_name_dropdown" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Candidate Name') }} <span class="text-danger">*</span></label>
 
-                <div class="input-group mg-b-10">
-                  <div class="input-group-prepend">
-                      <select id="edit_candidate_name_dropdown" name="edit_candidate_name_dropdown" class="custom-select" style="width: 100%"></select>
-                  </div>
+                <div class="wd-md-50p">
+                    <input type="text" class="form-control" required placeholder="Candidate name" value="{{ old('editCandidateName') }}" id="editCandidateName" name="editCandidateName">
                 </div>
                 <input id="editCandidateRecordId" type="hidden" name="editCandidateRecordId">
               </div>
@@ -193,7 +197,7 @@
             </form>
           </div>
           <div class="modal-footer">
-          <button type="button" id="saveEditCandidateBtn" class="btn btn-success">Save Changes</button>
+          <button type="button" id="saveEditCandidateBtn" class="btn btn-success">Save Changes <i class="bi bi-cassette"></i></button>
           </div>
         </div>
       </div>
