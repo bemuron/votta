@@ -19,7 +19,8 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
     <!-- Styles -->
-    <link href="{{ asset('assets/lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <!-- <link href="{{ asset('assets/lib/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet"> -->
     <link href="{{ asset('assets/lib/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/aos/aos.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
@@ -28,11 +29,21 @@
     <link href="{{ asset('assets/lib/datatables.net-dt/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/select2/css/select2.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
-    <!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
+    <link rel="stylesheet" href="{{ asset('css/dashforge.css') }}">
+    
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 </head>
 <body class="page-index">
+    <!--show overlay loading spinner-->
+    <div id="loader" class="lds-dual-ring hidden overlay"></div>
+    <!--overlay loading spinner end-->
+    
+    <div class="hidden" id="custom-alert">
+        <span class="closebtn">&times;</span>  
+        <strong id="alert-msg"></strong>
+    </div>
+    
     <!-- <div id="app"> -->
         <header id="header" class="header d-flex align-items-center fixed-top">
             <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
@@ -73,6 +84,9 @@
                         </li>
                         <li>
                             <a href="{{ route('manage_candidates') }}">{{ __('Candidates') }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('statistics') }}">{{ __('Dashboard') }}</a>
                         </li>
                     @endif
                         <li>
@@ -117,7 +131,7 @@
             <div id="failedAlert" class="modal alert-danger h-auto fade show alert-dismissible" role="document">
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             <br>
-            <p class="fs-4 text-center"><strong>Danger!</strong> Failed to complete action. Try again</p>
+            <p class="fs-4 text-center"><strong>Sorry!</strong> Failed to complete action. Try again</p>
             <br>
             </div>
         </main>
@@ -128,12 +142,9 @@
 
   <div class="footer-legal">
     <div class="container">
-      <div class="copyright">
-        &copy; Copyright <strong><span>Votta</span></strong>. All Rights Reserved
-      </div>
       <div class="credits">
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a><br>
-        System Built by <a href="https://www.emtechint.com/">Em-Tech Global</a>
+        <a href="mailto:contact@emtechint.com">Contact Support</a>
+        <!-- System Built by <a href="https://www.emtechint.com/">Em-Tech Global</a> -->
       </div>
     </div>
   </div>
@@ -145,7 +156,7 @@
   <div id="preloader"></div>
 
     <!-- JS Files -->
-    <script src="{{ asset('assets/lib/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- <script src="{{ asset('assets/lib/bootstrap/js/bootstrap.bundle.min.js') }}"></script> -->
     <script src="{{ asset('assets/lib/aos/aos.js') }}"></script>
     <script src="{{ asset('assets/lib/glightbox/js/glightbox.min.js') }}"></script>
     <script src="{{ asset('assets/lib/swiper/swiper-bundle.min.js') }}"></script>

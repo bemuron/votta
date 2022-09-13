@@ -118,18 +118,18 @@ class ElectionsController extends Controller
                         'image' => $thumbImgName, 'status' => $status, 
                         'end_date' => $to, 'created_at' => now()));
                     if($insertRes){
-                        return redirect()->back()->with("success","Election created successfully");
+                        return response()->json(['success'=>'Election created successfully']);
                     }else{
-                        return redirect()->back()->with("error","Failed to create election");
+                        return response()->json(['error'=>'Failed to create election']);
                     }    
                 }else{
-                    return redirect()->back()->with("error","Failed to move file");
+                    return response()->json(['error'=>'Failed to move file']);
                 }
             }else{
-                return redirect()->back()->with("error","Failed to move file");
+                return response()->json(['error'=>'Failed to move file']);
             }
         }else{
-            return redirect()->back()->with("error","File not found");
+            return response()->json(['error'=>'File not found']);
         }
         
     }
@@ -267,9 +267,9 @@ class ElectionsController extends Controller
                     'end_date' => $to,'status' => $status));
 
                 if($updateRes){
-                    return redirect()->back()->with("success","Election updated successfully");
+                    return response()->json(['success'=>'Election updated successfully']);
                 }else{
-                    return redirect()->back()->with("error","Failed to update election");
+                    return response()->json(['error'=>'Failed to update election']);
                 }     
             }
 
@@ -289,9 +289,9 @@ class ElectionsController extends Controller
                     'end_date' => $to,'status' => $status));
 
                 if($updateRes){
-                    return redirect()->back()->with("success","Election updated successfully");
+                    return response()->json(['success'=>'Election updated successfully']);
                 }else{
-                    return redirect()->back()->with("error","Failed to update election");
+                    return response()->json(['error'=>'Failed to update election']);
                 }      
             }
 
@@ -305,9 +305,9 @@ class ElectionsController extends Controller
             'end_date' => $to,'status' => $status));
 
         if($updateRes){
-            return redirect()->back()->with("success","Election updated successfully");
+            return response()->json(['success'=>'Election updated successfully']);
         }else{
-            return redirect()->back()->with("error","Failed to update election");
+            return response()->json(['error'=>'Failed to update election']);
         }
     }
 

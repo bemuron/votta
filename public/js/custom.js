@@ -117,27 +117,6 @@ to = $('#electDateTo').datepicker({
     from.datepicker('option','maxDate', getDate( this ) );
 });
 
-//edit election dates picker
-editElectFrom = $('#editElectDateFrom')
-.datepicker({
-    //defaultDate: '+1w',
-    dateFormat: 'yy-mm-dd'
-    //minDate: 0
-    //numberOfMonths: 2
-})
-.on('change', function() {
-    editElectTo.datepicker('option','minDate', getDate( this ) );
-}),
-
-editElectTo = $('#editElectDateTo').datepicker({
-    //defaultDate: '+1w',
-    dateFormat: 'yy-mm-dd'
-    //numberOfMonths: 2
-})
-.on('change', function() {
-    editElectFrom.datepicker('option','maxDate', getDate( this ) );
-});
-
 function getDate( element ) {
     var date;
     try {
@@ -243,16 +222,41 @@ $('#elections_table').DataTable({
   });
   }
 
-//populate the datatable with candidates when the edit button is clicked
-$('#edit-candidate-tab').click(function(){
-    getElectionCandidates();
+//show modal to create a new election
+$('#createElectionBtn').click(function(){
+    $('#elections_modal').modal("show");
+    $('#saveElectionBtn').html("<i class='bi bi-plus-circle'></i> Create Election");
 });
 
-  //populate the datatable with elections when the edit button is clicked
-  $('#edit-election-tab').click(function(){
-    //display the elections created
-    getAllElections();
-  });
+  
+
+//show the respective table data after page load
+window.onload = function() {
+var pageTitle = document.getElementById("page-title");
+switch(pageTitle.innerHTML) {
+    case "Manage Elections":
+        getAllElections();
+    break;
+    case "Manage Candidates":
+        getElectionCandidates();
+    break;
+    case "Manage Posts":
+        getElectionPosts();
+    break;
+    case "Manage Users":
+        getUsers();
+    break;
+    case "Manage Divisions":
+        getUserDivsions();
+    break;
+    case "Manage Sub Divisions":
+        getUserSubDivisions();
+    break;
+    default:
+      // code block
+  }
+
+}
 
 //format the date
 function formatDate(dateToFormat){
@@ -275,7 +279,7 @@ function displayCandidateImage(imgeName){
 //display action buttons
 function displayActionButtons(electionId){
     var actions =  "<div class='btn-toolbar'> <div> "+
-    "<a href='#edit_election_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getElectionDetails("+electionId+")' id='edit-election' data-id='"+electionId+"'><i class='bi bi-pencil-square'></i> </a> "+
+    "<a href='#elections_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getElectionDetails("+electionId+")' id='edit-election' data-id='"+electionId+"'><i class='bi bi-pencil-square'></i> </a> "+
     "<a href='#delete_election_modal' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmElectionDelete("+electionId+")' id='delete-election' data-id='"+electionId+"' data-toggle='modal' data-animation='effect-scale'> <i class='bi bi-trash'></i></a>"+
     "</div></div>";
 
@@ -292,6 +296,115 @@ function displayCandidatesActionButtons(candidateId){
     return actions;
 }
 
+//handle create / edit election form submition
+$('#saveElectionBtn').on('click', function (e) {
+    e.preventDefault();
+
+    // Get form
+    var form = $("#addElectionForm")[0];
+
+    // Create an FormData object
+    var data = new FormData(form);
+    
+    var electionId = $("#electionId").val();
+    
+    var route;
+    if(electionId > 0){
+        route = "/save-edit-election-details/"+electionId;
+        data.append("electionId", electionId);
+    }else{
+        route = "/create-election";
+    }
+    
+    // disable the submit button
+    $("#saveElectionBtn").prop("disabled", true);
+    
+    $.ajax({
+        url: route,
+        type: 'post',
+        processData: false,
+        contentType: false,
+        cache: false,
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        //dataType: 'json',
+        data: data,
+        success: function(data) {
+            //console.log(data);
+            $("#saveElectionBtn").prop("disabled", false);
+            if(data.success){
+                mIsAlertOn = true;
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                $('#custom-alert').show();
+
+                getAllElections();
+                document.getElementById("addElectionForm").reset();
+                document.getElementById("electionId").value = 0;
+                $("#elections_modal").modal("hide");
+            }
+
+            if(data.error){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.error);
+                $('#custom-alert').show();
+            }
+
+            if(data.info){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert warning');
+                $('#alert-msg').html("<i class='fas fa-info-circle'></i> "+data.info);
+                $('#custom-alert').show();
+            }
+        },
+        error: function (e) {
+            let responseHtml = '';
+            var errors = e.responseJSON.errors;
+            //var errors = data.responseJSON;
+            
+            $.each( errors , function( key, value ) {
+                responseHtml = '<p> * ' + value + '</p>';
+            });
+
+            
+            //console.log(errors);
+            $.each(errors, function (key, value) {
+                $('#electFormValErr').append('<p> * ' + value + '</p>');
+                $("#electFormValErr").removeClass('d-none');
+                document.getElementById("electFormValErr").scrollIntoView();
+            });
+
+            mIsAlertOn = true;
+
+            $('#custom-alert').addClass('custom-alert');
+            $('#alert-msg').html("<i class='fas fa-x'></i> "+responseHtml);
+            $('#custom-alert').show();
+
+          $("#saveElectionBtn").prop("disabled", false);
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+    
+    //hide the alert
+    setTimeout(function() {
+        if(mIsAlertOn === true){
+            $('#custom-alert').fadeOut('fast');
+            $('#custom-alert').removeClass('custom-alert info');
+            $('#custom-alert').removeClass('custom-alert warning');
+            $('#custom-alert').removeClass('custom-alert success');
+            $('#custom-alert').removeClass('custom-alert');
+        }
+        mIsAlertOn = false;
+    }, 5000); // <-- time in milliseconds
+    
+});
+
 //get the election details for the user to edit
 function getElectionDetails(electionId){
     var electionName = document.getElementById("editElectionName");
@@ -301,6 +414,7 @@ function getElectionDetails(electionId){
     var electionImage = document.getElementById("editElectionThumbImg");
     var electionBigImage = document.getElementById("editElectionBigImg");
     var electionDescription = document.getElementById("editElectionDescription");
+    var election_Id = document.getElementById("electionId");
     var imgpath = "images/elections/";
     var electionImg;
     var electionBigImg;
@@ -315,12 +429,14 @@ function getElectionDetails(electionId){
             electionStart.value = data.start_date;
             electionEnd.value = data.end_date;
             electionDescription.value = data.description;
+            election_Id.value = electionId;
             $('#editElectionStatus').val(data.status).change();
 
             $("#editThumbImg").html('<img src="' + electionImg + '" alt="Card image" width="200" height="200"/>');
             $("#editBigImg").html('<img src="' + electionBigImg + '" alt="Card image" width="200" height="200"/>');
 
-            $('#edit_election_modal').modal("show");
+            $('#saveElectionBtn').html("<i class='bi bi-save-fill'></i> Save");
+            $('#elections_modal').modal("show");
             
         }
     });
@@ -424,7 +540,7 @@ function saveElectionEdit(){
             //console.log(data);
             if(data != null || data > 0){
                     mElectionId = 0;
-                    $("#edit_election_modal").modal("hide");
+                    $("#elections_modal").modal("hide");
                     document.getElementById('electFormValErr').reset();
                 }else{
                     alert("Failed to save election");
@@ -557,42 +673,47 @@ var ele_drpdwn = $("#edit_elections_dropdown");
     });
 });
 
-//populate the posts table when the edit button is clicked
-$('#edit-posts-tab').click(function(){
+//get the elections posts
+function getElectionPosts(){
     //display the posts created
     if ($.fn.DataTable.isDataTable('#posts_table')) {
-      $('#posts_table').DataTable().destroy();
-  }
-  $('#posts_table tbody').empty();
-  $('#posts_table').DataTable({
-      //responsive: true,
-      processing: true,
-      //serverSide: true,
-      order: [],
-      ajax: {
-          url: "/posts/table-list",
-          dataSrc: function (json) {
-              //console.log(json.length);
-            var return_data = new Array();
-            for(var i=0;i< json.length; i++){
-              return_data.push({
-                action: displayPostsActionButtons(json[i].id),
-                post_name: json[i].post_name,
-                election_name: json[i].election_name,
-                description: json[i].description,
-              });
-              
+        $('#posts_table').DataTable().destroy();
+    }
+    $('#posts_table tbody').empty();
+    $('#posts_table').DataTable({
+        //responsive: true,
+        processing: true,
+        //serverSide: true,
+        order: [],
+        ajax: {
+            url: "/posts/table-list",
+            dataSrc: function (json) {
+                //console.log(json.length);
+              var return_data = new Array();
+              for(var i=0;i< json.length; i++){
+                return_data.push({
+                  action: displayPostsActionButtons(json[i].id),
+                  post_name: json[i].post_name,
+                  election_name: json[i].election_name,
+                  description: json[i].description,
+                });
+                
+              }
+              return return_data;
             }
-            return return_data;
-          }
-      },
-      columns: [
-      {data: 'post_name'},
-      {data: 'election_name'},
-      {data: 'description'},
-      {data: 'action', orderable: false, searchable: false}
-      ]
-  });
+        },
+        columns: [
+        {data: 'post_name'},
+        {data: 'election_name'},
+        {data: 'description'},
+        {data: 'action', orderable: false, searchable: false}
+        ]
+    });
+}
+
+//populate the posts table when the edit button is clicked
+$('#edit-posts-tab').click(function(){
+    
   });
 
   //display posts table action buttons

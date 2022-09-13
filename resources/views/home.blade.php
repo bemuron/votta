@@ -9,7 +9,7 @@
         <div class="col-xl-12">
           <h2 class="d-flex justify-content-center" data-aos="fade-up">Your Vote Your Voice</h2>
           <blockquote data-aos="fade-up" data-aos-delay="100">
-            <h3>Votta Online voting system makes handling of voting or election polls easy. 
+            <h3 class="text-white">Votta Online voting system makes handling of voting or election polls easy. 
               Quickly set up elections and candidates and have users vote. View results of polls.</h3>
           </blockquote>
           <div class="d-flex justify-content-center" data-aos="fade-up" data-aos-delay="200">
@@ -21,7 +21,7 @@
     </div>
   </section><!-- End Hero Section -->
 
-  <!-- ======= Our Services Section ======= -->
+  <!-- ======= Features ======= -->
   <section id="services-list" class="services-list">
       <div class="container" data-aos="fade-up">
 
@@ -76,7 +76,7 @@
         </div>
 
       </div>
-    </section><!-- End Our Services Section -->
+    </section><!-- End Features Section -->
 
     <section id="recent-posts" class="recent-posts pt-0">
       <div class="container" data-aos="fade-up">

@@ -205,7 +205,7 @@ class CandidatesController extends Controller
         }else{
             $updateRes = DB::table('candidates')
                 ->where('id', $validated['record_id'])
-                ->update(array('user_id' => $validated['candidate_id'], 'election_id' => $validated['election_id'],
+                ->update(array('candidate_name' => $validated['editCandidateName'], 'election_id' => $validated['election_id'],
                 'post_id' => $validated['position_id'],
                 'updated_at' => date('Y-m-d H:i:s'),'description' => $validated['editCandidateDescription']));
 

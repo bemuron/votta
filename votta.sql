@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jul 24, 2022 at 12:57 AM
+-- Generation Time: Aug 16, 2022 at 12:54 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.4.9
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `candidates`;
 CREATE TABLE IF NOT EXISTS `candidates` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `candidate_name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `election_id` bigint(20) UNSIGNED NOT NULL,
   `post_id` bigint(20) UNSIGNED NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci,
@@ -38,19 +38,21 @@ CREATE TABLE IF NOT EXISTS `candidates` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `candidates`
 --
 
-INSERT INTO `candidates` (`id`, `user_id`, `election_id`, `post_id`, `description`, `image`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, 'Willing to offer my best to this prosper', 'candidate.jpg', '2022-03-12 15:38:37', NULL),
-(2, 1, 6, 3, 'the man himself, right for the job alone.\r\nTried and tested. Your vote secured', 'candidate.jpg', '2022-07-18 12:44:19', '2022-07-22 14:07:16'),
-(3, 4, 8, 3, 'The best just', 'candidate.jpg', '2022-07-22 22:06:08', NULL),
-(4, 11, 9, 3, 'Lets do this', 'candidate.jpg', '2022-07-22 22:06:45', NULL),
-(5, 3, 7, 3, 'I am the big boss already', 'candidate.jpg', '2022-07-22 22:07:27', NULL),
-(6, 5, 5, 3, 'The main man himself', 'candidate.jpg', '2022-07-22 22:08:08', NULL);
+INSERT INTO `candidates` (`id`, `candidate_name`, `election_id`, `post_id`, `description`, `image`, `created_at`, `updated_at`) VALUES
+(1, 'Sam Maxwell', 6, 3, 'Willing to offer my best as the voice for the students', 'sam.jpg', '2022-03-12 15:38:37', NULL),
+(2, 'John Smith', 6, 3, 'the man himself, right for the job alone.\r\nTried and tested. Your vote secured', 'john.jpg', '2022-07-18 12:44:19', '2022-07-22 14:07:16'),
+(4, 'Team Mark', 9, 5, 'Lets do this', 'mark.jpg', '2022-07-22 22:06:45', NULL),
+(5, 'Cafe Javas', 7, 6, 'Dessert is our thing', 'javas.jpg', '2022-07-22 22:07:27', NULL),
+(6, 'Mercedes', 5, 4, 'Majestic in style', 'mercedes.jpg', '2022-07-22 22:08:08', NULL),
+(7, 'Audi', 5, 4, 'Simpy elegant', 'audi.jpg', '2022-07-22 22:08:08', NULL),
+(8, 'Team Samy', 9, 5, 'We get things done', 'sammy.jpg', '2022-07-22 22:08:08', '2022-08-16 09:40:51'),
+(9, 'KFC', 7, 6, 'Ask us about dessert.', 'kfc.jpg', '2022-07-22 22:08:08', NULL);
 
 -- --------------------------------------------------------
 
@@ -79,11 +81,10 @@ CREATE TABLE IF NOT EXISTS `elections` (
 --
 
 INSERT INTO `elections` (`id`, `name`, `description`, `image`, `image_big`, `created_by`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
-(7, 'Who has the best desert', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'election_thumb.jpg', 'students.JPG', 1, '2022-07-16 00:00:00', '2022-08-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44'),
-(6, 'The Class President', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'election_thumb.jpg', 'students.JPG', 1, '2022-07-21 00:00:00', '2022-08-31 00:00:00', 1, '2022-07-21 12:10:10', '2022-07-22 20:17:56'),
-(5, 'The best car', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'election_thumb.jpg', 'students.JPG', 1, '2022-07-16 00:00:00', '2022-08-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44'),
-(8, 'Blue or Red?', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'election_thumb.jpg', 'students.JPG', 1, '2022-07-16 00:00:00', '2022-08-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44'),
-(9, 'Best team', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'election_thumb.jpg', 'students.JPG', 1, '2022-07-16 00:00:00', '2022-08-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44');
+(7, 'Who has the best desert', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'dessert_thumb.jpg', 'dessert_big.JPG', 1, '2022-07-16 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44'),
+(6, 'The Class President', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'pres_thumb.jpg', 'pres_big.JPG', 1, '2022-07-21 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-21 12:10:10', '2022-08-14 03:22:58'),
+(5, 'The best car', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'car_thumb.jpg', 'car_big.JPG', 1, '2022-07-16 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44'),
+(9, 'Best team', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'team_thumb.jpg', 'team_big.JPG', 1, '2022-07-16 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44');
 
 -- --------------------------------------------------------
 
@@ -213,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `posts`
@@ -222,8 +223,10 @@ CREATE TABLE IF NOT EXISTS `posts` (
 INSERT INTO `posts` (`id`, `election_id`, `name`, `description`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Class Leader', 'The leader of the class body', '2022-03-12 15:41:03', '2022-04-08 05:09:20'),
 (2, 1, 'Chairman', 'the next board chair overseeing issues', '2022-04-08 04:54:36', '2022-04-08 05:12:11'),
-(3, 6, 'Big Man', 'big man post saved', '2022-07-16 16:25:35', '2022-07-21 12:54:37'),
-(4, 5, 'Another post', 'another post', '2022-07-18 11:00:54', NULL);
+(3, 6, 'Class President', 'Post held by the winner of the class president poll', '2022-07-16 16:25:35', '2022-07-21 12:54:37'),
+(4, 5, 'The Best Car', 'Title for the overall best car', '2022-07-18 11:00:54', NULL),
+(5, 9, 'Best Team', 'The best of the competing teams', '2022-07-18 11:00:54', NULL),
+(6, 7, 'Dessert Crown', 'Winner of the the best dessert', '2022-07-18 11:00:54', NULL);
 
 -- --------------------------------------------------------
 
@@ -293,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `votes` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `votes`
@@ -358,7 +361,8 @@ INSERT INTO `votes` (`id`, `candidate_id`, `election_id`, `post_id`, `voter_id`,
 (56, 6, 6, 3, 8, '2022-07-23 16:03:07', NULL),
 (57, 6, 6, 3, 7, '2022-07-23 16:20:11', NULL),
 (58, 4, 6, 3, 9, '2022-07-23 16:35:58', NULL),
-(59, 5, 6, 3, 10, '2022-07-23 17:11:32', NULL);
+(59, 5, 6, 3, 10, '2022-07-23 17:11:32', NULL),
+(60, 7, 5, 4, 1, '2022-08-15 06:10:01', NULL);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

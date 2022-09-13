@@ -1,10 +1,19 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
-<div class="breadcrumbs d-flex align-items-center" style="background-image: url('/images/img/manage-positions-header.jpg');">
-  <div class="container position-relative d-flex flex-column align-items-center">
-
-    <h2>Manage Election Positions</h2>
+<div class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30">
+  <div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb breadcrumb-style1 mg-b-10">
+        <li class="breadcrumb-item"><a href="#">Dashboard Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Manage Posts</li>
+      </ol>
+    </nav>
+    <h4 class="mg-b-0 tx-spacing--1" id="page-title">Manage Posts</h4>
+  </div>
+  <div class="d-none d-md-block">
+    <button class="btn btn-sm pd-x-15 btn-warning btn-uppercase"><i data-feather="plus-circle" class="wd-10 mg-r-5"></i> Create Post</button>
+    <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5"><i data-feather="file-plus" class="wd-10 mg-r-5"></i> Bulk Insert</button>
   </div>
 </div>
 

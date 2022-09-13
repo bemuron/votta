@@ -6,6 +6,7 @@ use App\Http\Controllers\VotesController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CandidatesController;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,12 @@ use App\Http\Controllers\PostsController;
 
 Auth::routes();
 
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+//admin dashboard
+Route::get('/dashboard', [HomeController::class, 'getDashboardView'])->name('statistics');
 
 //go to a single elections details
 Route::get('/election-details', [ElectionsController::class, 'show'])->name('election_details');

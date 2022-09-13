@@ -5,8 +5,8 @@
   <div class="container position-relative d-flex flex-column align-items-center">
 
     <h2>{{ $electionDetails->name }}</h2>
-    <p class="tx-white" >{{ $electionDetails->description }}</p>
-    <p class="tx-white" ><i class="bi bi-clock"></i> <time datetime="2022-01-01">{{ date_format(date_create($electionDetails->end_date), "d-M-Y") }}</time></p>
+    <p class="text-white" >{{ $electionDetails->description }}</p>
+    <p class="text-white" ><i class="bi bi-clock"></i> <time datetime="2022-01-01">{{ date_format(date_create($electionDetails->end_date), "d-M-Y") }}</time></p>
   </div>
 </div>
 

@@ -28,6 +28,12 @@ class HomeController extends Controller
         return view('home',compact('electionsList'));
     }
 
+    //get the admin dashboard
+    public function getDashboardView()
+    {
+        return view('statistics');
+    }
+
     //get the list of ongoing elections
     private function getCurrentElections(){
         
