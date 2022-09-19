@@ -223,12 +223,14 @@ $('#elections_table').DataTable({
   }
 
 //show modal to create a new election
-$('#createElectionBtn').click(function(){
+$('#createElectionBtn').on('click', function (e) {
+    document.getElementById("addElectionForm").reset();
+    document.getElementById("electionId").value = 0;
+    $("#electThumbImg").html('');
+    $("#electBigImg").html('');
     $('#elections_modal').modal("show");
     $('#saveElectionBtn').html("<i class='bi bi-plus-circle'></i> Create Election");
 });
-
-  
 
 //show the respective table data after page load
 window.onload = function() {
@@ -289,8 +291,8 @@ function displayActionButtons(electionId){
 //display action buttons for candidates list
 function displayCandidatesActionButtons(candidateId){
     var actions =  "<div class='btn-toolbar'> <div> "+
-    "<a href='#edit_candidate_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getElectionCandidateDetails("+candidateId+")' id='edit-candidate' data-id='"+candidateId+"'> Edit </a> "+
-    "<a href='#delete_candidate_modal' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmElectionCandidateDelete("+candidateId+")' id='delete-candidate' data-id='"+candidateId+"' data-toggle='modal' data-animation='effect-scale'> Delete </a>"+
+    "<a href='#edit_candidate_modal' class='btn btn-xs btn-outline-dark btn-icon' onclick='getElectionCandidateDetails("+candidateId+")' id='edit-candidate' data-id='"+candidateId+"'> <i class='bi bi-pencil-square'></i></a> "+
+    "<a href='#' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmElectionCandidateDelete("+candidateId+")' id='delete-candidate' data-id='"+candidateId+"'> <i class='bi bi-trash'></i></a>"+
     "</div></div>";
 
     return actions;
@@ -407,13 +409,13 @@ $('#saveElectionBtn').on('click', function (e) {
 
 //get the election details for the user to edit
 function getElectionDetails(electionId){
-    var electionName = document.getElementById("editElectionName");
-    var electionStart = document.getElementById("editElectDateFrom");
-    var electionEnd = document.getElementById("editElectDateTo");
-    var electionStatus = document.getElementById("editElectionStatus");
-    var electionImage = document.getElementById("editElectionThumbImg");
-    var electionBigImage = document.getElementById("editElectionBigImg");
-    var electionDescription = document.getElementById("editElectionDescription");
+    var electionName = document.getElementById("electionName");
+    var electionStart = document.getElementById("electDateFrom");
+    var electionEnd = document.getElementById("electDateTo");
+    var electionStatus = document.getElementById("electionStatus");
+    var electionImage = document.getElementById("electionThumbImg");
+    var electionBigImage = document.getElementById("electionBigImg");
+    var electionDescription = document.getElementById("electionDescription");
     var election_Id = document.getElementById("electionId");
     var imgpath = "images/elections/";
     var electionImg;
@@ -422,7 +424,10 @@ function getElectionDetails(electionId){
 
     $.get("/edit-election-details/"+electionId, function(data) {
         if(data !== null){
-            mElectionId = electionId;
+            document.getElementById("addElectionForm").reset();
+            $("#electThumbImg").html('');
+            $("#electBigImg").html('');
+
             electionImg = imgpath+data.image;
             electionBigImg = imgpath+data.image_big;
             electionName.value = data.name;
@@ -430,10 +435,10 @@ function getElectionDetails(electionId){
             electionEnd.value = data.end_date;
             electionDescription.value = data.description;
             election_Id.value = electionId;
-            $('#editElectionStatus').val(data.status).change();
+            $('#electionStatus').val(data.status).change();
 
-            $("#editThumbImg").html('<img src="' + electionImg + '" alt="Card image" width="200" height="200"/>');
-            $("#editBigImg").html('<img src="' + electionBigImg + '" alt="Card image" width="200" height="200"/>');
+            $("#electThumbImg").html('<img src="' + electionImg + '" alt="Card image" width="200" height="200"/>');
+            $("#electBigImg").html('<img src="' + electionBigImg + '" alt="Card image" width="200" height="200"/>');
 
             $('#saveElectionBtn').html("<i class='bi bi-save-fill'></i> Save");
             $('#elections_modal').modal("show");
@@ -444,30 +449,80 @@ function getElectionDetails(electionId){
 
 //get the candidate details for the user to edit
 function getElectionCandidateDetails(candidateId){
-    var candidateName = document.getElementById("editCandidateName");
-    var electionName = document.getElementById("edit_candidate_election_dropdown");
-    var candidatePosition = document.getElementById("edit_candidate_position_dropdown");
-    var candidateImage = document.getElementById("editCandidateImg");
-    var candidateDescription = document.getElementById("editCandidateDescription");
-    var recordId = document.getElementById("editCandidateRecordId");
+    var candidateName = document.getElementById("candidateName");
+    var electionName = document.getElementById("candidate_election_dropdown");
+    var candidatePosition = document.getElementById("candidate_position_dropdown");
+    var candidateImage = document.getElementById("candidateImg");
+    var candidateDescription = document.getElementById("candidateDescription");
+    var recordId = document.getElementById("candidateRecordId");
     var imgpath = "images/candidates/";
     var canImg;
     $("#electFormValErr").addClass('d-none');
 
     $.get("/edit-candidate-details/"+candidateId, function(data) {
         if(data !== null){
+            document.getElementById("candidateForm").reset();
+            $("#CandidateImgDisplay").html('');
+
             recordId.value = data.id;
             canImg = imgpath+data.image;
 
             candidateDescription.value = data.description;
             candidateName.value = data.candidate_name;
-            $('#edit_candidate_position_dropdown').append($("<option />").val(data.post_id).text(data.post_name));
-            $('#edit_candidate_election_dropdown').append($("<option />").val(data.election_id).text(data.election_name));
+            $('#candidate_position_dropdown').append($("<option />").val(data.post_id).text(data.post_name));
+            $('#candidate_election_dropdown').append($("<option />").val(data.election_id).text(data.election_name));
 
             $("#CandidateImgDisplay").html('<img src="' + canImg + '" alt="Card image" width="200" height="200"/>');
 
-            $('#edit_candidate_modal').modal("show");
+            $('#saveCandidateBtn').html("<i class='bi bi-save-fill'></i> Save");
+            $('#candidate_modal').modal("show");
             
+        }
+    });
+}
+
+//confirm deletion of a candidate
+function confirmElectionCandidateDelete(canId){
+    $('#delete_candidate_modal').modal("show");
+
+    document.getElementById("deleteCandidateConfirmText").innerHTML = "Confirm delete of this candidate";
+
+    $('#deleteCandidateBtn').click(function(){
+        deleteCandidate(canId);
+    
+  });
+}
+
+//deletion of a candidate
+function deleteCandidate(canId){
+
+    $.ajax({
+        url: "/delete-candidate",
+        type: 'post',
+        //dataType: 'json',
+        data: {
+            _token: CSRF_TOKEN,
+            candidate_id: canId
+        },
+        success: function(data) {
+            //console.log(data);
+            if(data.success){
+                mIsAlertOn = true;
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                $('#custom-alert').show();
+
+                $('#delete_candidate_modal').modal("hide");
+                getElectionCandidates();
+            }
+
+            if(data.error){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.error);
+                $('#custom-alert').show();
+            }
         }
     });
 }
@@ -478,7 +533,6 @@ function confirmElectionDelete(electionId){
 
     document.getElementById("deleteElectionConfirmText").innerHTML = "Confirm delete of this election";
 
-    //populate the posts table when the edit button is clicked
     $('#deletElectionBtn').click(function(){
         deleteElection(electionId);
     
@@ -517,71 +571,46 @@ function deleteElection(electionId){
     });
 }
 
-//save the election edits
-function saveElectionEdit(){
-    let myForm = document.getElementById('editElectionForm');
-    let formData = new FormData(myForm);
-    var electionName = document.getElementById("editElectionName").value;
-    var electionStart = document.getElementById("editElectDateFrom").value;
-    var electionEnd = document.getElementById("editElectDateTo").value;
-    var electionStatus = document.getElementById("editElectionStatus").value;
-    var electionImage = document.getElementById("editElectionThumbImg").value;
-    var electionBigImage = document.getElementById("editElectionBigImg").value;
-    var electionDescription = document.getElementById("editElectionDescription").value;
+//show modal to create a new candidate
+$('#createCandidateBtn').on('click', function (e) {
+    document.getElementById("candidateForm").reset();
+    document.getElementById("candidateRecordId").value = 0;
+    $("#CandidateImgDisplay").html('');
+    $('#candidate_modal').modal("show");
+    $('#saveCandidateBtn').html("<i class='bi bi-plus-circle'></i> Create Candidate");
+});
 
-    $.ajax({
-        url: "/save-edit-election-details/"+mElectionId,
-        type: 'post',
-        //dataType: 'json',
-        data:formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            //console.log(data);
-            if(data != null || data > 0){
-                    mElectionId = 0;
-                    $("#elections_modal").modal("hide");
-                    document.getElementById('electFormValErr').reset();
-                }else{
-                    alert("Failed to save election");
-            }
-        },
-        error: function(data){
-            var errors = data.responseJSON;
-            //console.log(errors);
-            $.each(errors, function (key, value) {
-                $('#electFormValErr').append(value);
-                $("#electFormValErr").removeClass('d-none');
-                document.getElementById("electFormValErr").scrollIntoView();
-            });
-          }
-    });
-}
-
-//handle candidate details edit
-$('#saveEditCandidateBtn').on('click', function (e) {
+//handle candidate creation and edit
+$('#saveCandidateBtn').on('click', function (e) {
     e.preventDefault();
     
     //var candidateID = $("#edit_candidate_name_dropdown").val();
-    var electionID = $("#edit_candidate_election_dropdown").val();
-    var postionID = $("#edit_candidate_position_dropdown").val();
-    var recordID = $("#editCandidateRecordId").val();
+    var electionID = $("#candidate_election_dropdown").val();
+    var postionID = $("#candidate_position_dropdown").val();
+    var recordID = $("#candidateRecordId").val();
     // Get form
-    var form = $("#editCandidateForm")[0];
+    //var form = $("#candidateForm")[0];
+    let myForm = document.getElementById('candidateForm');
+    let data = new FormData(myForm);
 
     // Create an FormData object
-    var data = new FormData(form);
+   // var data = new FormData(form);
 
-    //data.append("candidate_id", candidateID);
-    data.append("election_id", electionID);
-    data.append("position_id", postionID);
-    data.append("record_id", recordID);
+    var route;
+    if(electionID > 0 && postionID > 0 && recordID > 0){
+        route = "/edit-candidate";
+        data.append("election_id", electionID);
+        data.append("position_id", postionID);
+        data.append("record_id", recordID);
+    }else{
+        route = "/create-candidate";
+    }
     
     // disable the submit button
-    $("#saveEditCandidateBtn").prop("disabled", true);
+    $("#saveCandidateBtn").prop("disabled", true);
     
     $.ajax({
-        url: "/edit-candidate",
+        url: route,
         enctype: "multipart/form-data",
         type: 'post',
         processData: false,
@@ -594,49 +623,55 @@ $('#saveEditCandidateBtn').on('click', function (e) {
         data: data,
         success: function(data) {
             //console.log(data);
-            //$('.alert').alert('close');
             
+            $("#saveCandidateBtn").prop("disabled", false);
             if(data.success){
                 getElectionCandidates();
-                $("#saveEditCandidateBtn").prop("disabled", false);
-                // mIsAlertOn = true;
-
-                // $('#custom-alert').addClass('custom-alert success');
-                // $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
-                // $('#custom-alert').show();
                 
-                document.getElementById("editCandidateForm").reset();
-                document.getElementById("editCandidateRecordId").value = "";
-                $("#edit_candidate_modal").modal("hide");
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                $('#custom-alert').show();
+                
+                document.getElementById("candidateForm").reset();
+                document.getElementById("candidateRecordId").value = "";
+                $("#candidate_modal").modal("hide");
                 
             }
+
             if(data.error){
                 mIsAlertOn = true;
 
-                // $('#custom-alert').addClass('custom-alert');
-                // $('#alert-msg').html("<i class='fas fa-times-circle'></i> "+data.error);
-                // $('#custom-alert').show();
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-times-circle'></i> "+data.error);
+                $('#custom-alert').show();
             }
             
         },
         error: function (e) {
-            let responseHtml = '';
+          let responseHtml = '';
             var errors = e.responseJSON.errors;
-            
-            responseHtml = '<div class="alert alert-danger">';
+            //var errors = data.responseJSON;
             
             $.each( errors , function( key, value ) {
-                responseHtml += '<p> * ' + value + '</p>';
+                responseHtml = '<p> * ' + value + '</p>';
             });
-            responseHtml += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> </div>';
-            
-            $("#editCanFormValErr").html( responseHtml );
-            $("#electFormValErr").removeClass('d-none');
-            document.querySelector('#editCanFormValErr').scrollIntoView({
-                behavior: 'smooth'
+
+            //console.log(errors);
+            $.each(errors, function (key, value) {
+                $('#canFormValErr').append('<p> * ' + value + '</p>');
+                $("#canFormValErr").removeClass('d-none');
+                document.getElementById("canFormValErr").scrollIntoView({behavior: 'smooth'});
             });
-            
-          $("#saveEditCandidateBtn").prop("disabled", false);
+
+            mIsAlertOn = true;
+
+            $('#custom-alert').addClass('custom-alert');
+            $('#alert-msg').html("<i class='fas fa-x'></i> "+responseHtml);
+            $('#custom-alert').show();
+
+            $("#saveCandidateBtn").prop("disabled", false);
         },
         complete: function () { // hiding the spinner.
             $('#loader').addClass('hidden');
@@ -711,17 +746,12 @@ function getElectionPosts(){
     });
 }
 
-//populate the posts table when the edit button is clicked
-$('#edit-posts-tab').click(function(){
-    
-  });
-
   //display posts table action buttons
 function displayPostsActionButtons(postId){
 
     var actions =  "<div class='btn-toolbar'> <div> "+
     "<a href='#' class='btn btn-xs btn-outline-dark btn-icon' onclick='getPostDetails("+postId+")' id='edit-post' data-id='"+postId+"'> <i class='bi bi-pencil-square'></i> </a> "+
-    "<a href='#delete_post_modal' class='btn btn-xs btn-outline-danger btn-icon' id='delete-post' data-id='"+postId+"' data-toggle='modal' data-animation='effect-scale'> <i class='bi bi-trash'></i> </a>"+
+    "<a href='#' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmPostDelete("+postId+")' id='delete-post' data-id='"+postId+"'> <i class='bi bi-trash'></i> </a>"+
     "</div></div>";
 
     return actions;
@@ -729,61 +759,185 @@ function displayPostsActionButtons(postId){
 
 //get the election details for the user to edit
 function getPostDetails(postId){
-    var postName = document.getElementById("editPostName");
-    var postDesc = document.getElementById("editPostDescription");
-    var electionId = $("#edit_elections_dropdown").children("option:selected").val();
+    var postName = document.getElementById("postName");
+    var postDesc = document.getElementById("postDescription");
     $("#postsFormValErr").addClass('d-none');
 
     $.get("/edit-post-details/"+postId, function(data) {
         if(data !== null){
-            mElectionPosId = postId;
+            document.getElementById("postsForm").reset();
+            document.getElementById("postId").value = postId;
 
             postName.value = data.post_name;
             postDesc.value = data.description;
-            $('#edit_elections_dropdown').val(data.election_id).change();
+            $('#elections_dropdown').val(data.election_id).change();
 
-            $('#edit_posts_modal').modal("show");
+            $('#savePostBtn').html("<i class='bi bi-save-fill'></i> Save");
+            $('#posts_modal').modal("show");
             
         }
     });
 }
 
-//save the posts edits
-function savePostEdit(){
-    let myForm = document.getElementById('editPostsForm');
-    let formData = new FormData(myForm);
-    var post = document.getElementById("editPostName").value;
-    var election = document.getElementById("edit_elections_dropdown").value;
+$('#createPostBtn').on('click', function (e) {
+    document.getElementById("postsForm").reset();
+    document.getElementById("postId").value = 0;
+    $('#posts_modal').modal("show");
+    $('#savePostBtn').html("<i class='bi bi-plus-circle'></i> Create Post");
+});
 
+//handle create / edit positions form submition
+$('#savePostBtn').on('click', function (e) {
+    e.preventDefault();
+
+    let myForm = document.getElementById('postsForm');
+    let data = new FormData(myForm);
+
+    // Get form
+    //var form = $("#postsForm")[0];
+
+    // Create an FormData object
+    //var data = new FormData(form);
+    
+    var postId = $("#postId").val();
+    
+    var route;
+    if(postId > 0){
+        route = "/save-edit-post-details/"+postId;
+        data.append("postId", postId);
+    }else{
+        route = "/create-position";
+    }
+    
+    // disable the submit button
+    $("#savePostBtn").prop("disabled", true);
+    
     $.ajax({
-        url: "/save-edit-post-details/"+mElectionPosId,
+        url: route,
         type: 'post',
-        //dataType: 'json',
-        data:formData,
         processData: false,
         contentType: false,
+        cache: false,
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        data: data,
         success: function(data) {
             //console.log(data);
-            if(data != null || data > 0){
-                    mElectionId = 0;
-                    mElectionPosId = 0;
-                    $("#edit_posts_modal").modal("hide");
-                    document.getElementById('editPostsForm').reset();
-                }else{
-                    alert("Failed to save post");
+            $("#savePostBtn").prop("disabled", false);
+            if(data.success){
+                mIsAlertOn = true;
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                $('#custom-alert').show();
+
+                getElectionPosts();
+                document.getElementById("postsForm").reset();
+                document.getElementById("postId").value = 0;
+                $("#posts_modal").modal("hide");
+            }
+
+            if(data.error){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.error);
+                $('#custom-alert').show();
+            }
+
+            if(data.info){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert warning');
+                $('#alert-msg').html("<i class='fas fa-info-circle'></i> "+data.info);
+                $('#custom-alert').show();
             }
         },
-        error: function(data){
-            var errors = data.responseJSON;
-            console.log(errors);
+        error: function (e) {
+            let responseHtml = '';
+            var errors = e.responseJSON.errors;
+            //var errors = data.responseJSON;
+            
+            $.each( errors , function( key, value ) {
+                responseHtml = '<p> * ' + value + '</p>';
+            });
+
+            
+            //console.log(errors);
             $.each(errors, function (key, value) {
-                $('#postsFormValErr').append(value);
+                $('#postsFormValErr').append('<p> * ' + value + '</p>');
                 $("#postsFormValErr").removeClass('d-none');
                 document.getElementById("postsFormValErr").scrollIntoView();
-                //console.log(key+" "+value.errors);
-                
             });
-          }
+
+            mIsAlertOn = true;
+
+            $('#custom-alert').addClass('custom-alert');
+            $('#alert-msg').html("<i class='fas fa-x'></i> "+responseHtml);
+            $('#custom-alert').show();
+
+          $("#savePostBtn").prop("disabled", false);
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+    
+    //hide the alert
+    setTimeout(function() {
+        if(mIsAlertOn === true){
+            $('#custom-alert').fadeOut('fast');
+            $('#custom-alert').removeClass('custom-alert info');
+            $('#custom-alert').removeClass('custom-alert warning');
+            $('#custom-alert').removeClass('custom-alert success');
+            $('#custom-alert').removeClass('custom-alert');
+        }
+        mIsAlertOn = false;
+    }, 5000); // <-- time in milliseconds
+    
+});
+
+//confirm deletion of a post
+function confirmPostDelete(postId){
+    $('#delete_post_modal').modal("show");
+
+    document.getElementById("deletePostConfirmText").innerHTML = "Confirm delete of this position";
+
+    $('#deletePostBtn').click(function(){
+        deletePost(postId);
+  });
+}
+
+//deletion of a post
+function deletePost(postId){
+
+    $.ajax({
+        url: "/delete-post",
+        type: 'post',
+        //dataType: 'json',
+        data: {
+            _token: CSRF_TOKEN,
+            post_id: postId
+        },
+        success: function(data) {
+            if(data.success){
+                mIsAlertOn = true;
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                $('#custom-alert').show();
+
+                $('#delete_post_modal').modal("hide");
+                getElectionPosts();
+            }
+
+            if(data.error){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.error);
+                $('#custom-alert').show();
+            }
+        }
     });
 }
 
@@ -874,66 +1028,8 @@ $('#candidate_election_dropdown').select2({
     }
 });
 
-//the select for the elections when editing a candidate to a election
-$('#edit_candidate_election_dropdown').select2({
-    placeholder: 'Select election',
-    searchInputPlaceholder: 'Search election',
-    ajax: {
-        url: '/elections-dropdown',
-        dataType: 'json',
-        delay: 250,
-        data: function (data) {
-            //_token: CSRF_TOKEN;
-            return {
-                keyword: data.term // search term
-            };
-        },
-        processResults: function (response) {
-            return {
-                results: $.map(response, function (item) {
-                    return {
-                        text: item.name,
-                        //slug: item.slug,
-                        id: item.id
-                    };
-                })
-            };
-        },
-        cache: true
-    }
-});
-
 //position dropdown when adding a candidate
 $('#candidate_position_dropdown').select2({
-    placeholder: 'Select position',
-    searchInputPlaceholder: 'Search position',
-    ajax: {
-        url: '/positions-dropdown',
-        dataType: 'json',
-        delay: 250,
-        data: function (data) {
-            //_token: CSRF_TOKEN;
-            return {
-                keyword: data.term // search term
-            };
-        },
-        processResults: function (response) {
-            return {
-                results: $.map(response, function (item) {
-                    return {
-                        text: item.name,
-                        //slug: item.slug,
-                        id: item.id
-                    };
-                })
-            };
-        },
-        cache: true
-    }
-});
-
-//position dropdown when adding a candidate
-$('#edit_candidate_position_dropdown').select2({
     placeholder: 'Select position',
     searchInputPlaceholder: 'Search position',
     ajax: {

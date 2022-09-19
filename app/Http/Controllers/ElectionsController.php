@@ -238,25 +238,25 @@ class ElectionsController extends Controller
     public function update($electionId)
     {
         $validated = request()->validate([
-            'editElectionName' => 'required|max:191',
-            'editElectDateFrom' => 'required',
-            'editElectDateTo' => 'required',
-            'editElectionStatus' => 'required',
-            'editElectionThumbImg' => 'image|dimensions:width=288,height=288',
-            'editElectionBigImg' => 'image|dimensions:width=1100,height=281',
-            'editElectionDescription' => 'required|max:255',
+            'electionName' => 'required|max:191',
+            'electDateFrom' => 'required',
+            'electDateTo' => 'required',
+            'electionStatus' => 'required',
+            'electionBigImg' => 'image|dimensions:width=1100,height=281',
+            'electionThumbImg' => 'image|dimensions:width=288,height=288',
+            'electionDescription' => 'required|max:255',
         ]);
 
         $user_id = auth()->user()->id;
-        $name = request()->input('editElectionName');
-        $desc = request()->input('editElectionDescription');
-        $to = request()->input('editElectDateTo');
-        $from = request()->input('editElectDateFrom');
-        $status = request()->input('editElectionStatus');
+        $name = request()->input('electionName');
+        $desc = request()->input('electionDescription');
+        $to = request()->input('electDateTo');
+        $from = request()->input('electDateFrom');
+        $status = request()->input('electionStatus');
 
-        if (request()->hasFile('editElectionThumbImg')) {
-            $thumbImgName = request()->file('editElectionThumbImg')->getClientOriginalName();
-            $smallImgFile = request()->file('editElectionThumbImg');
+        if (request()->hasFile('electionThumbImg')) {
+            $thumbImgName = request()->file('electionThumbImg')->getClientOriginalName();
+            $smallImgFile = request()->file('electionThumbImg');
 
             //move the file to the right folder
             if($smallImgFile->move(base_path('public/images/elections/'), $smallImgFile->getClientOriginalName())){
@@ -273,12 +273,11 @@ class ElectionsController extends Controller
                 }     
             }
 
-
         }
 
-        if (request()->hasFile('editElectionBigImg')) {
-            $bigImgName = request()->file('editElectionBigImg')->getClientOriginalName();
-            $bigImgFile = request()->file('editElectionBigImg');
+        if (request()->hasFile('electionBigImg')) {
+            $bigImgName = request()->file('electionBigImg')->getClientOriginalName();
+            $bigImgFile = request()->file('electionBigImg');
 
             //move the file to the right folder
             if($bigImgFile->move(base_path('public/images/elections/'), $bigImgFile->getClientOriginalName())){

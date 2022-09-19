@@ -57,6 +57,9 @@ Route::get('/elections-dropdown', [PostsController::class, 'getElectionsList']);
 //get candidates list
 Route::get('/election-candidates-list', [CandidatesController::class, 'getCandidatesList']);
 
+//route to delete a candidate
+Route::post('/delete-candidate', [CandidatesController::class, 'destroy'])->name('delete_candidate');
+
 //get posts list for table
 Route::get('/posts/table-list', [PostsController::class, 'getAllPosts']);
 
@@ -86,6 +89,9 @@ Route::post('/delete-election', [ElectionsController::class, 'destroy'])->name('
 
 //route to create a new position
 Route::post('/create-position', [PostsController::class, 'store'])->name('create_position');
+
+//route to delete a post
+Route::post('/delete-post', [PostsController::class, 'destroy'])->name('delete_post');
 
 //route to create a new candidate
 Route::post('/create-candidate', [CandidatesController::class, 'store'])->name('create_candidate');

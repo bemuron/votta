@@ -133,32 +133,10 @@ class PostsController extends Controller
         $insertRes = DB::table('posts')->insertGetId(array('name' => $name,'description' => $desc, 
             'election_id' => $election_id,'created_at' => now()));
         if($insertRes){
-            return redirect()->back()->with("success","Elective position created successfully");
+            return response()->json(['success'=>'Elective position created successfully']);
         }else{
-            return redirect()->back()->with("error","Failed to create position");
+            return response()->json(['error'=>'Failed to create position']);
         } 
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Posts  $posts
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Posts $posts)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Posts  $posts
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Posts $posts)
-    {
-        //
     }
 
     /**
@@ -171,15 +149,15 @@ class PostsController extends Controller
     public function update($postId)
     {
         $validated = request()->validate([
-            'editPostName' => 'required|max:191',
-            'edit_elections_dropdown' => 'required',
-            'editPostDescription' => 'required|max:255',
+            'elections_dropdown' => 'required',
+            'postName' => 'required|max:191',
+            'postDescription' => 'required|max:255',
         ]);
 
         $user_id = auth()->user()->id;
-        $name = request()->input('editPostName');
-        $election_id = request()->input('edit_elections_dropdown');
-        $description = request()->input('editPostDescription');
+        $name = request()->input('postName');
+        $election_id = request()->input('elections_dropdown');
+        $description = request()->input('postDescription');
 
         $updateRes = DB::table('posts')
             ->where('id', $postId)
@@ -187,9 +165,9 @@ class PostsController extends Controller
             'updated_at' => now(),'description' => $description));
 
         if($updateRes){
-            return redirect()->back()->with("success","Post updated successfully");
+            return response()->json(['success'=>'Post updated successfully']);
         }else{
-            return redirect()->back()->with("error","Failed to update post");
+            return response()->json(['error'=>'Failed to update post']);
         } 
     }
 
@@ -199,8 +177,19 @@ class PostsController extends Controller
      * @param  \App\Models\Posts  $posts
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Posts $posts)
+    public function destroy()
     {
-        //
+        $postId = request()->input('post_id');
+
+        $deleteRes = DB::table('posts')
+                            ->where([
+                                ['id', '=', $postId]
+                            ])
+                            ->delete();
+        if($deleteRes){
+            return response()->json(['success'=>'Post deleted successfully']);
+        }else{
+            return response()->json(['error'=>'Failed to delete post']);
+        }
     }
 }

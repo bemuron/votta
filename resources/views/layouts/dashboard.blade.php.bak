@@ -36,9 +36,6 @@
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
   </head>
   <body>
-    <!--show overlay loading spinner-->
-    <div id="loader" class="lds-dual-ring hidden overlay"></div>
-    <!--overlay loading spinner end-->
 
     <aside class="aside aside-fixed">
       <div class="aside-header">
@@ -93,15 +90,13 @@
             <li class="nav-label">Dashboard</li>
             <li class="nav-item"><a href="{{ route('statistics') }}" class="nav-link"><i data-feather="shopping-bag"></i> <span>Home</span></a></li>
             <li class="nav-label mg-t-25">Election Management</li>
-            <li class="nav-item active" id="dash-elections"><a href="{{ route('manage_elections') }}" class="nav-link"><i data-feather="list"></i> <span>Elections</span></a></li>
-            <li class="nav-item" id="dash-posts"><a href="{{ route('manage_positions') }}" class="nav-link"><i data-feather="clipboard"></i> <span>Posts</span></a></li>
-            <li class="nav-item" id="dash-candidates"><a href="{{ route('manage_candidates') }}" class="nav-link"><i data-feather="user-check"></i> <span>Candidates</span></a></li>
+            <li class="nav-item" id="dash-elections"><a href="{{ route('manage_elections') }}" class="nav-link"><i data-feather="calendar"></i> <span>Elections</span></a></li>
+            <li class="nav-item" id="dash-posts"><a href="{{ route('manage_positions') }}" class="nav-link"><i data-feather="message-square"></i> <span>Posts</span></a></li>
+            <li class="nav-item" id="dash-candidates"><a href="{{ route('manage_candidates') }}" class="nav-link"><i data-feather="users"></i> <span>Candidates</span></a></li>
             <li class="nav-label mg-t-25">User Management</li>
-            <li class="nav-item" id="dash-users"><a href="{{ route('statistics') }}" class="nav-link"><i data-feather="users"></i> <span>Users</span></a></li>
-            <li class="nav-item" id="dash-divisions"><a href="app-chat.html" class="nav-link"><i data-feather="git-branch"></i> <span>Divisions</span></a></li>
-            <li class="nav-item" id="dash-sub-divisions"><a href="app-chat.html" class="nav-link"><i data-feather="grid"></i> <span>Sub Divisions</span></a></li>
-            <li class="nav-label mg-t-25">Reports</li>
-            <li class="nav-item" id="dash-users"><a href="{{ route('statistics') }}" class="nav-link"><i data-feather="book"></i> <span>All Reports</span></a></li>
+            <li class="nav-item" id="dash-users"><a href="{{ route('statistics') }}" class="nav-link"><i data-feather="calendar"></i> <span>Users</span></a></li>
+            <li class="nav-item" id="dash-divisions"><a href="app-chat.html" class="nav-link"><i data-feather="message-square"></i> <span>Divisions</span></a></li>
+            <li class="nav-item" id="dash-sub-divisions"><a href="app-chat.html" class="nav-link"><i data-feather="message-square"></i> <span>Sub Divisions</span></a></li>
 
             <!-- <li class="nav-label mg-t-25">Pages</li>
             <li class="nav-item with-sub">
@@ -126,7 +121,7 @@
       </div>
     </aside>
 
-    <div class="content pd-0">
+    <div class="content ht-100v pd-0">
 
       <div class="content-body">
         <div class="container pd-x-0">

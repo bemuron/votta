@@ -62,9 +62,9 @@ class CandidatesController extends Controller
                 'created_at' => date('Y-m-d H:i:s')));
 
                 if($insertRes){
-                    return redirect()->back()->with("success","Candidate created successfully");
+                    return response()->json(['success'=>'Candidate created successfully']);
                 }else{
-                    return redirect()->back()->with("error","Failed to create candidate");
+                    return response()->json(['error'=>'Failed to create candidate']);
                 }
             }
 
@@ -177,23 +177,23 @@ class CandidatesController extends Controller
             'election_id' => 'required',
             'position_id' => 'required',
             'record_id' => 'required',
-            'editCandidateImg' => 'image|dimensions:width=288,height=288',
-            'editCandidateDescription' => 'required|max:3000',
-            'editCandidateName' => 'required|max:50'
+            'candidateImg' => 'image|dimensions:width=288,height=288',
+            'candidateDescription' => 'required|max:3000',
+            'candidateName' => 'required|max:50'
         ]);
 
-        if (request()->hasFile('editCandidateImg')) {
-            $imgName = request()->file('editCandidateImg')->getClientOriginalName();
-            $imgFile = request()->file('editCandidateImg');
+        if (request()->hasFile('candidateImg')) {
+            $imgName = request()->file('candidateImg')->getClientOriginalName();
+            $imgFile = request()->file('candidateImg');
 
             //move the file to the right folder
             if($imgFile->move(base_path('public/images/candidates/'), $imgName)){
 
                 $updateRes = DB::table('candidates')
                 ->where('id', $validated['record_id'])
-                ->update(array('candidate_name' => $validated['editCandidateName'], 'election_id' => $validated['election_id'],
+                ->update(array('candidate_name' => $validated['candidateName'], 'election_id' => $validated['election_id'],
                 'post_id' => $validated['position_id'], 'image' => $imgName,
-                'updated_at' => date('Y-m-d H:i:s'),'description' => $validated['editCandidateDescription']));
+                'updated_at' => date('Y-m-d H:i:s'),'description' => $validated['candidateDescription']));
 
                 if($updateRes){
                     return response()->json(['success'=>'Candidate updated successfully.']);
@@ -205,9 +205,9 @@ class CandidatesController extends Controller
         }else{
             $updateRes = DB::table('candidates')
                 ->where('id', $validated['record_id'])
-                ->update(array('candidate_name' => $validated['editCandidateName'], 'election_id' => $validated['election_id'],
+                ->update(array('candidate_name' => $validated['candidateName'], 'election_id' => $validated['election_id'],
                 'post_id' => $validated['position_id'],
-                'updated_at' => date('Y-m-d H:i:s'),'description' => $validated['editCandidateDescription']));
+                'updated_at' => date('Y-m-d H:i:s'),'description' => $validated['candidateDescription']));
 
                 if($updateRes){
                     return response()->json(['success'=>'Candidate updated successfully.']);
@@ -223,8 +223,19 @@ class CandidatesController extends Controller
      * @param  \App\Models\Candidates  $candidates
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Candidates $candidates)
+    public function destroy()
     {
-        //
+        $canId = request()->input('candidate_id');
+
+        $deleteRes = DB::table('candidates')
+                            ->where([
+                                ['id', '=', $canId]
+                            ])
+                            ->delete();
+        if($deleteRes){
+            return response()->json(['success'=>'Candidate deleted successfully']);
+        }else{
+            return response()->json(['error'=>'Failed to delete candidate']);
+        }
     }
 }
