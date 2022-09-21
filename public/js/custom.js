@@ -252,10 +252,9 @@ switch(pageTitle.innerHTML) {
         getUserDivsions();
     break;
     case "Manage Sub Divisions":
-        getUserSubDivisions();
+        getSubDivisions();
     break;
-    default:
-      // code block
+    //default:
   }
 
 }

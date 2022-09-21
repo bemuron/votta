@@ -7,6 +7,8 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CandidatesController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserDivisionController;
+use App\Http\Controllers\UserSubDivisionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,7 +78,67 @@ Route::post('/save-edit-post-details/{postId}', [PostsController::class, 'update
 Route::get('/manage-candidates', [CandidatesController::class, 'index'])->name('manage_candidates');
 
 //manage users
-//Route::get('/manage-users', [UsersController::class, 'index'])->name('manage_users');
+Route::get('/manage-users', [UsersController::class, 'index'])->name('manage_users');
+
+//manage users
+Route::get('/manage-divisions', [UserDivisionController::class, 'index'])->name('manage_divisions');
+
+//manage users
+Route::get('/manage-sub-divisions', [UserSubDivisionController::class, 'index'])->name('manage_sub_divisions');
+
+//get user details for edit
+Route::get('/edit-user-details/{userId}', [UsersController::class, 'getSingleUser']);
+
+//change the user status in the system
+Route::post('/change-user-status', [UsersController::class, 'changeUserStatus']);
+
+//get users list for table
+Route::get('/users/table-list', [UsersController::class, 'getAllUsers']);
+
+//route to delete a user
+Route::post('/delete-user', [UsersController::class, 'destroy'])->name('delete_user');
+
+//route to create a new user
+Route::post('/create-user', [UsersController::class, 'store'])->name('create_user');
+
+//save the edited user details
+Route::post('/save-edit-user-details/{postId}', [UsersController::class, 'update']);
+
+//get divisions for dropdown
+Route::get('/divisions-dropdown', [UserDivisionController::class, 'getDivisionsList']);
+
+//get list of sub divisions
+Route::get('/sub-division/table-list', [UserSubDivisionController::class, 'getAllSubDivisions']);
+
+//get sub division details for edit
+Route::get('/edit-sub-div-details/{subDivId}', [UserSubDivisionController::class, 'getSubDivDetails']);
+
+//save the edited sub division details
+Route::post('/save-edit-sub-div-details/{subDivId}', [UserSubDivisionController::class, 'update']);
+
+//route to create a new sub division
+Route::post('/create-sub-division', [UserSubDivisionController::class, 'store']);
+
+//route to delete a sub division
+Route::post('/delete-sub-division', [UserSubDivisionController::class, 'destroy']);
+
+//get sub divisions for dropdown
+Route::get('/sub-division-dropdown/{division_id}', [UserSubDivisionController::class, 'getSubDivisionsList']);
+
+//save the edited division details
+Route::post('/save-edit-div-details/{divId}', [UserDivisionController::class, 'update']);
+
+//route to create a new division
+Route::post('/create-division', [UserDivisionController::class, 'store']);
+
+//get list of divisions
+Route::get('/division/table-list', [UserDivisionController::class, 'getAllDivisions']);
+
+//get division details for edit
+Route::get('/edit-div-details/{divId}', [UserDivisionController::class, 'getDivDetails']);
+
+//route to delete a division
+Route::post('/delete-division', [UserDivisionController::class, 'destroy']);
 
 //view election results
 Route::get('/election-results', [VotesController::class, 'index'])->name('voting_results');

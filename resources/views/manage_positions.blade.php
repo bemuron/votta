@@ -40,7 +40,7 @@
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content tx-14">
           <div class="modal-header">
-            <h6 class="modal-title" id="postsModalLabel">Edit Post Details</h6>
+            <h6 class="modal-title" id="postsModalLabel">Post Details</h6>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </button>
           </div>

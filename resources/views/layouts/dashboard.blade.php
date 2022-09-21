@@ -97,9 +97,9 @@
             <li class="nav-item" id="dash-posts"><a href="{{ route('manage_positions') }}" class="nav-link"><i data-feather="clipboard"></i> <span>Posts</span></a></li>
             <li class="nav-item" id="dash-candidates"><a href="{{ route('manage_candidates') }}" class="nav-link"><i data-feather="user-check"></i> <span>Candidates</span></a></li>
             <li class="nav-label mg-t-25">User Management</li>
-            <li class="nav-item" id="dash-users"><a href="{{ route('statistics') }}" class="nav-link"><i data-feather="users"></i> <span>Users</span></a></li>
-            <li class="nav-item" id="dash-divisions"><a href="app-chat.html" class="nav-link"><i data-feather="git-branch"></i> <span>Divisions</span></a></li>
-            <li class="nav-item" id="dash-sub-divisions"><a href="app-chat.html" class="nav-link"><i data-feather="grid"></i> <span>Sub Divisions</span></a></li>
+            <li class="nav-item" id="dash-users"><a href="{{ route('manage_users') }}" class="nav-link"><i data-feather="users"></i> <span>Users</span></a></li>
+            <li class="nav-item" id="dash-divisions"><a href="{{ route('manage_divisions') }}" class="nav-link"><i data-feather="git-branch"></i> <span>Divisions</span></a></li>
+            <li class="nav-item" id="dash-sub-divisions"><a href="{{ route('manage_sub_divisions') }}" class="nav-link"><i data-feather="grid"></i> <span>Sub Divisions</span></a></li>
             <li class="nav-label mg-t-25">Reports</li>
             <li class="nav-item" id="dash-users"><a href="{{ route('statistics') }}" class="nav-link"><i data-feather="book"></i> <span>All Reports</span></a></li>
 
@@ -158,6 +158,7 @@
     <script src="{{ asset('js/dashforge.aside.js') }}"></script>
     <script src="{{ asset('js/mainjs.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('js/users.js') }}"></script>
 
     </body>
 </html>
