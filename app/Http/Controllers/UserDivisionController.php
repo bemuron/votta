@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserDivision;
 use App\Http\Requests\StoreUserDivisionRequest;
 use App\Http\Requests\UpdateUserDivisionRequest;
+use App\Imports\UserDivisionsImport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -152,11 +153,7 @@ class UserDivisionController extends Controller
                 ->limit(1)
                 ->get();
 
-        logger('here');
-        logger($result);
-
-        if(empty($result)){
-            logger('inside if');
+        if(!empty($result)){
             return response()->json(['info'=>'Division not deleted because it has sub divisions']);
         }
 
@@ -170,5 +167,45 @@ class UserDivisionController extends Controller
         }else{
             return response()->json(['error'=>'Failed to delete division']);
         }
+    }
+
+    //import user divisions to db
+    public function importDivisions() {
+        $user_id = auth()->user()->id;
+
+        $validatedFile = request()->validate([
+           'divs_file' => 'required|mimes:xls,xlsx,txt,csv',
+       ]);
+        
+        $fileName = request()->file('divs_file')->getClientOriginalName();
+        
+        $divImport = new UserDivisionsImport($user_id );
+        $divImport->import(request()->file('divs_file'));
+
+        // foreach ($divImport->failures() as $failure) {
+        //     $failure->row(); // row that went wrong
+        //     $failure->attribute(); // either heading key (if using heading row concern) or column index
+        //     $failure->errors(); // Actual error messages from Laravel validator
+        //     $failure->values(); // The values of the row that has failed.
+        // }
+
+        if(count($divImport->failures()) > 0){
+            return response()->json(['error'=>$divImport->failures()]);
+        }
+
+        return response()->json(['success'=>'Divisions imported successfully']);
+
+    }
+
+    //download the template for bulk division upload
+    public function downloadDivUploadTemplate(){
+
+        // $headers = [
+        //     'Content-Type' => 'application/pdf',
+        //  ];
+
+        $file_path = base_path('public/uploads/divisions_upload_template.csv');
+
+        return response()->download($file_path, 'divisions_upload_template.csv');
     }
 }

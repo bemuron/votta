@@ -1,0 +1,2 @@
+name,email,password,user_role,sub_division,status
+sample user,bulk1@email.com,password,0,1,1

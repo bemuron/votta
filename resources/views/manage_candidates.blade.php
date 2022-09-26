@@ -20,7 +20,7 @@
 <div class="container mt-5">
 
   <table id="candidates_table" class="table table-sm caption-top table-striped">
-    <thead>
+    <thead class="thead-dark">
       <tr>
         <th class="wd-10p">Name</th>
         <th class="wd-10p">Election</th>

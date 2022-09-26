@@ -20,7 +20,7 @@
 <div class="container mt-5">
 
 <table id="sub_division_table" class="table table-sm caption-top table-striped">
-  <thead>
+  <thead class="thead-dark">
     <tr>
       <th class="wd-10p">Sub Division Name</th>
       <th class="wd-10p">Division</th>
@@ -79,6 +79,52 @@
         </div>
       </div>
     </div>
+
+    <!-- modal to handle bulk sub division insert-->
+<div class="modal fade" id="sub_div_import_modal" tabindex="-1" role="dialog" aria-labelledby="subDivImportModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content tx-14">
+      <div class="modal-header">
+        <h6 class="modal-title" id="subDivImportModalLabel">Siub Divisions Import File</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="subDivImportFormValErr" class="alert alert-danger d-none">
+        </div>
+
+      @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+      @endif
+        <form id="subDivImportForm" method="POST"  enctype="multipart/form-data">
+          @csrf
+
+          <div class="form-group col">
+            <label for="sub_divs_file" class="mg-b-0 col-form-label tx-spacing-1 fw-bold text-md-right">{{ __('Select the csv file with the sub divisions to upload') }} <span class="text-danger">*</span></label>
+
+            <div class="row">
+              <div class="col-6">
+                <input id="sub_divs_file" type="file" class="form-control" name="sub_divs_file">
+              </div>
+
+              <div class="col-6">
+                <a href="#" id="subDivDwnTempBtn"><i data-feather="download" ></i> Download Template</a>
+              </div>
+
+            </div><!-- row -->
+          </div>
+          
+        </form>
+      </div>
+      <div class="modal-footer">
+      <button type="button" class="btn btn-secondary tx-13" data-bs-dismiss="modal">Close</button>
+      <button type="button" id="importSubDivBtn" class="btn btn-success"> <i data-feather="upload"></i> {{ __('Import Sub Divisions') }}</button>
+      </div>
+    </div>
+  </div>
+</div>
     
   <!-- modal to confirm with user if they want to delete the sub division -->
   <div class="modal fade" id="delete_sub_div_modal" tabindex="-1" role="dialog" aria-labelledby="confirmSubDivDelLabel" aria-hidden="true">

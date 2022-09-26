@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\SubDivisionsImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -171,5 +172,45 @@ class UserSubDivisionController extends Controller
         }else{
             return response()->json(['error'=>'Failed to delete Sub division']);
         }
+    }
+
+    //import sub divisions to db
+    public function importSubDivisions() {
+        $user_id = auth()->user()->id;
+
+        $validatedFile = request()->validate([
+           'sub_divs_file' => 'required|mimes:xls,xlsx,txt,csv',
+       ]);
+        
+        $fileName = request()->file('sub_divs_file')->getClientOriginalName();
+        
+        $subDivImport = new SubDivisionsImport($user_id );
+        $subDivImport->import(request()->file('sub_divs_file'));
+
+        // foreach ($subDivImport->failures() as $failure) {
+        //     $failure->row(); // row that went wrong
+        //     $failure->attribute(); // either heading key (if using heading row concern) or column index
+        //     $failure->errors(); // Actual error messages from Laravel validator
+        //     $failure->values(); // The values of the row that has failed.
+        // }
+
+        if(count($subDivImport->failures()) > 0){
+            return response()->json(['error'=>$subDivImport->failures()]);
+        }
+
+        return response()->json(['success'=>'Sub Divisions imported successfully']);
+
+    }
+
+    //download the template for bulk sub division upload
+    public function downloadSubDivUploadTemplate(){
+
+        // $headers = [
+        //     'Content-Type' => 'application/pdf',
+        //  ];
+
+        $file_path = base_path('public/uploads/sub_divisions_upload_template.csv');
+
+        return response()->download($file_path, 'sub_divisions_upload_template.csv');
     }
 }

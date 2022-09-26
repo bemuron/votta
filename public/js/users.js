@@ -1,6 +1,17 @@
 //csrf token
 var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
+var close = document.getElementsByClassName("closebtn");
+var i;
+
+for (i = 0; i < close.length; i++) {
+  close[i].onclick = function(){
+    var div = this.parentElement;
+    div.style.opacity = "0";
+    setTimeout(function(){ div.style.display = "none"; }, 600);
+  };
+}
+
 //show modal to create a new user
 $('#createUserBtn').on('click', function (e) {
     document.getElementById("usersForm").reset();
@@ -17,10 +28,10 @@ $('#userBulkInsertBtn').on('click', function (e) {
 });
 
 //download bulk insert template file
-function onDownloadTemplateFileClick(item_id){
+function downloadUserUploadTemplate(){
     //console.log("called to donwload");
     $.ajax({
-        url: "/download-requisition-file/"+item_id,
+        url: "/user-upload-template",
         type: 'get',
         beforeSend: function () { // show loading spinner
             $('#loader').removeClass('hidden');
@@ -36,7 +47,7 @@ function onDownloadTemplateFileClick(item_id){
             }
 
             if(data.length > 0 || data !== null){
-                window.location = "/download-requisition-file/"+item_id;
+                window.location = "/user-upload-template";
             }
 
         },
@@ -57,6 +68,101 @@ function onDownloadTemplateFileClick(item_id){
         mIsAlertOn = false;
     }, 5000); // <-- time in milliseconds
 }
+
+//import the users
+$('#importUsersBtn').on('click', function (e) {
+    e.preventDefault();
+    $("#userImportFormValErr").addClass('d-none');
+    
+    // Get form
+    var form = $("#userImportForm")[0];
+
+    // Create an FormData object
+    var data = new FormData(form);
+    
+    // disabled the submit button
+    $("#importUsersBtn").prop("disabled", true);
+    
+    $.ajax({
+        url: "/users/import",
+        type: 'post',
+        processData: false,
+        contentType: false,
+        cache: false,
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        //dataType: 'json',
+        data: data,
+        success: function(data) {
+            //console.log(data);
+            $("#importUsersBtn").prop("disabled", false);
+            document.getElementById("users_file").value="";
+            
+            if(data.success){
+                getUsers();
+                $("#user_import_modal").modal("hide");
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                $('#custom-alert').show();
+            }
+
+            if(data.error){
+                let responseHtml = '';
+                responseHtml += '<p> * ' + data.error[0].errors[0] + '</p>';
+                //console.log(data.error[0].errors[0]);
+                
+
+                $("#userImportFormValErr").removeClass('d-none');
+                $("#userImportFormValErr").html( responseHtml );
+                document.querySelector('#userImportFormValErr').scrollIntoView({
+                    behavior: 'smooth'
+                });
+
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-times-circle'></i> Issue with file: "+data.error[0].errors[0]);
+                $('#custom-alert').show();
+            }
+            
+        },
+        error: function (e) {
+            let responseHtml = '';
+            var errors = e.responseJSON.errors;
+            
+            responseHtml += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> </div>';
+            $.each( errors , function( key, value ) {
+                responseHtml += '<p> * ' + value + '</p>';
+            });
+            
+            
+            $("#userImportFormValErr").html( responseHtml );
+            document.querySelector('#userImportFormValErr').scrollIntoView({
+                behavior: 'smooth'
+            });
+            
+          $("#importUsersBtn").prop("disabled", false);
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+    
+    //hide the alert
+setTimeout(function() {
+    if(mIsAlertOn === true){
+        $('#custom-alert').fadeOut('fast');
+        $('#custom-alert').removeClass('custom-alert info');
+        $('#custom-alert').removeClass('custom-alert warning');
+        $('#custom-alert').removeClass('custom-alert success');
+        $('#custom-alert').removeClass('custom-alert');
+    }
+}, 5000); 
+    
+});
 
 //get the system users
 function getUsers(){
@@ -349,7 +455,7 @@ function deleteUser(userId){
     });
 }
 
-//populate the divisions dropdown dropdown
+//populate the divisions dropdown
 var div_drpdwn = $("#divisions_dropdown");
     $.get("/divisions-dropdown", function(data) {
         //console.log(data);
@@ -431,6 +537,105 @@ $('#createSubDivisionBtn').on('click', function (e) {
     document.getElementById("subDivId").value = 0;
     $('#sub_division_modal').modal("show");
     $('#saveSubDivBtn').html("<i class='bi bi-plus-circle'></i> Create Sub Division");
+});
+
+//show modal to import sub division
+$('#subDivBulkInsertBtn').on('click', function (e) {
+    $('#sub_div_import_modal').modal("show");
+});
+
+//import the sub division
+$('#importSubDivBtn').on('click', function (e) {
+    e.preventDefault();
+    
+    // Get form
+    var form = $("#subDivImportForm")[0];
+
+    // Create an FormData object
+    var data = new FormData(form);
+    
+    // disabled the submit button
+    $("#importSubDivBtn").prop("disabled", true);
+    
+    $.ajax({
+        url: "/sub-division/import",
+        type: 'post',
+        processData: false,
+        contentType: false,
+        cache: false,
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        //dataType: 'json',
+        data: data,
+        success: function(data) {
+            //console.log(data);
+            $("#importSubDivBtn").prop("disabled", false);
+            document.getElementById("sub_divs_file").value="";
+            
+            if(data.success){
+                getSubDivisions();
+                $("#sub_div_import_modal").modal("hide");
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                $('#custom-alert').show();
+
+            }
+
+            if(data.error){
+                let responseHtml = '';
+                responseHtml += '<p> * ' + data.error[0].errors[0] + '</p>';
+                $("#subDivImportFormValErr").removeClass('d-none');
+                $("#subDivImportFormValErr").html( responseHtml );
+                document.querySelector('#subDivImportFormValErr').scrollIntoView({
+                    behavior: 'smooth'
+                });
+
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-times-circle'></i> Issue with file: "+data.error[0].errors[0]);
+                $('#custom-alert').show();
+            }
+            
+        },
+        error: function (e) {
+            let responseHtml = '';
+            var errors = e.responseJSON.errors;
+            console.log(data);
+            
+            responseHtml = '<div class="alert alert-danger">';
+            
+            $.each( errors , function( key, value ) {
+                responseHtml += '<p> * ' + value + '</p>';
+            });
+            responseHtml += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> </div>';
+            
+            $("#subDivImportFormValErr").html( responseHtml );
+            document.querySelector('#subDivImportFormValErr').scrollIntoView({
+                behavior: 'smooth'
+            });
+            
+          $("#importSubDivBtn").prop("disabled", false);
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+    
+    //hide the alert
+setTimeout(function() {
+    if(mIsAlertOn === true){
+        $('#custom-alert').fadeOut('fast');
+        $('#custom-alert').removeClass('custom-alert info');
+        $('#custom-alert').removeClass('custom-alert warning');
+        $('#custom-alert').removeClass('custom-alert success');
+        $('#custom-alert').removeClass('custom-alert');
+    }
+}, 5000); // <-- time in milliseconds
+    
 });
 
 //handle create / edit positions form submition
@@ -595,6 +800,105 @@ $('#createDivisionBtn').on('click', function (e) {
     document.getElementById("divId").value = 0;
     $('#division_modal').modal("show");
     $('#saveDivBtn').html("<i class='bi bi-plus-circle'></i> Create Division");
+});
+
+//show modal to import division
+$('#divBulkInsertBtn').on('click', function (e) {
+    $('#divisions_import_modal').modal("show");
+});
+
+//import the division
+$('#importDivBtn').on('click', function (e) {
+    e.preventDefault();
+    
+    // Get form
+    var form = $("#divImportForm")[0];
+
+    // Create an FormData object
+    var data = new FormData(form);
+    
+    // disabled the submit button
+    $("#importDivBtn").prop("disabled", true);
+    
+    $.ajax({
+        url: "/division/import",
+        type: 'post',
+        processData: false,
+        contentType: false,
+        cache: false,
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        //dataType: 'json',
+        data: data,
+        success: function(data) {
+            //console.log(data);
+            $("#importDivBtn").prop("disabled", false);
+            document.getElementById("divs_file").value="";
+            
+            if(data.success){
+                getUserDivsions();
+                $("#divisions_import_modal").modal("hide");
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                $('#custom-alert').show();
+
+            }
+
+            if(data.error){
+                let responseHtml = '';
+                responseHtml += '<p> * ' + data.error[0].errors[0] + '</p>';
+                $("#divImportFormValErr").removeClass('d-none');
+                $("#divImportFormValErr").html( responseHtml );
+                document.querySelector('#divImportFormValErr').scrollIntoView({
+                    behavior: 'smooth'
+                });
+
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-times-circle'></i> Issue with file: "+data.error[0].errors[0]);
+                $('#custom-alert').show();
+            }
+            
+        },
+        error: function (e) {
+            let responseHtml = '';
+            var errors = e.responseJSON.errors;
+            console.log(data);
+            
+            responseHtml = '<div class="alert alert-danger">';
+            
+            $.each( errors , function( key, value ) {
+                responseHtml += '<p> * ' + value + '</p>';
+            });
+            responseHtml += '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> </div>';
+            
+            $("#divImportFormValErr").html( responseHtml );
+            document.querySelector('#divImportFormValErr').scrollIntoView({
+                behavior: 'smooth'
+            });
+            
+          $("#importDivBtn").prop("disabled", false);
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+    
+    //hide the alert
+setTimeout(function() {
+    if(mIsAlertOn === true){
+        $('#custom-alert').fadeOut('fast');
+        $('#custom-alert').removeClass('custom-alert info');
+        $('#custom-alert').removeClass('custom-alert warning');
+        $('#custom-alert').removeClass('custom-alert success');
+        $('#custom-alert').removeClass('custom-alert');
+    }
+}, 5000); // <-- time in milliseconds
+    
 });
 
 //handle create / edit positions form submition
@@ -888,6 +1192,280 @@ function getSelectedDivision(event){
                 };
             }
             //cache: true
+        }
+    });
+}
+
+//show modal to create voter base
+$('#createVotersBtn').on('click', function (e) {
+    $("#election_voters_table").hide();
+    getDivisionsForVoters();
+    $.get("/elections-dropdown", function(data) {
+        //console.log(data);
+        $.each(data, function(index,item) {
+            $("#voters_election_dropdown").append($("<option />").val(item.id).text(item.name));
+        });
+    });
+    $('#voters_modal').modal("show");
+});
+
+//populate the elections dropdown when selecting a voter base
+//var elect_drpdwn = $("#voters_election_dropdown");
+//     $.get("/elections-dropdown", function(data) {
+//         //console.log(data);
+//         $.each(data, function(index,item) {
+//             $("#voters_election_dropdown").append($("<option />").val(item.id).text(item.name));
+//     });
+// });
+
+function getDivisionsForVoters(){
+    //the select for the divisions when adding voters to an election
+    $('#voters_division_dropdown').select2({
+        placeholder: 'Select division',
+        searchInputPlaceholder: 'Search division',
+        ajax: {
+            url: '/divisions-dropdown',
+            dataType: 'json',
+            delay: 250,
+            data: function (data) {
+                //_token: CSRF_TOKEN;
+                return {
+                    keyword: data.term // search term
+                };
+            },
+            processResults: function (response) {
+                return {
+                    results: $.map(response, function (item) {
+                        return {
+                            text: item.division,
+                            //slug: item.slug,
+                            id: item.id
+                        };
+                    })
+                };
+            },
+            cache: true
+        }
+    });
+}
+
+
+
+//get the id of the selected divsion
+//use it to get the sub divisions in that division
+function getVoterBaseSelectedDivision(event){
+    var divisionId = event.target.value;
+    
+    //unselect previously selected
+    $('#voters_sub_division_dropdown').val(0);
+    
+    $('#voters_sub_division_dropdown').select2({
+      placeholder: 'Select sub division',
+      searchInputPlaceholder: 'Search sub division',
+      //minimumInputLength: 2,
+        //tags: [],
+        ajax: {
+            url: "/sub-division-dropdown/"+divisionId,
+            dataType: 'json',
+            delay: 250,
+            data: function (data) {
+                //_token: CSRF_TOKEN;
+                return {
+                    keyword: data.term // search term
+                };
+            },
+            processResults: function (response) {
+                
+                return {
+                    results: $.map(response, function (item) {
+                        return {
+                            text: item.label,
+                            //slug: item.slug,
+                            id: item.value
+                        };
+                    })
+                };
+            }
+            //cache: true
+        }
+    });
+
+    $("#voters_sub_division_dropdown").append($("<option />").val(0).text("All Sub Divisions"));
+    $("#voters_sub_division_dropdown").trigger('change');
+}
+
+//holds map of scanned for disposal approval
+var mVoterIds = new Map();
+
+//add voters selected to map of voters
+$('#addVotersBtn').on('click', function (e) {
+    e.preventDefault();
+    let myForm = document.getElementById('votersForm');
+    let data = new FormData(myForm);
+
+    var electionId = $("#voters_election_dropdown").children("option:selected").val();
+    var division_name = $("#voters_division_dropdown").children("option:selected").text();
+    var divId = $("#voters_division_dropdown").children("option:selected").val();
+    var subDivId = $("#voters_sub_division_dropdown").children("option:selected").val();
+    var subDivName = $("#voters_sub_division_dropdown").children("option:selected").text();
+
+    if (typeof subDivId == "undefined") {
+        subDivId = 0;
+    }
+
+    data.append("election_id", electionId);
+    data.append("division_id", divId);
+    data.append("sub_div_id", subDivId);
+
+    // disable the submit button
+    $("#addVotersBtn").prop("disabled", true);
+
+    $.ajax({
+        url: "add-voters",
+        type: 'post',
+        processData: false,
+        contentType: false,
+        cache: false,
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        data: data,
+        success: function(data) {
+            //console.log(data);
+            $("#addVotersBtn").prop("disabled", false);
+            if(data.success){
+                mIsAlertOn = true;
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i>"+data.success);
+                $('#custom-alert').show();
+
+                getElectionVoters(electionId);
+                document.getElementById("votersForm").reset();
+                document.getElementById("voters_sub_division_dropdown").value = "";
+                $("#division_modal").modal("hide");
+            }
+
+            if(data.error){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.error);
+                $('#custom-alert').show();
+            }
+
+            if(data.info){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert warning');
+                $('#alert-msg').html("<i class='fas fa-info-circle'></i> "+data.info);
+                $('#custom-alert').show();
+            }
+        },
+        error: function (e) {
+            let responseHtml = '';
+            var errors = e.responseJSON.errors;
+            
+            $.each( errors , function( key, value ) {
+                responseHtml = '<p> * ' + value + '</p>';
+            });
+
+            //console.log(errors);
+            $.each(errors, function (key, value) {
+                $('#divFormValErr').append('<p> * ' + value + '</p>');
+                $("#divFormValErr").removeClass('d-none');
+                document.getElementById("divFormValErr").scrollIntoView();
+            });
+
+            mIsAlertOn = true;
+
+            $('#custom-alert').addClass('custom-alert');
+            $('#alert-msg').html("<i class='fas fa-x'></i> "+responseHtml);
+            $('#custom-alert').show();
+
+          $("#addVotersBtn").prop("disabled", false);
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+    
+    //hide the alert
+    setTimeout(function() {
+        if(mIsAlertOn === true){
+            $('#custom-alert').fadeOut('fast');
+            $('#custom-alert').removeClass('custom-alert info');
+            $('#custom-alert').removeClass('custom-alert warning');
+            $('#custom-alert').removeClass('custom-alert success');
+            $('#custom-alert').removeClass('custom-alert');
+        }
+        mIsAlertOn = false;
+    }, 5000); // <-- time in milliseconds
+
+});
+
+function getElectionVoters(voterId){
+    var votersList = $("#election_voters_table");
+    $('#election_voters_table tbody').empty();
+        
+    $.get("/get-election-voters/"+voterId, function(data) {
+        if (data[0]['election_name'] != null){
+            votersList.show();
+            $.each(data, function(index,item) {
+
+                votersList.append("<tr><td>"+item.division_name+
+                "</td><td>"+item.sub_division_name+
+                "</td><td><a id='rem-voters-id' class='mg-r-10' data-toggle='tooltip' onclick='removeElectionVoter("+item.id+ ',' +item.election_id+")' data-placement='bottom' title='Remove from list' data-id='"+item.id+"' href='#'>"+
+                "<i style='font-size: 1em; color: #FF0000;' class='bi bi-trash'></i></a>"+
+                "</td></tr>");
+            });
+        }else{
+            votersList.hide();
+        }
+
+    });
+}
+
+//delete a voter form the election
+function removeElectionVoter(voterId, electionId){
+
+    $.ajax({
+        url: "/delete-election-voter",
+        type: 'post',
+        //dataType: 'json',
+        data: {
+            _token: CSRF_TOKEN,
+            voter_id: voterId
+        },
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        success: function(data) {
+            if(data.success){
+                mIsAlertOn = true;
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
+                $('#custom-alert').show();
+                getElectionVoters(electionId);
+            }
+
+            if(data.error){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.error);
+                $('#custom-alert').show();
+            }
+
+            if(data.info){
+                mIsAlertOn = true;
+
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.info);
+                $('#custom-alert').show();
+            }
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
         }
     });
 }

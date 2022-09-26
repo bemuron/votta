@@ -20,7 +20,7 @@
 <div class="container mt-5">
 
 <table id="users_table" class="table table-sm caption-top table-striped">
-  <thead>
+  <thead class="thead-dark">
     <tr>
       <th class="wd-10p">Name</th>
       <th class="wd-10p">Email</th>
@@ -165,7 +165,7 @@
               </div>
 
               <div class="col-6">
-                <a href="#" id="userImpTempBtn"><i data-feather="download" ></i> Download Template</a>
+                <a href="#" id="userDwnTempBtn" onclick="downloadUserUploadTemplate()"><i data-feather="download" ></i> Download Template</a>
               </div>
 
             </div><!-- row -->

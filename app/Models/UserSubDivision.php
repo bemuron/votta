@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class UserSubDivision extends Model
 {
     use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'division_id',
+        'sub_division_name',
+        'created_at',
+    ];
 }

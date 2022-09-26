@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Imports\UsersImport;
 
 class UsersController extends Controller
 {
@@ -167,5 +168,45 @@ class UsersController extends Controller
         response()->json(['success'=>'User '.$message.' successfully']) :
         response()->json(['error'=>'Ooops! An error occured during user status change']);
 
+    }
+
+    //import users to db
+    public function importUsers() {
+        $user_id = auth()->user()->id;
+
+        $validatedFile = request()->validate([
+           'users_file' => 'required|mimes:xls,xlsx,txt,csv',
+       ]);
+        
+        $fileName = request()->file('users_file')->getClientOriginalName();
+        
+        $userImport = new UsersImport($user_id );
+        $userImport->import(request()->file('users_file'));
+
+        // foreach ($userImport->failures() as $failure) {
+        //     $failure->row(); // row that went wrong
+        //     $failure->attribute(); // either heading key (if using heading row concern) or column index
+        //     $failure->errors(); // Actual error messages from Laravel validator
+        //     $failure->values(); // The values of the row that has failed.
+        // }
+
+        if(count($userImport->failures()) > 0){
+            return response()->json(['error'=>$userImport->failures()]);
+        }
+
+        return response()->json(['success'=>'Users imported successfully']);
+
+    }
+
+    //download the template for bulk user upload
+    public function downloadUserUploadTemplate(){
+
+        $headers = [
+            'Content-Type' => 'application/pdf',
+         ];
+
+        $file_path = base_path('public/uploads/user_upload_template.csv');
+
+        return response()->download($file_path, 'user_upload_template.csv');
     }
 }

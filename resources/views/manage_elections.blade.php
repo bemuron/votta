@@ -20,7 +20,7 @@
 <div class="container mt-5">
 
   <table id="elections_table" class="table table-sm caption-top table-striped">
-    <thead>
+    <thead class="thead-dark">
       <tr>
         <th class="wd-10p">Name</th>
         <th class="wd-10p">Status</th>
@@ -101,6 +101,13 @@
                         <input type="text" id="electDateTo" name="electDateTo" value="{{ old('electDateTo') }}" class="form-control" required placeholder="End">
                       </div><!-- col -->
                     </div><!-- row -->
+              </div>
+
+              <div class="form-group col mt-3">
+                <label for="electDateFrom" class="mg-b-0 col-form-label fw-bold text-md-right">{{ __('Voter Base') }}
+                  <span class="text-danger">*</span>
+                </label>
+                <input id="input2" type="text" id="electVoters" class="form-control" value="Amsterdam,Washington">
               </div>
 
               <div class="form-group col mt-3">

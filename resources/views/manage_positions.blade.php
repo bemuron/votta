@@ -20,7 +20,7 @@
 <div class="container mt-5">
 
 <table id="posts_table" class="table table-sm caption-top table-striped">
-  <thead>
+  <thead class="thead-dark">
     <tr>
       <th class="wd-10p">Post Name</th>
       <th class="wd-10p">Election</th>

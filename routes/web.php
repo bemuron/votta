@@ -9,6 +9,7 @@ use App\Http\Controllers\PostsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserDivisionController;
 use App\Http\Controllers\UserSubDivisionController;
+use App\Http\Controllers\VoterBaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,13 +78,16 @@ Route::post('/save-edit-post-details/{postId}', [PostsController::class, 'update
 //manage candidates
 Route::get('/manage-candidates', [CandidatesController::class, 'index'])->name('manage_candidates');
 
+//manage voter base
+Route::get('/manage-voter-base', [VoterBaseController::class, 'index'])->name('manage_voter_base');
+
 //manage users
 Route::get('/manage-users', [UsersController::class, 'index'])->name('manage_users');
 
 //manage users
 Route::get('/manage-divisions', [UserDivisionController::class, 'index'])->name('manage_divisions');
 
-//manage users
+//manage sub divisions
 Route::get('/manage-sub-divisions', [UserSubDivisionController::class, 'index'])->name('manage_sub_divisions');
 
 //get user details for edit
@@ -94,6 +98,12 @@ Route::post('/change-user-status', [UsersController::class, 'changeUserStatus'])
 
 //get users list for table
 Route::get('/users/table-list', [UsersController::class, 'getAllUsers']);
+
+//upload users to db
+Route::post('/users/import', [UsersController::class, 'importUsers']);
+
+//donwload users upload template file
+Route::get('/user-upload-template', [UsersController::class, 'downloadUserUploadTemplate']);
 
 //route to delete a user
 Route::post('/delete-user', [UsersController::class, 'destroy'])->name('delete_user');
@@ -109,6 +119,12 @@ Route::get('/divisions-dropdown', [UserDivisionController::class, 'getDivisionsL
 
 //get list of sub divisions
 Route::get('/sub-division/table-list', [UserSubDivisionController::class, 'getAllSubDivisions']);
+
+//upload sub divisions to db
+Route::post('/sub-division/import', [UserSubDivisionController::class, 'importSubDivisions']);
+
+//download sub divisions upload template file
+Route::get('/sub-div-upload-template', [UserSubDivisionController::class, 'downloadSubDivUploadTemplate']);
 
 //get sub division details for edit
 Route::get('/edit-sub-div-details/{subDivId}', [UserSubDivisionController::class, 'getSubDivDetails']);
@@ -139,6 +155,21 @@ Route::get('/edit-div-details/{divId}', [UserDivisionController::class, 'getDivD
 
 //route to delete a division
 Route::post('/delete-division', [UserDivisionController::class, 'destroy']);
+
+//upload divisions to db
+Route::post('/division/import', [UserDivisionController::class, 'importDivisions']);
+
+//download divisions upload template file
+Route::get('/div-upload-template', [UserDivisionController::class, 'downloadDivUploadTemplate']);
+
+//route to add voters to an election
+Route::post('/add-voters', [VoterBaseController::class, 'store']);
+
+//get voters for an election
+Route::get('/get-election-voters/{electionId}', [VoterBaseController::class, 'getElectionVoters']);
+
+//route to delete a voter from an election
+Route::post('/delete-election-voter', [VoterBaseController::class, 'destroy']);
 
 //view election results
 Route::get('/election-results', [VotesController::class, 'index'])->name('voting_results');
