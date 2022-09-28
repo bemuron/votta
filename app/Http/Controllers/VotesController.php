@@ -135,14 +135,31 @@ class VotesController extends Controller
         return view('voting_results',compact('electionsList','postsList','electionResults'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function getDashBoardElectionResults()
     {
-        //
+        return view('election_results');
+    }
+
+    /**
+     * get all the election results
+     *
+     */
+    public function getElectionResults()
+    {
+        if (request()->ajax()) {
+            return DB::table('candidates')
+            ->select('candidates.election_id', 'candidates.id','candidates.post_id',
+                    DB::raw("COALESCE( (select COUNT(voter_id) from votta.votes where candidates.id = votes.candidate_id), 0 ) AS total_votes"),
+                    'elections.name AS election_name',
+                    'candidates.candidate_name','elections.start_date','elections.end_date')
+            ->join('posts', 'posts.id', '=', 'candidates.post_id')
+            ->join('elections', 'elections.id', '=', 'candidates.election_id')
+            ->groupBy('candidates.election_id','candidates.id','candidates.post_id','elections.name',
+            'candidates.candidate_name','elections.start_date','elections.end_date')
+            ->get();
+
+            //TODO add condition to pick elections whose end date has passed
+        }
     }
 
     /**

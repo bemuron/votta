@@ -3,7 +3,6 @@ var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
 var close = document.getElementsByClassName("closebtn");
 var i;
-var mIsAlertOn;
 
 for (i = 0; i < close.length; i++) {
   close[i].onclick = function(){
@@ -1199,48 +1198,56 @@ function getSelectedDivision(event){
 
 //show modal to create voter base
 $('#createVotersBtn').on('click', function (e) {
-    $("#voterBaseElectId").show();
     $("#election_voters_table").hide();
-    $('#voters_modal').modal("show");
-});
-
-//populate the elections dropdown when selecting a voter base
-var elect_drpdwn = $("#voters_election_dropdown");
+    getDivisionsForVoters();
     $.get("/elections-dropdown", function(data) {
         //console.log(data);
         $.each(data, function(index,item) {
             $("#voters_election_dropdown").append($("<option />").val(item.id).text(item.name));
+        });
     });
+    $('#voters_modal').modal("show");
 });
 
-//the select for the divisions when adding voters to an election
-$('#voters_division_dropdown').select2({
-    placeholder: 'Select division',
-    searchInputPlaceholder: 'Search division',
-    ajax: {
-        url: '/divisions-dropdown',
-        dataType: 'json',
-        delay: 250,
-        data: function (data) {
-            //_token: CSRF_TOKEN;
-            return {
-                keyword: data.term // search term
-            };
-        },
-        processResults: function (response) {
-            return {
-                results: $.map(response, function (item) {
-                    return {
-                        text: item.division,
-                        //slug: item.slug,
-                        id: item.id
-                    };
-                })
-            };
-        },
-        cache: true
-    }
-});
+//populate the elections dropdown when selecting a voter base
+//var elect_drpdwn = $("#voters_election_dropdown");
+//     $.get("/elections-dropdown", function(data) {
+//         //console.log(data);
+//         $.each(data, function(index,item) {
+//             $("#voters_election_dropdown").append($("<option />").val(item.id).text(item.name));
+//     });
+// });
+
+function getDivisionsForVoters(){
+    //the select for the divisions when adding voters to an election
+    $('#voters_division_dropdown').select2({
+        placeholder: 'Select division',
+        searchInputPlaceholder: 'Search division',
+        ajax: {
+            url: '/divisions-dropdown',
+            dataType: 'json',
+            delay: 250,
+            data: function (data) {
+                //_token: CSRF_TOKEN;
+                return {
+                    keyword: data.term // search term
+                };
+            },
+            processResults: function (response) {
+                return {
+                    results: $.map(response, function (item) {
+                        return {
+                            text: item.division,
+                            //slug: item.slug,
+                            id: item.id
+                        };
+                    })
+                };
+            },
+            cache: true
+        }
+    });
+}
 
 
 
@@ -1302,105 +1309,86 @@ $('#addVotersBtn').on('click', function (e) {
     var subDivId = $("#voters_sub_division_dropdown").children("option:selected").val();
     var subDivName = $("#voters_sub_division_dropdown").children("option:selected").text();
 
-    var votersId = document.getElementById("votersId").value;
-
-    //if user is editing the voter base for an election
-    if(votersId > 0){
-        electionId = votersId;
-    }
-
     if (typeof subDivId == "undefined") {
         subDivId = 0;
     }
 
-    if (divId > 0) {
-        if (electionId > 0) {
-            data.append("election_id", electionId);
-            data.append("division_id", divId);
-            data.append("sub_div_id", subDivId);
+    data.append("election_id", electionId);
+    data.append("division_id", divId);
+    data.append("sub_div_id", subDivId);
 
-            // disable the submit button
-            $("#addVotersBtn").prop("disabled", true);
+    // disable the submit button
+    $("#addVotersBtn").prop("disabled", true);
 
-            $.ajax({
-                url: "add-voters",
-                type: 'post',
-                processData: false,
-                contentType: false,
-                cache: false,
-                beforeSend: function () { // show loading spinner
-                    $('#loader').removeClass('hidden');
-                },
-                data: data,
-                success: function(data) {
-                    //console.log(data);
-                    $("#addVotersBtn").prop("disabled", false);
-                    if(data.success){
-                        mIsAlertOn = true;
-                        $('#custom-alert').addClass('custom-alert success');
-                        $('#alert-msg').html("<i class='fas fa-check-circle'></i>"+data.success);
-                        $('#custom-alert').show();
+    $.ajax({
+        url: "add-voters",
+        type: 'post',
+        processData: false,
+        contentType: false,
+        cache: false,
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        data: data,
+        success: function(data) {
+            //console.log(data);
+            $("#addVotersBtn").prop("disabled", false);
+            if(data.success){
+                mIsAlertOn = true;
+                $('#custom-alert').addClass('custom-alert success');
+                $('#alert-msg').html("<i class='fas fa-check-circle'></i>"+data.success);
+                $('#custom-alert').show();
 
-                        getElectionVoters(electionId);
-                        document.getElementById("votersForm").reset();
-                        document.getElementById("voters_sub_division_dropdown").value = "";
-                        document.getElementById("votersId").value = "";
-                        $("#election_voters_table").hide();
-                        $("#division_modal").modal("hide");
-                    }
+                getElectionVoters(electionId);
+                document.getElementById("votersForm").reset();
+                document.getElementById("voters_sub_division_dropdown").value = "";
+                $("#division_modal").modal("hide");
+            }
 
-                    if(data.error){
-                        mIsAlertOn = true;
+            if(data.error){
+                mIsAlertOn = true;
 
-                        $('#custom-alert').addClass('custom-alert');
-                        $('#alert-msg').html("<i class='fas fa-x'></i> "+data.error);
-                        $('#custom-alert').show();
-                    }
+                $('#custom-alert').addClass('custom-alert');
+                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.error);
+                $('#custom-alert').show();
+            }
 
-                    if(data.info){
-                        mIsAlertOn = true;
+            if(data.info){
+                mIsAlertOn = true;
 
-                        $('#custom-alert').addClass('custom-alert warning');
-                        $('#alert-msg').html("<i class='fas fa-info-circle'></i> "+data.info);
-                        $('#custom-alert').show();
-                    }
-                },
-                error: function (e) {
-                    let responseHtml = '';
-                    var errors = e.responseJSON.errors;
-                    
-                    $.each( errors , function( key, value ) {
-                        responseHtml = '<p> * ' + value + '</p>';
-                    });
-
-                    //console.log(errors);
-                    $.each(errors, function (key, value) {
-                        $('#divFormValErr').append('<p> * ' + value + '</p>');
-                        $("#divFormValErr").removeClass('d-none');
-                        document.getElementById("divFormValErr").scrollIntoView();
-                    });
-
-                    mIsAlertOn = true;
-
-                    $('#custom-alert').addClass('custom-alert');
-                    $('#alert-msg').html("<i class='fas fa-x'></i> "+responseHtml);
-                    $('#custom-alert').show();
-
-                $("#addVotersBtn").prop("disabled", false);
-                },
-                complete: function () { // hiding the spinner.
-                    $('#loader').addClass('hidden');
-                }
+                $('#custom-alert').addClass('custom-alert warning');
+                $('#alert-msg').html("<i class='fas fa-info-circle'></i> "+data.info);
+                $('#custom-alert').show();
+            }
+        },
+        error: function (e) {
+            let responseHtml = '';
+            var errors = e.responseJSON.errors;
+            
+            $.each( errors , function( key, value ) {
+                responseHtml = '<p> * ' + value + '</p>';
             });
-        }
-        
-    }else{
-        mIsAlertOn = true;
 
-        $('#custom-alert').addClass('custom-alert primary');
-        $('#alert-msg').html("<i class='fas fa-info-circle'></i> First select an election and a division");
-        $('#custom-alert').show();
-    }
+            //console.log(errors);
+            $.each(errors, function (key, value) {
+                $('#divFormValErr').append('<p> * ' + value + '</p>');
+                $("#divFormValErr").removeClass('d-none');
+                document.getElementById("divFormValErr").scrollIntoView();
+            });
+
+            mIsAlertOn = true;
+
+            $('#custom-alert').addClass('custom-alert');
+            $('#alert-msg').html("<i class='fas fa-x'></i> "+responseHtml);
+            $('#custom-alert').show();
+
+          $("#addVotersBtn").prop("disabled", false);
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+    
     //hide the alert
     setTimeout(function() {
         if(mIsAlertOn === true){
@@ -1415,11 +1403,11 @@ $('#addVotersBtn').on('click', function (e) {
 
 });
 
-function getElectionVoters(electionId){
+function getElectionVoters(voterId){
     var votersList = $("#election_voters_table");
     $('#election_voters_table tbody').empty();
         
-    $.get("/get-election-voters/"+electionId, function(data) {
+    $.get("/get-election-voters/"+voterId, function(data) {
         if (data[0]['election_name'] != null){
             votersList.show();
             $.each(data, function(index,item) {
@@ -1480,208 +1468,4 @@ function removeElectionVoter(voterId, electionId){
             $('#loader').addClass('hidden');
         }
     });
-}
-
-//populate elections dropdown for viewing election voter base
-$('#view_election_voters').select2({
-    placeholder: 'Select election',
-    searchInputPlaceholder: 'Search election',
-    ajax: {
-        url: '/elections-dropdown',
-        dataType: 'json',
-        delay: 250,
-        data: function (data) {
-            //_token: CSRF_TOKEN;
-            return {
-                keyword: data.term // search term
-            };
-        },
-        processResults: function (response) {
-            return {
-                results: $.map(response, function (item) {
-                    return {
-                        text: item.name,
-                        id: item.id
-                    };
-                })
-            };
-        },
-        cache: true
-    }
-});
-
-//get the voter base of the selected election
-$("#view_election_voters").on('change', function() {
-    var electionId = $(this).children("option:selected").val();
-    getElectionVoters(electionId);
-});
-
-function getElectionVoters(electionId){
-    if ($.fn.DataTable.isDataTable('#voters_table')) {
-        $('#voters_table').DataTable().destroy();
-        $('#voters_table').empty();
-    }
-
-    $('#voters_table').append("<thead class='thead-dark'><tr>"+
-        "<th class='wd-20p'>Election Name</th>"+
-        "<th class='wd-20p'>Division Name</th>"+
-        "<th class='wd-25p'>Sub Division Name</th>"+
-        "<th class='wd-10p'>Action</th>"+
-    "</tr></thead>");
-
-    $('#voters_table').DataTable({
-        //responsive: true,
-        processing: true,
-        //serverSide: true,
-        order: [],
-        ajax: {
-            url: "/get-election-voters/"+electionId,
-            dataSrc: function (json) {
-                //console.log(json.length);
-              var return_data = new Array();
-              for(var i=0;i< json.length; i++){
-                return_data.push({
-                  action: displayVoterBaseActionButtons(json[i].id, json[i].election_id),
-                  division_name: json[i].division_name,
-                  election_name: json[i].election_name,
-                  sub_division_name: json[i].sub_division_name
-                });
-                
-              }
-              return return_data;
-            }
-        },
-        columns: [
-        {data: 'election_name'},
-        {data: 'division_name'},
-        {data: 'sub_division_name'},
-        {data: 'action', orderable: false, searchable: false}
-        ]
-    });
-}
-
-function displayVoterBaseActionButtons(votersId,election_id){
-
-    var actions =  "<div class='btn-toolbar'> <div> "+
-    "<a href='#' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmVoterBaseDelete("+votersId+ ',' +election_id+")' id='delete-post' data-id='"+votersId+"'> <i class='bi bi-trash'></i> </a>"+
-    "</div></div>";
-
-    return actions;
-}
-
-//confirm deletion of a voter base for an election
-function confirmVoterBaseDelete(votersId, election_id){
-    $('#delete_voters_modal').modal("show");
-
-    document.getElementById("confirmVotersDeleteLabel").innerHTML = "Confirm delete of this voter base";
-
-    $('#deleteVotersBtn').on('click', function (e) {
-        deleteVoterBase(votersId,election_id);
-    });
-}
-
-//deletion of a voter base
-function deleteVoterBase(votersId,election_id){
-
-    $.ajax({
-        url: "/delete-election-voter",
-        type: 'post',
-        //dataType: 'json',
-        data: {
-            _token: CSRF_TOKEN,
-            voter_id: votersId
-        },
-        beforeSend: function () { // show loading spinner
-            $('#loader').removeClass('hidden');
-        },
-        success: function(data) {
-            if(data.success){
-                mIsAlertOn = true;
-                $('#custom-alert').addClass('custom-alert success');
-                $('#alert-msg').html("<i class='fas fa-check-circle'></i> "+data.success);
-                $('#custom-alert').show();
-
-                $('#delete_voters_modal').modal("hide");
-                getElectionVoters(election_id);
-            }
-
-            if(data.error){
-                mIsAlertOn = true;
-
-                $('#custom-alert').addClass('custom-alert');
-                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.error);
-                $('#custom-alert').show();
-            }
-
-            if(data.info){
-                mIsAlertOn = true;
-
-                $('#custom-alert').addClass('custom-alert');
-                $('#alert-msg').html("<i class='fas fa-x'></i> "+data.info);
-                $('#custom-alert').show();
-            }
-        },
-        complete: function () { // hiding the spinner.
-            $('#loader').addClass('hidden');
-        }
-    });
-}
-
-getElectionResults();
-
-//get the election results
-function getElectionResults(){
-    if ($.fn.DataTable.isDataTable('#election_results_table')) {
-        $('#election_results_table').DataTable().destroy();
-        $('#election_results_table').empty();
-    }
-
-    $('#election_results_table').append("<thead class='thead-dark'><tr>"+
-        "<th class='wd-20p'>Election Name</th>"+
-        "<th class='wd-20p'>From</th>"+
-        "<th class='wd-25p'>To</th>"+
-        "<th class='wd-25p'>Winner</th>"+
-        "<th class='wd-10p'>Action</th>"+
-    "</tr></thead>");
-
-    $('#election_results_table').DataTable({
-        //responsive: true,
-        processing: true,
-        //serverSide: true,
-        order: [],
-        ajax: {
-            url: "/get-election-results",
-            dataSrc: function (json) {
-                //console.log(json.length);
-              var return_data = new Array();
-              for(var i=0;i< json.length; i++){
-                return_data.push({
-                  action: displayVoterBaseActionButtons(json[i].id, json[i].election_id),
-                  start_date: json[i].start_date,
-                  end_date: json[i].end_date,
-                  election_name: json[i].election_name,
-                  candidate_name: json[i].candidate_name
-                });
-                
-              }
-              return return_data;
-            }
-        },
-        columns: [
-        {data: 'election_name'},
-        {data: 'start_date'},
-        {data: 'end_date'},
-        {data: 'candidate_name'},
-        {data: 'action', orderable: false, searchable: false}
-        ]
-    });
-}
-
-function displayVoterBaseActionButtons(votersId,election_id){
-
-    var actions =  "<div class='btn-toolbar'> <div> "+
-    "<a href='#' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmVoterBaseDelete("+votersId+ ',' +election_id+")' id='delete-post' data-id='"+votersId+"'> <i class='bi bi-trash'></i> </a>"+
-    "</div></div>";
-
-    return actions;
 }

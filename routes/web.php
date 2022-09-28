@@ -171,8 +171,17 @@ Route::get('/get-election-voters/{electionId}', [VoterBaseController::class, 'ge
 //route to delete a voter from an election
 Route::post('/delete-election-voter', [VoterBaseController::class, 'destroy']);
 
+//get single voter base
+Route::get('/get-voters-details/{votersId}', [VoterBaseController::class, 'getVoterDetails']);
+
 //view election results
 Route::get('/election-results', [VotesController::class, 'index'])->name('voting_results');
+
+// get the view for election results in the dashbord
+Route::get('/dash-election-results', [VotesController::class, 'getDashBoardElectionResults'])->name('election_results');
+
+//view all election results in dashboard datatable
+Route::get('/get-election-results', [VotesController::class, 'getElectionResults']);
 
 //route to create a new election
 Route::post('/create-election', [ElectionsController::class, 'store'])->name('create_election');
@@ -193,7 +202,7 @@ Route::post('/create-candidate', [CandidatesController::class, 'store'])->name('
 Route::post('/edit-candidate', [CandidatesController::class, 'update'])->name('edit_candidate');
 
 //get elections list for table
-Route::get('/elections/table-list', [ElectionsController::class, 'getAllElections'])->name('election_results');
+Route::get('/elections/table-list', [ElectionsController::class, 'getAllElections']);
 
 //get candidates list for table
 Route::get('/candidates/table-list', [CandidatesController::class, 'getAllCandidates']);

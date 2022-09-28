@@ -31,7 +31,6 @@ class VoterBaseController extends Controller
         $divId = $validated['division_id'];
         $subDivId = $validated['sub_div_id'];
 
-        //TODO check if voter base was already added
         if($subDivId == 0){
             $result = DB::table('voter_bases')
                 ->select('voter_bases.id')
@@ -54,7 +53,6 @@ class VoterBaseController extends Controller
                     ['voter_bases.division_id', '=', $divId],
                     ['voter_bases.sub_division_id', '=', $subDivId]
                     ])
-                ->limit(1)
                 ->get();
 
             if(count($result) >= 1){
@@ -108,5 +106,21 @@ class VoterBaseController extends Controller
         }else{
             return response()->json(['error'=>'Failed to remove voters']);
         }
+    }
+
+    //get single voter base details by id
+    public function getVoterDetails($voterId){
+
+        return DB::table('voter_bases')
+            ->select('voter_bases.id',
+                    'voter_bases.election_id','elections.name AS election_name',
+                    'voter_bases.division_id','user_divisions.division_name',
+                    DB::raw("(CASE WHEN voter_bases.sub_division_id = 0 THEN 'All Sub Divisions' "
+                    . "ELSE ". (DB::raw("(SELECT s.sub_division_name from user_sub_divisions s WHERE s.id = voter_bases.sub_division_id)")) 
+                    ."END) AS sub_division_name"),'voter_bases.sub_division_id')
+            ->join('user_divisions', 'user_divisions.id', '=', 'voter_bases.division_id') 
+            ->join('elections', 'elections.id', '=', 'voter_bases.election_id')  
+            ->where('voter_bases.id', $voterId)   
+            ->first();
     }
 }

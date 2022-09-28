@@ -101,13 +101,13 @@
             <li class="nav-item active" id="dash-elections"><a href="{{ route('manage_elections') }}" class="nav-link"><i data-feather="list"></i> <span>Elections</span></a></li>
             <li class="nav-item" id="dash-posts"><a href="{{ route('manage_positions') }}" class="nav-link"><i data-feather="clipboard"></i> <span>Posts</span></a></li>
             <li class="nav-item" id="dash-candidates"><a href="{{ route('manage_candidates') }}" class="nav-link"><i data-feather="user-check"></i> <span>Candidates</span></a></li>
-            <li class="nav-item" id="dash-voter-base"><a href="{{ route('manage_voter_base') }}" class="nav-link"><i data-feather="user-check"></i> <span>Voter Base</span></a></li>
+            <li class="nav-item" id="dash-voter-base"><a href="{{ route('manage_voter_base') }}" class="nav-link"><i data-feather="globe"></i> <span>Voter Base</span></a></li>
             <li class="nav-label mg-t-25">User Management</li>
             <li class="nav-item" id="dash-users"><a href="{{ route('manage_users') }}" class="nav-link"><i data-feather="users"></i> <span>Users</span></a></li>
             <li class="nav-item" id="dash-divisions"><a href="{{ route('manage_divisions') }}" class="nav-link"><i data-feather="git-branch"></i> <span>Divisions</span></a></li>
             <li class="nav-item" id="dash-sub-divisions"><a href="{{ route('manage_sub_divisions') }}" class="nav-link"><i data-feather="grid"></i> <span>Sub Divisions</span></a></li>
             <li class="nav-label mg-t-25">Reports</li>
-            <li class="nav-item" id="dash-users"><a href="{{ route('statistics') }}" class="nav-link"><i data-feather="book"></i> <span>All Reports</span></a></li>
+            <li class="nav-item" id="dash-election-results"><a href="{{ route('election_results') }}" class="nav-link"><i data-feather="bar-chart-2"></i> <span>Election Results</span></a></li>
 
             <!-- <li class="nav-label mg-t-25">Pages</li>
             <li class="nav-item with-sub">

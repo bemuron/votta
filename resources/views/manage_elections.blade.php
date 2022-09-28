@@ -104,13 +104,6 @@
               </div>
 
               <div class="form-group col mt-3">
-                <label for="electDateFrom" class="mg-b-0 col-form-label fw-bold text-md-right">{{ __('Voter Base') }}
-                  <span class="text-danger">*</span>
-                </label>
-                <input id="input2" type="text" id="electVoters" class="form-control" value="Amsterdam,Washington">
-              </div>
-
-              <div class="form-group col mt-3">
                   <label for="electionThumbImg" class="col-form-label fw-bold text-md-right">
                     {{ __('Thumbnail Image 288 X 288 for best results') }} <span class="text-danger">*</span></label>
 

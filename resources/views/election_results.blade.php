@@ -6,10 +6,10 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb breadcrumb-style1 mg-b-10">
         <li class="breadcrumb-item"><a href="{{ route('statistics') }}">Dashboard Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Manage Voter Base</li>
+        <li class="breadcrumb-item active" aria-current="page">Election Results</li>
       </ol>
     </nav>
-    <h4 class="mg-b-0 tx-spacing--1" id="page-title">Manage Voter Base</h4>
+    <h4 class="mg-b-0 tx-spacing--1" id="page-title">Election Results</h4>
   </div>
   <div class="d-none d-md-block">
     <button class="btn btn-sm pd-x-15 btn-warning btn-uppercase" id="createVotersBtn"><i data-feather="plus-circle" class="wd-10 mg-r-5"></i> Add Voter Base</button>
@@ -20,16 +20,16 @@
 
 <!-- User selects the election they want to view -->
 <div class="form-group col">
-      <label for="view_election_voters" class="mg-b-0 col-form-label tx-spacing-1 tx-semibold text-md-right">{{ __('Select election to view/edit voter base') }} </label>
+      <label for="view_election_results" class="mg-b-0 col-form-label tx-spacing-1 tx-semibold text-md-right">{{ __('Select election to view/edit voter base') }} </label>
 
         <div class="wd-md-50p">
-            <select id="view_election_voters" class="custom-select">
+            <select id="view_election_results" class="custom-select">
 
             </select>
         </div>
   </div>
 
-  <table id="voters_table" class="table table-sm table-striped">
+  <table id="election_results_table" class="table table-sm table-striped">
     <tbody>
     </tbody>
   </table>

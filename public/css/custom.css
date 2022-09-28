@@ -1,6 +1,6 @@
 /*to make the date picker appear above the modal not under*/
 #ui-datepicker-div  {
-    z-index: 2000 !important;
+    z-index: 1050 !important;
 }
 
 /*place table captions at the top of the table*/
@@ -8,12 +8,12 @@ caption {
     caption-side:top; }
 
 .ui-autocomplete {
-    z-index: 20000 !important;
+    z-index: 1050 !important;
 }
 
 /*to make the select 2 dropdown appear above the modal not under*/
  .select2-container{
-  z-index:2000;
+  z-index:1050;
 } 
 
 /*.autocomplete-suggestions {
