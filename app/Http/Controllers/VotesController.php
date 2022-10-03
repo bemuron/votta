@@ -104,7 +104,7 @@ class VotesController extends Controller
 
         return DB::table('candidates')
         ->select('candidates.id','candidates.post_id',
-                DB::raw("COALESCE( (select COUNT(voter_id) from votta.votes where candidates.id = votes.candidate_id), 0 ) AS total_votes"),
+                DB::raw("COALESCE( (select COUNT(voter_id) from votes where candidates.id = votes.candidate_id), 0 ) AS total_votes"),
                 'candidates.image','candidates.election_id',
                 'candidates.candidate_name')
         ->join('posts', 'posts.id', '=', 'candidates.post_id')
@@ -147,19 +147,113 @@ class VotesController extends Controller
     public function getElectionResults()
     {
         if (request()->ajax()) {
+                
             return DB::table('candidates')
-            ->select('candidates.election_id', 'candidates.id','candidates.post_id',
-                    DB::raw("COALESCE( (select COUNT(voter_id) from votta.votes where candidates.id = votes.candidate_id), 0 ) AS total_votes"),
+            ->select('candidates.election_id', 'votes.id','candidates.post_id',
+                    DB::raw("COALESCE( (select COUNT(voter_id) from votes where candidates.id = votes.candidate_id), 0 ) AS total_votes"),
                     'elections.name AS election_name',
                     'candidates.candidate_name','elections.start_date','elections.end_date')
             ->join('posts', 'posts.id', '=', 'candidates.post_id')
+            ->join('votes', 'votes.id', '=', 'candidates.id')
             ->join('elections', 'elections.id', '=', 'candidates.election_id')
-            ->groupBy('candidates.election_id','candidates.id','candidates.post_id','elections.name',
-            'candidates.candidate_name','elections.start_date','elections.end_date')
+            //->where('elections.end_date', '<', date('Y-m-d'))   
+            ->groupBy('candidates.election_id')
+            ->orderBy('elections.end_date','asc')
             ->get();
 
             //TODO add condition to pick elections whose end date has passed
         }
+    }
+
+    public function getElectionSummaryDetails($votesId, $electionId){
+        logger("getting details");
+        $resArr = array();
+
+        $electionName = DB::table('elections')
+        ->select('elections.name')
+        ->where('elections.id', '=', $electionId)
+        ->first();
+
+        array_push($resArr, $electionName);
+
+        $votesCast = DB::table('votes')
+            ->select(DB::raw("COALESCE( (COUNT(voter_id)), 0 ) AS votes_cast"))
+            ->where('votes.election_id', '=', $electionId)
+            ->first();
+
+            //return $votesCast->votes_cast;
+        //logger($votesCast);
+
+        array_push($resArr, $votesCast);
+
+        $candidatesNum = DB::table('candidates')
+            ->select(DB::raw("COALESCE( (COUNT(id)), 0 ) AS candidates_num"))
+            ->where('candidates.election_id', '=', $electionId)
+            ->first();
+
+        array_push($resArr, $candidatesNum);
+
+        $voterBase = $this->getElectionVoterBaseCount($electionId);
+        array_push($resArr, $voterBase);
+
+        $period = DB::table('elections')
+        ->select('elections.start_date','elections.end_date')
+        ->where('elections.id', '=', $electionId)
+        ->first();
+
+        array_push($resArr, $period->start_date);
+        array_push($resArr, $period->end_date);
+
+        return response()->json($resArr);
+
+    }
+
+    //get number of voters in an election
+    private function getElectionVoterBaseCount($electionId){
+        $num_users = 0;
+        $voterBase = DB::table('voter_bases')
+            ->select('voter_bases.division_id','voter_bases.sub_division_id')
+            ->where('voter_bases.election_id', '=', $electionId)
+            ->get();
+
+        //loop through the results and get users in the divisions or sub divisions
+        for ($r = 0; $r < count($voterBase); $r++){
+            if($voterBase[$r]->sub_division_id > 0){
+                $num_users = $num_users + $this->getUsersInSubDivision($voterBase[$r]->sub_division_id);
+            }else{
+                $num_users = $num_users + $this->getUsersInDivision($voterBase[$r]->division_id);
+            }
+        }
+
+        return $num_users;
+    }
+
+    //get the number of users in a sub division
+    private function getUsersInSubDivision($sub_div_id){
+        $users = DB::table('users')
+            ->select(DB::raw("COALESCE( (COUNT(id)), 0 ) AS num_users"))
+            ->where('users.sub_division', '=', $sub_div_id)
+            ->first();
+
+        return $users->num_users;
+    }
+
+    //get the number of users in a division
+    private function getUsersInDivision($div_id){
+        $num_div_users = 0;
+
+        //get sub divs in this division
+        $subDivs = DB::table('user_sub_divisions')
+            ->select('user_sub_divisions.id')
+            ->where('user_sub_divisions.division_id', '=', $div_id)
+            ->get();
+
+        //loop through the results and get users in the divisions or sub divisions
+        for ($r = 0; $r < count($subDivs); $r++){
+            $num_div_users = $num_div_users + $this->getUsersInSubDivision($subDivs[$r]->id);
+        }
+
+        return $num_div_users;
     }
 
     /**

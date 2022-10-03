@@ -183,6 +183,9 @@ Route::get('/dash-election-results', [VotesController::class, 'getDashBoardElect
 //view all election results in dashboard datatable
 Route::get('/get-election-results', [VotesController::class, 'getElectionResults']);
 
+//get election summary results
+Route::get('/election-summary-details/{votesId}/{elelctionId}', [VotesController::class, 'getElectionSummaryDetails']);
+
 //route to create a new election
 Route::post('/create-election', [ElectionsController::class, 'store'])->name('create_election');
 

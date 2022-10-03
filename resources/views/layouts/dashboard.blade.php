@@ -27,6 +27,8 @@
     <link href="{{ asset('assets/lib/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/remixicon/remixicon.css') }}" rel="stylesheet">
+
+    <link href="{{ asset('assets/lib/ionicons/css/ionicons.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/datatables.net-dt/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/select2/css/select2.min.css') }}" rel="stylesheet">
     

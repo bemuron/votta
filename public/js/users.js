@@ -1656,9 +1656,9 @@ function getElectionResults(){
               var return_data = new Array();
               for(var i=0;i< json.length; i++){
                 return_data.push({
-                  action: displayVoterBaseActionButtons(json[i].id, json[i].election_id),
-                  start_date: json[i].start_date,
-                  end_date: json[i].end_date,
+                  action: displayElectionResultsActionButtons(json[i].id, json[i].election_id),
+                  start_date: formatDate(json[i].start_date),
+                  end_date: formatDate(json[i].end_date),
                   election_name: json[i].election_name,
                   candidate_name: json[i].candidate_name
                 });
@@ -1677,11 +1677,29 @@ function getElectionResults(){
     });
 }
 
-function displayVoterBaseActionButtons(votersId,election_id){
+function displayElectionResultsActionButtons(votesId,election_id){
 
     var actions =  "<div class='btn-toolbar'> <div> "+
-    "<a href='#' class='btn btn-xs btn-outline-danger btn-icon' onclick='confirmVoterBaseDelete("+votersId+ ',' +election_id+")' id='delete-post' data-id='"+votersId+"'> <i class='bi bi-trash'></i> </a>"+
+    "<a href='#' class='btn btn-xs btn-outline-primary btn-icon' onclick='getElectionResultsSummary("+votesId+ ',' +election_id+")' id='delete-post' data-id='"+votesId+"'> <i class='bi bi-eye'></i> </a>"+
     "</div></div>";
 
     return actions;
+}
+
+//show summary details of an election
+function getElectionResultsSummary(votesId, electionId){
+
+    $.get("/election-summary-details/"+votesId+"/"+electionId, function(data) {
+         if(data !== null){
+            //console.log(data);
+            $('#votes_cast').html(data[1].votes_cast);
+            $('#voter_base').html("<strong>" + data[3] + "</strong>");
+            $('#election_period').html("<strong>" + formatDate(data[4]) + " - " + formatDate(data[5]) +"</strong>");
+            $('#elect_candidates').html("<strong>" + data[2].candidates_num + "</strong>");
+
+             $('#elecResModalLabel').html("<strong>" + data[0].name + "</strong>");
+             $('#election_res_modal').modal("show");
+            
+         }
+    });
 }
