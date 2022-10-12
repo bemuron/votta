@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 16, 2022 at 12:54 PM
+-- Generation Time: Oct 11, 2022 at 01:00 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.4.9
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `emtechint_votta`
+-- Database: `votta`
 --
 
 -- --------------------------------------------------------
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `candidates` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `candidates`
@@ -48,11 +48,11 @@ INSERT INTO `candidates` (`id`, `candidate_name`, `election_id`, `post_id`, `des
 (1, 'Sam Maxwell', 6, 3, 'Willing to offer my best as the voice for the students', 'sam.jpg', '2022-03-12 15:38:37', NULL),
 (2, 'John Smith', 6, 3, 'the man himself, right for the job alone.\r\nTried and tested. Your vote secured', 'john.jpg', '2022-07-18 12:44:19', '2022-07-22 14:07:16'),
 (4, 'Team Mark', 9, 5, 'Lets do this', 'mark.jpg', '2022-07-22 22:06:45', NULL),
-(5, 'Cafe Javas', 7, 6, 'Dessert is our thing', 'javas.jpg', '2022-07-22 22:07:27', NULL),
+(5, 'Cafe Javas', 11, 9, 'Dessert is our thing', 'javas.jpg', '2022-07-22 22:07:27', NULL),
 (6, 'Mercedes', 5, 4, 'Majestic in style', 'mercedes.jpg', '2022-07-22 22:08:08', NULL),
 (7, 'Audi', 5, 4, 'Simpy elegant', 'audi.jpg', '2022-07-22 22:08:08', NULL),
 (8, 'Team Samy', 9, 5, 'We get things done', 'sammy.jpg', '2022-07-22 22:08:08', '2022-08-16 09:40:51'),
-(9, 'KFC', 7, 6, 'Ask us about dessert.', 'kfc.jpg', '2022-07-22 22:08:08', NULL);
+(9, 'KFC', 11, 9, 'Ask us about dessert.', 'kfc.jpg', '2022-07-22 22:08:08', NULL);
 
 -- --------------------------------------------------------
 
@@ -74,17 +74,17 @@ CREATE TABLE IF NOT EXISTS `elections` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `elections`
 --
 
 INSERT INTO `elections` (`id`, `name`, `description`, `image`, `image_big`, `created_by`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
-(7, 'Who has the best desert', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'dessert_thumb.jpg', 'dessert_big.JPG', 1, '2022-07-16 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44'),
-(6, 'The Class President', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'pres_thumb.jpg', 'pres_big.JPG', 1, '2022-07-21 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-21 12:10:10', '2022-08-14 03:22:58'),
-(5, 'The best car', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'car_thumb.jpg', 'car_big.JPG', 1, '2022-07-16 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44'),
-(9, 'Best team', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'team_thumb.jpg', 'team_big.JPG', 1, '2022-07-16 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44');
+(6, 'The Class President', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'pres_thumb.jpg', 'pres_big.JPG', 2, '2022-07-21 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-21 12:10:10', '2022-09-19 09:29:15'),
+(5, 'The best car', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'car_thumb.jpg', 'car_big.JPG', 2, '2022-07-16 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44'),
+(11, 'The best dessert', 'Choosing who has the best dessert.', 'dessert_thumb.jpg', 'dessert_big.jpg', 2, '2022-08-01 00:00:00', '2022-12-31 00:00:00', 1, '2022-09-23 20:30:03', NULL),
+(9, 'Best team', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. ', 'team_thumb.jpg', 'team_big.JPG', 2, '2022-07-16 00:00:00', '2022-12-31 00:00:00', 1, '2022-07-16 16:20:31', '2022-07-16 16:58:44');
 
 -- --------------------------------------------------------
 
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `migrations`
@@ -161,7 +161,10 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (8, '2022_03_12_094444_create_election_user_table', 1),
 (9, '2022_03_12_094458_create_post_user_table', 1),
 (10, '2022_03_12_094522_create_election_post_table', 1),
-(12, '2022_03_12_142134_create_candidates_table', 2);
+(12, '2022_03_12_142134_create_candidates_table', 2),
+(13, '2022_09_20_063001_create_user_divisions_table', 3),
+(14, '2022_09_20_063339_create_user_sub_divisions_table', 3),
+(15, '2022_09_24_114004_create_voter_bases_table', 4);
 
 -- --------------------------------------------------------
 
@@ -214,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `posts`
@@ -226,7 +229,9 @@ INSERT INTO `posts` (`id`, `election_id`, `name`, `description`, `created_at`, `
 (3, 6, 'Class President', 'Post held by the winner of the class president poll', '2022-07-16 16:25:35', '2022-07-21 12:54:37'),
 (4, 5, 'The Best Car', 'Title for the overall best car', '2022-07-18 11:00:54', NULL),
 (5, 9, 'Best Team', 'The best of the competing teams', '2022-07-18 11:00:54', NULL),
-(6, 7, 'Dessert Crown', 'Winner of the the best dessert', '2022-07-18 11:00:54', NULL);
+(6, 7, 'Dessert Crown', 'Winner of the the best dessert', '2022-07-18 11:00:54', NULL),
+(7, 7, 'de best sample post', 'talking about the best. Simply the best', '2022-09-19 09:04:50', '2022-09-19 09:35:33'),
+(9, 11, 'Dessert King', 'Who will hold the bragging rights for the best made dessert', '2022-09-23 20:40:37', NULL);
 
 -- --------------------------------------------------------
 
@@ -257,28 +262,110 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_role` smallint(6) NOT NULL DEFAULT '0',
+  `sub_division` int(11) DEFAULT '0',
+  `status` smallint(1) DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
+  `salt` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `users_email_unique` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `user_role`, `created_at`, `updated_at`) VALUES
-(1, 'Test User', 'tester@email.com', '2022-03-12 15:37:14', '$2y$10$FA.vKszxyxHD48QUNGerUe4uNcOSS0rfToYOwRHx.lySIJP3ETLF.', NULL, 1, '2022-03-12 15:37:14', NULL),
-(2, 'Admin User', 'admin@email.com', NULL, '$2y$10$FA.vKszxyxHD48QUNGerUe4uNcOSS0rfToYOwRHx.lySIJP3ETLF.', NULL, 1, '2022-03-15 03:44:03', '2022-03-15 03:44:03'),
-(3, 'Tester2', 'tester2@email.com', NULL, '$2y$10$74WX.q2CGRyxUATc16z1Gu/F7sY8eK9/IyJ9HO3kSyINACsUr1C.C', NULL, 0, '2022-07-22 21:31:47', '2022-07-22 21:31:47'),
-(4, 'Tester 3', 'tester3@email.com', NULL, '$2y$10$fG7Vwqf8dzsWQt1no3bpQOsBKEQ0wt51WmLYAY3xVq./LiNeMY0uG', NULL, 0, '2022-07-22 21:59:32', '2022-07-22 21:59:32'),
-(5, 'Tester4', 'tester4@email.com', NULL, '$2y$10$dw2gpY9hYjQZ8RfKZ/GnceG9bWAmrsYTSUDXOWUBdl0AYZwwVSbeO', NULL, 0, '2022-07-22 22:00:12', '2022-07-22 22:00:12'),
-(6, 'Tester5', 'tester5@email.com', NULL, '$2y$10$10qHKUYiLVgovl/KhxiNiudXVIodYm69mTD/gORm5/u68EnOOPune', NULL, 0, '2022-07-22 22:00:57', '2022-07-22 22:00:57'),
-(7, 'Tester6', 'tester6@email.com', NULL, '$2y$10$HvvpkBmSmX4TWePII/F/AOWs30FQd0mawTIPpMZacMdgjoBojfLVa', NULL, 0, '2022-07-22 22:01:37', '2022-07-22 22:01:37'),
-(8, 'Tester7', 'tester7@email.com', NULL, '$2y$10$1bJ3zKgYvZ5OrREJ8HIW7eE0ePpjkMpOb6G1ec1IH/az4izDwSTH.', NULL, 0, '2022-07-22 22:02:17', '2022-07-22 22:02:17'),
-(9, 'Tester8', 'tester8@email.com', NULL, '$2y$10$lBqAXolPLHCHppt7SUAQTuHYThjK0UDQef7w0DzHVSIhS.BS6TuIK', NULL, 0, '2022-07-22 22:03:05', '2022-07-22 22:03:05'),
-(10, 'Tester9', 'tester9@email.com', NULL, '$2y$10$5GfTGI/50mkoKH9iFgesXeMmr8kUnfDe46W5W6HGOV250F3Hlf.kS', NULL, 0, '2022-07-22 22:03:46', '2022-07-22 22:03:46'),
-(11, 'Tester10', 'tester10@email.com', NULL, '$2y$10$A1sJ.vjkGI2qbafqFWIlfe6FcPQHcVUwt7Sykmq8DDNfIuW1P60BS', NULL, 0, '2022-07-22 22:04:27', '2022-07-22 22:04:27');
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `user_role`, `sub_division`, `status`, `created_at`, `updated_at`, `salt`) VALUES
+(2, 'Admin User', 'admin@email.com', NULL, '$2y$10$FA.vKszxyxHD48QUNGerUe4uNcOSS0rfToYOwRHx.lySIJP3ETLF.', NULL, 1, 3, 1, '2022-03-15 03:44:03', '2022-03-15 03:44:03', 'c5g73sq9v1'),
+(23, 'Vickey', 'vickey@email.com', NULL, '$2y$10$1v2K89BfNKxBxLroWMXJUOAjn1IQeYsCSuTcem.sI8pFK6zL1mjM.', NULL, 0, 3, 1, '2022-10-11 06:10:04', NULL, '2b07eff46a'),
+(24, 'Max', 'max@email.com', NULL, '$2y$10$/Vqfu3U4dHW/h5a3W64bhebbJvjZPBPA59r83Bb59ZI.ihi.1r6IG', NULL, 0, 7, 1, '2022-10-11 06:10:37', NULL, '8e9899f89a'),
+(25, 'Peter', 'peter@email.com', NULL, '$2y$10$k9.dgefMZ4ydIRihrOXBAO6h5SuZIAsr1gL6.NpEu3Pyv1XkDGWbS', NULL, 0, 8, 1, '2022-10-11 06:11:26', NULL, '5e27bc4de7'),
+(22, 'Suzan', 'suzan@email.com', NULL, '$2y$10$DGVJBMsN/AsmyYc5ToD8Qei8FJlSvlkavPcl9FLMkALnExFY30gP2', NULL, 0, 6, 1, '2022-10-11 06:09:03', NULL, 'ff735fb728'),
+(21, 'Mark', 'mark@email.com', NULL, '$2y$10$t5wY0boOoPWGFogi6anEuu8EmpeusSKSQHVTBkTrW3Hg3jUiJuoey', NULL, 0, 5, 1, '2022-10-11 05:56:10', NULL, 'a7b20cc1b3');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_divisions`
+--
+
+DROP TABLE IF EXISTS `user_divisions`;
+CREATE TABLE IF NOT EXISTS `user_divisions` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `division_name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `user_divisions`
+--
+
+INSERT INTO `user_divisions` (`id`, `division_name`, `created_at`, `updated_at`) VALUES
+(1, 'Human Resources', '2022-09-20 17:50:42', '2022-09-20 17:52:32'),
+(3, 'IT', '2022-09-23 18:57:46', '2022-09-23 18:57:46'),
+(4, 'Finance', '2022-09-23 18:57:46', '2022-09-23 18:57:46'),
+(5, 'Legal', '2022-09-23 18:57:46', '2022-09-23 18:57:46'),
+(6, 'Procurement', '2022-09-23 18:57:46', '2022-09-23 18:57:46');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_sub_divisions`
+--
+
+DROP TABLE IF EXISTS `user_sub_divisions`;
+CREATE TABLE IF NOT EXISTS `user_sub_divisions` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `division_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `sub_division_name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `user_sub_divisions`
+--
+
+INSERT INTO `user_sub_divisions` (`id`, `division_id`, `sub_division_name`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Wellbeing', '2022-09-20 18:37:41', '2022-09-20 18:41:31'),
+(3, 1, 'Talent Sourcing', '2022-09-23 20:00:38', '2022-09-23 20:00:38'),
+(4, 3, 'App Development', '2022-09-23 20:00:38', '2022-09-23 20:00:38'),
+(5, 3, 'System Admin', '2022-09-23 20:00:38', '2022-09-23 20:00:38'),
+(6, 4, 'Payments', '2022-09-23 20:00:38', '2022-09-23 20:00:38'),
+(7, 5, 'Legal', '2022-10-11 05:11:57', NULL),
+(8, 6, 'Procurement', '2022-10-11 05:50:37', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `voter_bases`
+--
+
+DROP TABLE IF EXISTS `voter_bases`;
+CREATE TABLE IF NOT EXISTS `voter_bases` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `election_id` bigint(20) UNSIGNED NOT NULL,
+  `division_id` bigint(20) UNSIGNED NOT NULL,
+  `sub_division_id` bigint(20) UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `voter_bases`
+--
+
+INSERT INTO `voter_bases` (`id`, `election_id`, `division_id`, `sub_division_id`) VALUES
+(5, 5, 1, 0),
+(7, 11, 5, 0),
+(8, 9, 6, 0),
+(10, 11, 4, 0),
+(12, 5, 5, 0),
+(16, 6, 5, 0),
+(17, 6, 6, 0),
+(18, 6, 4, 6);
 
 -- --------------------------------------------------------
 
@@ -292,77 +379,25 @@ CREATE TABLE IF NOT EXISTS `votes` (
   `candidate_id` int(11) NOT NULL,
   `election_id` int(11) NOT NULL,
   `post_id` int(11) NOT NULL,
-  `voter_id` int(11) NOT NULL,
+  `voter_id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `votes`
 --
 
 INSERT INTO `votes` (`id`, `candidate_id`, `election_id`, `post_id`, `voter_id`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1, 1, '2022-03-14 10:46:06', NULL),
-(2, 1, 1, 1, 1, '2022-03-14 10:46:45', NULL),
-(3, 1, 1, 1, 1, '2022-03-14 10:51:03', NULL),
-(4, 1, 1, 1, 1, '2022-03-14 10:51:45', NULL),
-(5, 1, 1, 1, 1, '2022-03-14 10:52:41', NULL),
-(6, 1, 1, 1, 1, '2022-03-14 10:55:33', NULL),
-(7, 1, 1, 1, 1, '2022-03-14 10:59:08', NULL),
-(8, 1, 1, 1, 1, '2022-03-14 11:01:28', NULL),
-(9, 1, 1, 1, 1, '2022-03-14 11:03:08', NULL),
-(10, 1, 1, 1, 1, '2022-03-14 11:15:50', NULL),
-(11, 1, 1, 1, 1, '2022-03-14 11:16:31', NULL),
-(12, 1, 1, 1, 1, '2022-03-14 11:17:47', NULL),
-(13, 1, 1, 1, 1, '2022-03-14 11:18:34', NULL),
-(14, 1, 1, 1, 1, '2022-03-14 11:20:25', NULL),
-(15, 1, 1, 1, 1, '2022-03-14 11:22:28', NULL),
-(16, 1, 1, 1, 1, '2022-03-14 11:29:02', NULL),
-(17, 1, 1, 1, 1, '2022-03-14 11:33:57', NULL),
-(18, 1, 1, 1, 1, '2022-03-14 11:35:37', NULL),
-(19, 1, 1, 1, 1, '2022-03-14 11:39:01', NULL),
-(20, 1, 1, 1, 1, '2022-03-14 11:53:44', NULL),
-(21, 1, 1, 1, 1, '2022-03-14 11:54:21', NULL),
-(22, 1, 1, 1, 1, '2022-03-14 11:54:33', NULL),
-(23, 1, 1, 1, 1, '2022-03-14 11:57:03', NULL),
-(24, 1, 1, 1, 1, '2022-03-14 11:58:49', NULL),
-(25, 1, 1, 1, 1, '2022-03-14 11:59:51', NULL),
-(26, 1, 1, 1, 1, '2022-03-14 12:00:14', NULL),
-(27, 1, 1, 1, 1, '2022-03-14 12:01:31', NULL),
-(28, 1, 1, 1, 1, '2022-03-14 12:03:01', NULL),
-(29, 1, 1, 1, 1, '2022-03-14 12:03:15', NULL),
-(30, 1, 1, 1, 1, '2022-03-14 12:03:46', NULL),
-(31, 1, 1, 1, 1, '2022-03-14 12:03:58', NULL),
-(32, 1, 1, 1, 1, '2022-03-14 12:04:13', NULL),
-(33, 1, 1, 1, 1, '2022-03-14 12:04:23', NULL),
-(34, 1, 1, 1, 1, '2022-03-14 12:05:18', NULL),
-(35, 1, 1, 1, 1, '2022-03-14 12:05:27', NULL),
-(36, 1, 1, 1, 1, '2022-03-14 12:06:39', NULL),
-(37, 1, 1, 1, 1, '2022-03-14 12:06:48', NULL),
-(38, 1, 1, 1, 1, '2022-03-14 12:07:25', NULL),
-(39, 1, 1, 1, 1, '2022-03-14 12:07:35', NULL),
-(40, 1, 1, 1, 1, '2022-03-14 12:08:30', NULL),
-(41, 1, 1, 1, 1, '2022-03-14 12:08:59', NULL),
-(42, 1, 1, 1, 1, '2022-03-14 12:10:33', NULL),
-(43, 1, 1, 1, 1, '2022-03-14 12:10:59', NULL),
-(44, 1, 1, 1, 1, '2022-03-14 12:12:13', NULL),
-(45, 1, 1, 1, 1, '2022-03-14 12:12:31', NULL),
-(46, 1, 1, 1, 1, '2022-03-14 12:13:12', NULL),
-(47, 1, 1, 1, 1, '2022-03-14 12:13:22', NULL),
-(48, 1, 1, 1, 1, '2022-03-14 12:15:14', NULL),
-(49, 1, 1, 1, 1, '2022-03-14 12:15:58', NULL),
-(50, 1, 1, 1, 1, '2022-03-14 17:00:33', NULL),
-(51, 1, 1, 1, 1, '2022-03-15 01:35:40', NULL),
-(52, 2, 6, 3, 1, '2022-07-22 20:18:41', NULL),
-(53, 2, 6, 3, 3, '2022-07-22 21:32:01', NULL),
-(54, 6, 6, 3, 5, '2022-07-23 15:53:43', NULL),
-(55, 6, 6, 3, 4, '2022-07-23 15:56:44', NULL),
-(56, 6, 6, 3, 8, '2022-07-23 16:03:07', NULL),
-(57, 6, 6, 3, 7, '2022-07-23 16:20:11', NULL),
-(58, 4, 6, 3, 9, '2022-07-23 16:35:58', NULL),
-(59, 5, 6, 3, 10, '2022-07-23 17:11:32', NULL),
-(60, 7, 5, 4, 1, '2022-08-15 06:10:01', NULL);
+(1, 4, 9, 5, 'zWmm/q7T8rIPf/pCkagoWdoMPoQ1ZTI3YmM0ZGU3', '2022-10-11 06:23:37', NULL),
+(2, 1, 6, 3, 'zWmm/q7T8rIPf/pCkagoWdoMPoQ1ZTI3YmM0ZGU3', '2022-10-11 06:24:23', NULL),
+(3, 1, 6, 3, 'SnYlChAolsoRZob/JWwAMDLngbM4ZTk4OTlmODlh', '2022-10-11 06:26:15', NULL),
+(4, 7, 5, 4, 'SnYlChAolsoRZob/JWwAMDLngbM4ZTk4OTlmODlh', '2022-10-11 06:27:00', NULL),
+(5, 5, 11, 9, 'SnYlChAolsoRZob/JWwAMDLngbM4ZTk4OTlmODlh', '2022-10-11 06:27:27', NULL),
+(6, 7, 5, 4, 'WM3DM1FCWi7MmIKQSAb7x3i/eK4yYjA3ZWZmNDZh', '2022-10-11 06:30:10', NULL),
+(7, 5, 11, 9, 'rtG44IietYbyVq//PovUTTeilmVmZjczNWZiNzI4', '2022-10-11 06:31:44', NULL),
+(8, 2, 6, 3, 'rtG44IietYbyVq//PovUTTeilmVmZjczNWZiNzI4', '2022-10-11 06:32:06', NULL);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

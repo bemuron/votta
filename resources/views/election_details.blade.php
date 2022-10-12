@@ -47,7 +47,7 @@
           <a href="{{ route('login') }}" class="ps-2">Log in to vote</a>
           @endif
           @else
-          <button type="button" class="btn btn-outline-success" id="votePromptBtn" onclick="getCandidateDetails( {{ $candidate->id }}, {{ $candidate->election_id }}, {{ $candidate->post_id }}, 2 )" > Vote <i class="bi bi-box-arrow-in-down"></i></button>
+          <button type="button" class="btn btn-outline-success vote-btn" id="votePromptBtn" onclick="getCandidateDetails( {{ $candidate->id }}, {{ $candidate->election_id }}, {{ $candidate->post_id }}, 2 )" > Vote <i class="bi bi-box-arrow-in-down"></i></button>
           @endguest
       </div>
 
@@ -143,7 +143,7 @@
 <div id="voteFailedAlert" class="modal alert-danger h-auto fade show alert-dismissible" role="document">
   <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   <br>
-  <p class="fs-4 text-center"><strong>Danger!</strong> Your vote was not received.</p>
+  <p id="fail-msg" class="fs-4 text-center"><strong>Danger!</strong> Your vote was not received.</p>
   <br>
 </div>
 @endsection

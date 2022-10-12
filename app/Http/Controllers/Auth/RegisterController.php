@@ -64,10 +64,14 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $salt1 = sha1(rand());
+        $salt = substr($salt1, 0, 10);
+
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'salt' => $salt,
         ]);
     }
 }

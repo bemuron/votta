@@ -103,7 +103,6 @@
             <h3 class="post-title">{{ $election->name }}</h3>
             <div class="meta">
               <span class="post-date"><i class="bi bi-clock"></i> {{ date_format(date_create($election->end_date), "d-M-Y") }}</span>
-              <!-- <span class="post-author"> / Julia Parker</span> -->
             </div>
             <p>{{ $election->description }}</p>
             <form method="GET" action="{{ route('election_details') }}">

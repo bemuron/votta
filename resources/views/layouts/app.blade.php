@@ -29,7 +29,7 @@
     <link href="{{ asset('assets/lib/datatables.net-dt/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/select2/css/select2.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashforge.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styles2.css') }}">
     
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
@@ -38,11 +38,6 @@
     <!--show overlay loading spinner-->
     <div id="loader" class="lds-dual-ring hidden overlay"></div>
     <!--overlay loading spinner end-->
-    
-    <div class="hidden" id="custom-alert">
-        <span class="closebtn">&times;</span>  
-        <strong id="alert-msg"></strong>
-    </div>
     
     <!-- <div id="app"> -->
         <header id="header" class="header d-flex align-items-center fixed-top">
@@ -69,22 +64,13 @@
                     @endif
 
                     @if (Route::has('register'))
-                        <li>
+                        <!-- <li>
                             <a href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
+                        </li> -->
                     @endif
                 @else
 
                     @if (Auth::user()->user_role == 1)
-                        <li>
-                            <a href="{{ route('manage_elections') }}">{{ __('Elections') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('manage_positions') }}">{{ __('Election Positions') }}</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('manage_candidates') }}">{{ __('Candidates') }}</a>
-                        </li>
                         <li>
                             <a href="{{ route('statistics') }}">{{ __('Dashboard') }}</a>
                         </li>
@@ -164,7 +150,7 @@
     <script src="{{ asset('assets/lib/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/jquery-ui.js') }}"></script> 
     <script src="{{ asset('assets/lib/select2/js/select2.min.js') }}"></script>
-    <script src="{{ asset('js/mainjs.js') }}"></script>
+    <script src="{{ asset('js/votta.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
 </body>
 </html>

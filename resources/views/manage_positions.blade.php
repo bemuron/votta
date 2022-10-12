@@ -13,7 +13,7 @@
   </div>
   <div class="d-none d-md-block">
     <button class="btn btn-sm pd-x-15 btn-warning btn-uppercase" id="createPostBtn"><i data-feather="plus-circle" class="wd-10 mg-r-5"></i> Create Post</button>
-    <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5" id="postBulkInsertBtn"><i data-feather="file-plus" class="wd-10 mg-r-5"></i> Bulk Insert</button>
+    <!-- <button class="btn btn-sm pd-x-15 btn-primary btn-uppercase mg-l-5" id="postBulkInsertBtn"><i data-feather="file-plus" class="wd-10 mg-r-5"></i> Bulk Insert</button> -->
   </div>
 </div>
 

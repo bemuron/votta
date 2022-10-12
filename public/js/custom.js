@@ -48,6 +48,9 @@ function voteCandidate(){
         url: "/vote-candidate",
         type: 'post',
         //dataType: 'json',
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
         data: {
             _token: CSRF_TOKEN,
             candidate_id: mCandidateId,
@@ -64,8 +67,7 @@ function voteCandidate(){
                     $("#voteSuccessAlert").slideUp(500);
                 });
 
-                document.getElementById("votePromptBtn").innerHTML = 'Thanks for voting';
-                document.getElementById("votePromptBtn").disabled = true; 
+                disableVoteButton();
                 
             }else if(data == 0){
                 //console.log(data);
@@ -73,14 +75,25 @@ function voteCandidate(){
                 $("#voteFailedAlert").fadeTo(2000, 500).slideUp(500, function(){
                     $("#voteFailedAlert").slideUp(500);
                 });
+            }else if(data == 2){
+                //console.log(data);
+                //alert("Somethng went wrong, details not saved");
+                $('#fail-msg').html("<i class='fas fa-x'></i> You are not eligible to vote in this election");
+                $("#voteFailedAlert").fadeTo(2000, 500).slideUp(500, function(){
+                    $("#voteFailedAlert").slideUp(500);
+                });
+
+                alreadyVotedText.innerHTML = "You are not eligible to vote in this election";
+                $('#alreadyVotedModal').modal("show");
+
             }else if(data.name != null ){
                 alreadyVotedText.innerHTML = "You already voted "+data.name+" for the position of <strong>"+data.post_name+"</strong>";
                 $('#alreadyVotedModal').modal("show");
-                document.getElementById("votePromptBtn").innerHTML = 'You already voted';
-                document.getElementById("votePromptBtn").disabled = true; 
+                disableVoteButton();
 
             }else{
                 //error occured
+                $('#fail-msg').html("<strong>Ooops!</strong> Something went wrong. Your vote was not received.");
                 $("#voteFailedAlert").fadeTo(2000, 500).slideUp(500, function(){
                     $("#voteFailedAlert").slideUp(500);
                 });
@@ -92,7 +105,23 @@ function voteCandidate(){
             var errors = e.responseJSON.errors;
             
         },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        },
     });
+}
+
+function disableVoteButton(){
+    var voteBtn = document.getElementsByClassName("vote-btn");
+    
+    if(voteBtn != null){
+
+        for (var i = 0; i < voteBtn.length; i++) {
+            voteBtn[i].innerHTML = 'Thanks for voting';
+            voteBtn[i].disabled = true; 
+        }
+
+    }
 }
 
 //election duration date pickers
@@ -234,29 +263,30 @@ $('#createElectionBtn').on('click', function (e) {
 
 //show the respective table data after page load
 window.onload = function() {
-var pageTitle = document.getElementById("page-title");
-switch(pageTitle.innerHTML) {
-    case "Manage Elections":
-        getAllElections();
-    break;
-    case "Manage Candidates":
-        getElectionCandidates();
-    break;
-    case "Manage Posts":
-        getElectionPosts();
-    break;
-    case "Manage Users":
-        getUsers();
-    break;
-    case "Manage Divisions":
-        getUserDivsions();
-    break;
-    case "Manage Sub Divisions":
-        getSubDivisions();
-    break;
-    //default:
-  }
-
+    var pageTitle = document.getElementById("page-title");
+    if(pageTitle != null){
+        switch(pageTitle.innerHTML) {
+            case "Manage Elections":
+                getAllElections();
+            break;
+            case "Manage Candidates":
+                getElectionCandidates();
+            break;
+            case "Manage Posts":
+                getElectionPosts();
+            break;
+            case "Manage Users":
+                getUsers();
+            break;
+            case "Manage Divisions":
+                getUserDivsions();
+            break;
+            case "Manage Sub Divisions":
+                getSubDivisions();
+            break;
+            //default:
+        }
+    }
 }
 
 //format the date

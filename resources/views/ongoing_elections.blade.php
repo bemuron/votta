@@ -10,6 +10,7 @@
 
 <!-- <hr class="mg-t-50 mg-b-40"> -->
 <div class="container mt-5">
+@if (count($electionsList) > 0)
 <section id="blog" class="blog p-0">
       <div class="container" data-aos="fade-up">
 
@@ -59,9 +60,15 @@
         
         @endforeach
 
-        </div><!-- End blog posts list -->
+        </div><!-- End posts list -->
 
       </div>
     </section><!-- End Blog Section -->
+    @else
+      <div class="content tx-center p-0">
+      <h3>No ongoing elections at the moment</h3>
+      </div>
+      
+    @endif
 </div>
 @endsection

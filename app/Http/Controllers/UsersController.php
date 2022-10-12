@@ -35,7 +35,7 @@ class UsersController extends Controller
                             . "ELSE 'Deactivated' END) AS user_status"),
                 'users.status','users.sub_division','user_sub_divisions.division_id',
                 'user_sub_divisions.sub_division_name','user_divisions.division_name')
-            ->join('user_sub_divisions', 'user_sub_divisions.id', '=', 'users.sub_division') 
+            ->join('user_sub_divisions', 'user_sub_divisions.id', '=', 'users.sub_division')
             ->join('user_divisions', 'user_divisions.id', '=', 'user_sub_divisions.division_id')                
             ->orderBy('users.created_at','desc')
             ->get();
@@ -88,13 +88,16 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'sub_division' => 'required',
+            'sub_division' => 'required|numeric',
             'user_name' => 'required|max:191',
             'user_email' => 'required|email',
             'user_password' => 'required|string',
             'user_status' => 'required|numeric',
             'user_role' => 'required|numeric'
         ]);
+
+        $salt1 = sha1(rand());
+        $salt = substr($salt1, 0, 10);
 
         $user_id = auth()->user()->id;
         $name = request()->input('user_name');
@@ -106,7 +109,8 @@ class UsersController extends Controller
 
         $insertRes = DB::table('users')->insertGetId(array('name' => $name,'email' => $email, 
             'password' => $password, 'sub_division' => $sub_division, 'created_at' => now(),
-            'status' => $status, 'user_role' => $role));
+            'status' => $status, 'user_role' => $role, 'salt' => $salt));
+            
         if($insertRes){
             return response()->json(['success'=>'User created successfully']);
         }else{

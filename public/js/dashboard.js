@@ -13,6 +13,37 @@ for (i = 0; i < close.length; i++) {
   };
 }
 
+//show the active side menu item
+switch(window.location.pathname){
+    case "/dashboard":
+        document.getElementsByClassName("nav-item")[0].className += " active";
+    break;
+    case "/manage-elections":
+        document.getElementsByClassName("nav-item")[1].className += " active";
+    break;
+    case "/manage-positions":
+        document.getElementsByClassName("nav-item")[2].className += " active";
+    break;
+    case "/manage-candidates":
+        document.getElementsByClassName("nav-item")[3].className += " active";
+    break;
+    case "/manage-voter-base":
+        document.getElementsByClassName("nav-item")[4].className += " active";
+    break;
+    case "/manage-users":
+        document.getElementsByClassName("nav-item")[5].className += " active";
+    break;
+    case "/manage-divisions":
+        document.getElementsByClassName("nav-item")[6].className += " active";
+    break;
+    case "/manage-sub-divisions":
+        document.getElementsByClassName("nav-item")[7].className += " active";
+    break;
+    case "/dash-election-results":
+        document.getElementsByClassName("nav-item")[8].className += " active";
+    break;
+}
+
 //show modal to create a new user
 $('#createUserBtn').on('click', function (e) {
     document.getElementById("usersForm").reset();
@@ -1689,17 +1720,53 @@ function displayElectionResultsActionButtons(votesId,election_id){
 //show summary details of an election
 function getElectionResultsSummary(votesId, electionId){
 
-    $.get("/election-summary-details/"+votesId+"/"+electionId, function(data) {
-         if(data !== null){
-            //console.log(data);
-            $('#votes_cast').html(data[1].votes_cast);
-            $('#voter_base').html("<strong>" + data[3] + "</strong>");
-            $('#election_period').html("<strong>" + formatDate(data[4]) + " - " + formatDate(data[5]) +"</strong>");
-            $('#elect_candidates').html("<strong>" + data[2].candidates_num + "</strong>");
+    $.ajax({
+        url: "/election-summary-details/"+votesId+"/"+electionId,
+        type: 'get',
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        success: function(data) {
+            //console.log(data[6][0].post_name);
+            //console.log(data[6].length);
+            if(data !== null){
+                var candidates = $("#elect_candidates_res");
+                candidates.html("");
+                var highestVotes = 0;
+                var canName = "";
+                $('#votes_cast').html("<strong>" + data[1].votes_cast + "</strong>");
+                $('#voter_base').html("<strong>" + data[3] + "</strong>");
+                $('#election_period').html("<strong>" + formatDate(data[4]) + " - " + formatDate(data[5]) +"</strong>");
+                $('#elect_candidates').html("<strong>" + data[2].candidates_num + "</strong>");
 
-             $('#elecResModalLabel').html("<strong>" + data[0].name + "</strong>");
-             $('#election_res_modal').modal("show");
-            
-         }
+                $('#elecResModalLabel').html("<strong>" + data[0].name + "</strong>");
+                $('#election_res_modal').modal("show");
+
+                for (i=0; i<data[6].length; i++) {
+                    
+                    if(data[6][i].total_votes > highestVotes){
+                        highestVotes = data[6][i].total_votes;
+                        canName = "<i class='bi bi-stars' style='color: #f5cf13;'></i> <strong><u> "+ data[6][i].candidate_name +" </u></strong><i class='bi bi-stars' style='color: #f5cf13;'></i>"
+                    }else{
+                        canName = data[6][i].candidate_name;
+                    }
+                    
+                    candidates.append("<div class='col-lg-3'><article class='d-flex flex-column'>"+
+                        "<div class='post-img'>"+
+                            "<img src='images/candidates/"+ data[6][i].image +"' alt="+ data[6][i].candidate_name +" class='img-fluid' >"+
+                        "</div>" + 
+                        "<h5 class='title m-0 mg-b-0'>"+
+                            canName +
+                        "</h5>"+
+                        "<div class='content mg-t-0 p-0'><p>"+
+                            "<h6 class='tx-normal tx-primary mg-b-0 mg-r-5 lh-1'>"+ data[6][i].total_votes +" Vote(s) </h6>"+
+                        "</p></div>"+
+                        "</article></div>");
+                }
+            }
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
     });
 }

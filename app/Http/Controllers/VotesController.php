@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Votes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class VotesController extends Controller
 {
@@ -22,18 +23,50 @@ class VotesController extends Controller
     //save a vote for a candidate
     public function voteCandidtate(){
         $voterId = auth()->user()->id;
-        //$voterId = 1;
+        $salt = auth()->user()->salt;
+
+        $hash = self::Hash($voterId, $salt);
+        $encrypted_id = $hash["encrypted"];
         $candidateId = request()->input('candidate_id');
         $electionId = request()->input('election_id');
         $postId = request()->input('post_id');
 
-        //check if this user has already voted for someone in this election and position
-        $alreadyVoted = $this->checkUserAlreadyVoted($electionId, $postId, $voterId);
+        $sub_division = auth()->user()->sub_division;
 
-        if($alreadyVoted->num_votes == 0){
+        $division = DB::table('users')
+            ->select('user_sub_divisions.division_id')
+            ->join('user_sub_divisions', 'user_sub_divisions.id', '=', 'users.sub_division') 
+            ->join('user_divisions', 'user_divisions.id', '=', 'user_sub_divisions.division_id')   
+            ->where([
+                ['users.id', '=', $voterId]
+                    ])
+            ->first();
+
+        //check if the voter is eligible to vote in this election
+        $voterEligibility = DB::table('voter_bases')
+            ->select('voter_bases.division_id','voter_bases.sub_division_id')
+            ->where('voter_bases.election_id', '=', $electionId)
+            ->where([
+                ['voter_bases.election_id', '=', $electionId],
+                ['voter_bases.sub_division_id', '=', $sub_division]
+                    ])
+            ->orWhere([
+                ['voter_bases.election_id', '=', $electionId],
+                ['voter_bases.division_id', '=', $division->division_id]
+            ])
+            ->get();
+
+        if(count($voterEligibility) == 0){
+            return 2;
+        }
+
+        //check if this user has already voted for someone in this election and position
+        $alreadyVoted = $this->checkUserAlreadyVoted($electionId, $postId, $voterId, $salt);
+
+        if(!$alreadyVoted){
             $insertResponse =  DB::insert('insert into votes (candidate_id, '
                 . 'election_id, post_id, voter_id, created_at) values (?,?,?,?,?)',
-                [$candidateId, $electionId,$postId,$voterId,now()]);
+                [$candidateId, $electionId, $postId, $encrypted_id, now()]);
 
             if($insertResponse){
                 return 1;
@@ -42,49 +75,89 @@ class VotesController extends Controller
             }
         }else{
             //user already voted
-            $result = $this->getWhoUserVoted($electionId, $postId, $voterId);
+            $result = $this->getWhoUserVoted($electionId, $postId, $voterId,$salt);
             return $result;
         }
     }
 
     //check if user already voted
-    public function checkUserAlreadyVoted($electionId, $postId, $voterId){
-        return DB::table('votes')
-            ->select(DB::raw('count(*) as num_votes'))
+    public function checkUserAlreadyVoted($electionId, $postId, $voterId, $salt){
+        //verifying
+        $hash = self::checkhashSSHA($salt, $voterId);
+
+        $voters = DB::table('votes')
+            ->select('votes.voter_id')
             ->where([
                 ['votes.election_id', '=', $electionId],
                 ['votes.post_id', '=', $postId],
-                ['votes.voter_id', '=', $voterId]
+                ['votes.voter_id', '=', $hash]
                     ])    
             ->first();
+
+        return (empty($voters)) ? false : true;
     }
 
     //check which user voted for a particular position
-    public function getWhoUserVoted($electionId, $postId, $voterId){
+    public function getWhoUserVoted($electionId, $postId, $voterId, $salt){
+        //verifying
+        $hash = self::checkhashSSHA($salt, $voterId);
+
         return DB::table('votes')
-                ->select('candidates.candidate_name AS name','posts.name AS post_name')
+                ->select('candidates.candidate_name AS name','posts.name AS post_name','votes.voter_id')
                 ->join('candidates', 'candidates.id', '=', 'votes.candidate_id')
                 ->join('posts', 'posts.id', '=', 'candidates.post_id')
                 ->where([
                     ['posts.id', '=', $postId],
                     ['candidates.election_id', '=', $electionId],
-                    ['votes.voter_id', '=', $voterId]
-                        ])
-                ->limit(1)        
+                    ['votes.voter_id', '=', $hash]
+                        ])    
                 ->first();
     }
 
     //get all the elections
     public function getAllElections(){
-        return DB::table('elections')
-            ->select('id',
-                    'name',
-                    'end_date', 
-                    'image')
+        $user_id = auth()->user()->id;
+        $sub_division = auth()->user()->sub_division;
+        $user_role = auth()->user()->user_role;
+
+        //if user is admin
+        if($user_role == 1){
+            return DB::table('elections')
+            ->select('elections.id',
+                    'elections.name',
+                    'elections.end_date', 
+                    'elections.image')
             ->where([
-                ['status', '=', 1]
+                ['elections.status', '=', 1]
+            ])
+            ->orderBy('elections.end_date','desc')
+            ->get();
+        }
+
+        $division = DB::table('users')
+            ->select('user_sub_divisions.division_id')
+            ->join('user_sub_divisions', 'user_sub_divisions.id', '=', 'users.sub_division') 
+            ->join('user_divisions', 'user_divisions.id', '=', 'user_sub_divisions.division_id')   
+            ->where([
+                ['users.id', '=', $user_id]
                     ])
-            ->orderBy('end_date','desc')
+            ->first();
+
+        return DB::table('elections')
+            ->select('elections.id',
+                    'elections.name',
+                    'elections.end_date', 
+                    'elections.image')
+            ->join('voter_bases', 'voter_bases.election_id', '=', 'elections.id')
+            ->where([
+                ['elections.status', '=', 1],
+                ['voter_bases.sub_division_id', '=', $sub_division]
+            ])
+            ->orWhere([
+                ['elections.status', '=', 1],
+                ['voter_bases.division_id', '=', $division->division_id]
+            ])
+            ->orderBy('elections.end_date','desc')
             ->get();
     }
 
@@ -111,14 +184,6 @@ class VotesController extends Controller
         ->join('elections', 'elections.id', '=', 'candidates.election_id')
         ->groupBy('candidates.id')
         ->get();
-
-        // for ($r = 0; $r < count($results); $r++){
-        //     if($results[$r]->total_votes > $highestVotes){
-        //         $highestVotes = $results[$r]->total_votes;
-        //     }
-        //     array_push($resArr,$results[$r]->branch_code);
-        // }
-        
     }
 
     /**
@@ -165,8 +230,9 @@ class VotesController extends Controller
         }
     }
 
+    //get election summary details displayed in dashboard modal
     public function getElectionSummaryDetails($votesId, $electionId){
-        logger("getting details");
+        //logger("getting details");
         $resArr = array();
 
         $electionName = DB::table('elections')
@@ -180,9 +246,6 @@ class VotesController extends Controller
             ->select(DB::raw("COALESCE( (COUNT(voter_id)), 0 ) AS votes_cast"))
             ->where('votes.election_id', '=', $electionId)
             ->first();
-
-            //return $votesCast->votes_cast;
-        //logger($votesCast);
 
         array_push($resArr, $votesCast);
 
@@ -203,6 +266,20 @@ class VotesController extends Controller
 
         array_push($resArr, $period->start_date);
         array_push($resArr, $period->end_date);
+
+        $electionRes = DB::table('elections')
+            ->select('elections.id', 'posts.name AS post_name','candidates.image',
+            'candidates.candidate_name',
+            DB::raw("COALESCE( (select COUNT(voter_id) from votes where candidates.id = votes.candidate_id), 0 ) AS total_votes"),)
+            ->join('posts', 'posts.election_id', '=', 'elections.id')
+            ->join('candidates', 'candidates.election_id', '=', 'elections.id')
+            ->where([
+                ['elections.id', '=', $electionId]
+                    ])
+            ->orderBy('total_votes','desc')
+            ->get();
+
+        array_push($resArr, $electionRes);
 
         return response()->json($resArr);
 
@@ -256,59 +333,25 @@ class VotesController extends Controller
         return $num_div_users;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    //hashing the voter id
+    private static function Hash($voterId, $salt)
+	{
+           $encrypted = base64_encode(sha1($voterId . $salt, true) . $salt);
+           $hashed_id = array("salt" => $salt, "encrypted" => $encrypted);
+		   //$hashed_password = sha1(HASH_PREFIX . $password);
+	   
+		return $hashed_id;
+	}
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Votes  $votes
-     * @return \Illuminate\Http\Response
+      /**
+     * Decrypting voter id
+     * @param salt, id
+     * returns hash string
      */
-    public function show(Votes $votes)
-    {
-        //
-    }
+    public static function checkhashSSHA($salt, $id) {
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Votes  $votes
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Votes $votes)
-    {
-        //
-    }
+        $hash = base64_encode(sha1($id . $salt, true) . $salt);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Votes  $votes
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Votes $votes)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Votes  $votes
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Votes $votes)
-    {
-        //
+        return $hash;
     }
 }

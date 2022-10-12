@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserDivisionController;
 use App\Http\Controllers\UserSubDivisionController;
 use App\Http\Controllers\VoterBaseController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 //admin dashboard
-Route::get('/dashboard', [HomeController::class, 'getDashboardView'])->name('statistics');
+Route::get('/dashboard', [DashboardController::class, 'getDashboardView'])->name('statistics');
 
 //go to a single elections details
 Route::get('/election-details', [ElectionsController::class, 'show'])->name('election_details');

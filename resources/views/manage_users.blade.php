@@ -65,7 +65,7 @@
 
             <div class="row">
               <div class="col-6">
-                  <input type="text" class="form-control" required placeholder="Naame" value="{{ old('user_name') }}" id="user_name" name="user_name">
+                  <input type="text" class="form-control" required placeholder="Name" value="{{ old('user_name') }}" id="user_name" name="user_name">
                   <input id="userId" type="hidden" name="userId">
               </div>
 

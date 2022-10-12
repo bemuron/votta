@@ -76,7 +76,7 @@ to add color gradient to the border play with below styles
     margin: 5% auto;
     border-radius: 50%;
     border: 6px solid #000;
-    border-color: #03014d #03014d #b2b507 #870505;
+    border-color: #f7f7f7 #03014d #b2b507 #092a49;
     animation: lds-dual-ring 1.2s linear infinite;
 }
 @keyframes lds-dual-ring {

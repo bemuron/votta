@@ -35,6 +35,9 @@ WithValidation,SkipsOnFailure, WithBatchInserts, WithChunkReading
     */
     public function model(array $row)
     {
+        $salt1 = sha1(rand());
+        $salt = substr($salt1, 0, 10);
+
         return new User([
             //'id'     => $row[0],
             'name'    => $row['name'],
@@ -43,7 +46,8 @@ WithValidation,SkipsOnFailure, WithBatchInserts, WithChunkReading
             'user_role' => $row['user_role'],
             'sub_division' => $row['sub_division'],
             'created_at' => date('Y-m-d H:i:s'),
-            'status' => $row['status']
+            'status' => $row['status'],
+            'salt' => $salt,
         ]);
     }
 
@@ -60,7 +64,6 @@ WithValidation,SkipsOnFailure, WithBatchInserts, WithChunkReading
             'user_role' => ['required','numeric'],
             'sub_division' => ['required','numeric'],
             'email' => ['required'],
-
             //'created_at' => ['required'],
             'password' => ['required','string']
         ];

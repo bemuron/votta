@@ -12,7 +12,6 @@
     <h4 class="mg-b-0 tx-spacing--1" id="page-title">Election Results</h4>
   </div>
   <div class="d-none d-md-block">
-    <button class="btn btn-sm pd-x-15 btn-warning btn-uppercase" id="createVotersBtn"><i data-feather="plus-circle" class="wd-10 mg-r-5"></i> Add Voter Base</button>
   </div>
 </div>
 
@@ -68,6 +67,12 @@
             <h5 id="elect_candidates" class="tx-rubik tx-small"></h5>
             <h5 class="mg-b-25">Candidates</h5>
           </div><!-- col -->
+        </div><!-- row -->
+      </div><!-- container -->
+
+      <div class="container">
+        <div id="elect_candidates_res" class="row row-xs">
+
         </div><!-- row -->
       </div><!-- container -->
 

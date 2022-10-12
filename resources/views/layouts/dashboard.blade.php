@@ -32,7 +32,7 @@
     <link href="{{ asset('assets/lib/datatables.net-dt/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/select2/css/select2.min.css') }}" rel="stylesheet">
     
-    <link rel="stylesheet" href="{{ asset('css/dashforge.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styles2.css') }}">
     
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
@@ -43,7 +43,7 @@
     <!--overlay loading spinner end-->
 
     <div class="hidden" id="custom-alert">
-        <span class="closebtn">&times;</span>  
+        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
         <strong id="alert-msg"></strong>
     </div>
 
@@ -100,7 +100,7 @@
             <li class="nav-label">Dashboard</li>
             <li class="nav-item"><a href="{{ route('statistics') }}" class="nav-link"><i data-feather="shopping-bag"></i> <span>Home</span></a></li>
             <li class="nav-label mg-t-25">Election Management</li>
-            <li class="nav-item active" id="dash-elections"><a href="{{ route('manage_elections') }}" class="nav-link"><i data-feather="list"></i> <span>Elections</span></a></li>
+            <li class="nav-item" id="dash-elections"><a href="{{ route('manage_elections') }}" class="nav-link"><i data-feather="list"></i> <span>Elections</span></a></li>
             <li class="nav-item" id="dash-posts"><a href="{{ route('manage_positions') }}" class="nav-link"><i data-feather="clipboard"></i> <span>Posts</span></a></li>
             <li class="nav-item" id="dash-candidates"><a href="{{ route('manage_candidates') }}" class="nav-link"><i data-feather="user-check"></i> <span>Candidates</span></a></li>
             <li class="nav-item" id="dash-voter-base"><a href="{{ route('manage_voter_base') }}" class="nav-link"><i data-feather="globe"></i> <span>Voter Base</span></a></li>
@@ -110,26 +110,6 @@
             <li class="nav-item" id="dash-sub-divisions"><a href="{{ route('manage_sub_divisions') }}" class="nav-link"><i data-feather="grid"></i> <span>Sub Divisions</span></a></li>
             <li class="nav-label mg-t-25">Reports</li>
             <li class="nav-item" id="dash-election-results"><a href="{{ route('election_results') }}" class="nav-link"><i data-feather="bar-chart-2"></i> <span>Election Results</span></a></li>
-
-            <!-- <li class="nav-label mg-t-25">Pages</li>
-            <li class="nav-item with-sub">
-              <a href="" class="nav-link"><i class="bi bi-person"></i> <span>User Pages</span></a>
-              <ul>
-                <li><a href="page-profile-view.html">View Profile</a></li>
-                <li><a href="page-connections.html">Connections</a></li>
-                <li><a href="page-groups.html">Groups</a></li>
-                <li><a href="page-events.html">Events</a></li>
-              </ul>
-            </li>
-            <li class="nav-item with-sub">
-              <a href="" class="nav-link"><i data-feather="file"></i> <span>Other Pages</span></a>
-              <ul>
-                <li><a href="page-timeline.html">Timeline</a></li>
-              </ul>
-            </li>
-            <li class="nav-label mg-t-25">User Interface</li>
-            <li class="nav-item"><a href="../../components" class="nav-link"><i data-feather="layers"></i> <span>Components</span></a></li>
-            <li class="nav-item"><a href="../../collections" class="nav-link"><i data-feather="box"></i> <span>Collections</span></a></li> -->
           </ul>
       </div>
     </aside>
@@ -147,8 +127,6 @@
 
       </div>
 
-    <!-- <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a> -->
-
     <div id="preloader"></div>
 
     <!-- JS Files -->
@@ -160,14 +138,10 @@
     <script src="{{ asset('assets/lib/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('js/jquery-ui.js') }}"></script> 
     <script src="{{ asset('assets/lib/select2/js/select2.min.js') }}"></script>
-
     <script src="{{ asset('assets/lib/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-
-    <script src="{{ asset('js/dashforge.js') }}"></script>
-    <script src="{{ asset('js/dashforge.aside.js') }}"></script>
-    <script src="{{ asset('js/mainjs.js') }}"></script>
+    <script src="{{ asset('js/votta.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
-    <script src="{{ asset('js/users.js') }}"></script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
 
     </body>
 </html>

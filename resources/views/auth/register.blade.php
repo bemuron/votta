@@ -20,8 +20,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/dashforge.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashforge.filemgr.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styles2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 </head>
@@ -38,23 +37,23 @@
                         @csrf
               <div class="form-group">
                 <label>Email address</label>
-                <input id="email" type="email" class="form-control text-white @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Enter your email address" autofocus>
+                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Enter your email address" autofocus>
               </div>
               <div class="form-group">
                 <div class="d-flex justify-content-between mg-b-5">
                   <label class="mg-b-0-f">Password</label>
                 </div>
-                <input id="password" type="password" class="form-control text-white @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Enter your password">
+                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password" placeholder="Enter your password">
               </div>
               <div class="form-group">
                 <div class="d-flex justify-content-between mg-b-5">
                   <label class="mg-b-0-f">Password Confirm</label>
                 </div>
-                <input id="password-confirm" type="password" class="form-control text-white" name="password_confirmation" required autocomplete="new-password">
+                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
               </div>
               <div class="form-group">
                 <label>Full Name</label>
-                <input type="text" id="name" class="form-control text-white @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" placeholder="Enter your full name">
+                <input type="text" id="name" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" placeholder="Enter your full name">
                 @error('name')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -95,7 +94,7 @@
     <!-- <script src="{{ asset('assets/lib/datatables.net-dt/js/dataTables.dataTables.min.js') }}"></script> -->
     <script src="{{ asset('js/jquery-ui.js') }}"></script> 
     <script src="{{ asset('assets/lib/select2/js/select2.min.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/votta.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
 </body>
 </html>

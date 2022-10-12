@@ -58,19 +58,57 @@ class ElectionsController extends Controller
 
     //get the list of ongoing elections
     private function getCurElections(){
-        
+
+        if(auth()->check()){
+            $user_id = auth()->user()->id;
+            $sub_division = auth()->user()->sub_division;
+
+            $division = DB::table('users')
+                ->select('user_sub_divisions.division_id')
+                ->join('user_sub_divisions', 'user_sub_divisions.id', '=', 'users.sub_division') 
+                ->join('user_divisions', 'user_divisions.id', '=', 'user_sub_divisions.division_id')   
+                ->where([
+                    ['users.id', '=', $user_id]
+                        ])
+                ->first();
+
+            return DB::table('elections')
+                ->distinct()
+                ->select('elections.id',
+                        'elections.name','elections.end_date',
+                        DB::raw("IF(LENGTH(elections.description) <= 40, elections.description,
+                                CONCAT(LEFT(elections.description, 40), '...')) AS description"), 
+                        'elections.image')
+                ->join('voter_bases', 'voter_bases.election_id', '=', 'elections.id')
+                ->where([
+                    ['elections.end_date', '>', NOW()],
+                    ['elections.status', '=', 1],
+                    ['voter_bases.sub_division_id', '=', $sub_division]
+                ])
+                ->orWhere([
+                    ['elections.end_date', '>', NOW()],
+                    ['elections.status', '=', 1],
+                    ['voter_bases.division_id', '=', $division->division_id]
+                ])
+                ->orderBy('elections.end_date','asc')
+                ->get();
+        }
+
         return DB::table('elections')
-            ->select('id',
-                    'name','end_date',
-                    DB::raw("IF(LENGTH(description) <= 40, description,
-                            CONCAT(LEFT(description, 40), '...')) AS description"), 
-                    'image')
-            ->where([
-                ['end_date', '>', NOW()],
-                ['status', '=', 1]
-            ]) 
-            ->orderBy('end_date','asc')
-            ->get();
+                ->distinct()
+                ->select('elections.id',
+                        'elections.name','elections.end_date',
+                        DB::raw("IF(LENGTH(elections.description) <= 40, elections.description,
+                                CONCAT(LEFT(elections.description, 40), '...')) AS description"), 
+                        'elections.image')
+                ->where([
+                    ['elections.end_date', '>', NOW()],
+                    ['elections.status', '=', 1]
+                ])
+                ->orderBy('elections.end_date','asc')
+                ->get();
+
+        
     }
 
     /**
@@ -145,8 +183,8 @@ class ElectionsController extends Controller
                 . "WHEN elections.status  = 3 THEN 'Completed'END) AS status"),
                 'elections.image','elections.image_big','elections.start_date',
                     'elections.end_date','elections.created_at','users.name AS created_by',
-                    DB::raw("IF(LENGTH(description) <= 40, elections.description,
-                            CONCAT(LEFT(description, 40), '...')) AS description"))
+                DB::raw("IF(LENGTH(description) <= 40, elections.description,
+                        CONCAT(LEFT(description, 40), '...')) AS description"))
             ->join('users', 'elections.created_by', '=', 'users.id')                
             ->orderBy('elections.created_at','desc')
             ->get();

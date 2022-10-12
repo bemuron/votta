@@ -25,16 +25,6 @@ class CandidatesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -92,17 +82,6 @@ class CandidatesController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Candidates  $candidates
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Candidates $candidates)
-    {
-        //
-    }
-
-    /**
      * get a list of users so the user can select a candidate
      *
      */
@@ -150,17 +129,6 @@ class CandidatesController extends Controller
             ->orderBy('candidates.created_at','desc')
             ->get();
         }
-        
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Candidates  $candidates
-     * @return \Illuminate\Http\Response
-     */
-    public function edit()
-    {
         
     }
 

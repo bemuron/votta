@@ -20,8 +20,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/dashforge.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/dashforge.filemgr.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/styles2.css') }}">
     <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 </head>
@@ -118,7 +117,7 @@
     <!-- <script src="{{ asset('assets/lib/datatables.net-dt/js/dataTables.dataTables.min.js') }}"></script> -->
     <script src="{{ asset('js/jquery-ui.js') }}"></script> 
     <script src="{{ asset('assets/lib/select2/js/select2.min.js') }}"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/votta.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
 </body>
 </html>
