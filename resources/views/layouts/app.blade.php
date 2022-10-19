@@ -29,7 +29,7 @@
     <link href="{{ asset('assets/lib/datatables.net-dt/css/jquery.dataTables.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/lib/select2/css/select2.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/styles2.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('css/styles2.css') }}"> -->
     
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
@@ -80,6 +80,7 @@
                         </li>
                         <li class="dropdown"><a href="#"><span>{{ Auth::user()->name }}</span> <i class="bi bi-chevron-down dropdown-indicator"></i></a>
                             <ul>
+                                <li><a href="{{ route('changepassword') }}"> Change Password</a></li>
                                 <li>
                                     <!-- <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown"> -->
                                         <a class="dropdown-item" href="{{ route('logout') }}"
@@ -123,17 +124,63 @@
         </main>
     <!-- </div> -->
 
-    <!-- Footer -->
+    <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
 
-  <div class="footer-legal">
-    <div class="container">
-      <div class="credits">
-        <a href="mailto:contact@emtechint.com">Contact Support</a>
-        <!-- System Built by <a href="https://www.emtechint.com/">Em-Tech Global</a> -->
+<div class="footer-content">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-5 col-md-12 footer-info">
+        <a href="index.html" class="logo d-flex align-items-center">
+          <span>Votta</span>
+        </a>
+        <p>Votta online votting system. Handle your organisation's elections or polls the smart way</p>
+        <div class="social-links d-flex  mt-3">
+          <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
+          <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+        </div>
       </div>
+
+      <div class="col-lg-2 col-6 footer-links">
+        <h4>Useful Links</h4>
+        <ul>
+          <li><i class="bi bi-dash"></i> <a href="{{ route('ongoing_elections') }}">Ongoing Elections</a></li>
+          <li><i class="bi bi-dash"></i> <a href="#">About us</a></li>
+          <li><i class="bi bi-dash"></i> <a href="#">Services</a></li>
+          <li><i class="bi bi-dash"></i> <a href="#">Terms of service</a></li>
+          <li><i class="bi bi-dash"></i> <a href="#">Privacy policy</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-2 col-6 footer-links">
+        <h4>Our Services</h4>
+        <ul>
+          <li><i class="bi bi-dash"></i> <a href="#">Election Management</a></li>
+          <li><i class="bi bi-dash"></i> <a href="#">Online Polls</a></li>
+          <li><i class="bi bi-dash"></i> <a href="#">e-Voting</a></li>
+          <li><i class="bi bi-dash"></i> <a href="#">e-Ballot</a></li>
+          <li><i class="bi bi-dash"></i> <a href="#">Online Elections</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+        <h4>Contact Us</h4>
+        <p>
+          Some Street <br>
+          City, Code<br>
+          Country <br><br>
+          <strong>Phone:</strong> +256 700 345 556<br>
+          <strong>Email:</strong> info@votta.com<br>
+        </p>
+
+      </div>
+
     </div>
   </div>
+</div>
+
 </footer><!-- End Footer -->
 <!-- End Footer -->
 

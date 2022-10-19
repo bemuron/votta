@@ -17,6 +17,14 @@
 
 <div class="container mt-5">
 
+  <!-- excel export button-->
+  <div class="d-flex d-lg-block d-xl-flex mg-b-10 align-items-end">
+      <h5 class="tx-11 tx-rubik mg-b-0 ml-auto mg-r-5 lh-1">Download:</h5>
+
+      <button id="election-res-excel-download" class="btn btn-sm pd-x-15 btn-outline-success btn-uppercase mg-l-5"><i class='bi bi-file-excel'></i> Excel</button>
+
+  </div>
+
   <table id="election_results_table" class="table table-sm table-striped">
     <tbody>
     </tbody>
@@ -32,6 +40,7 @@
     <div class="modal-content tx-14">
       <div class="modal-header">
         <h6 class="modal-title" id="elecResModalLabel">Election Results Details</h6>
+        <input id="election_id" type="hidden">
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </button>
       </div>
@@ -78,7 +87,8 @@
 
       </div>
       <div class="modal-footer">
-      <button type="button" class="btn btn-dark tx-13" data-bs-dismiss="modal">Close</button>
+        <button type="button" id="candidate-res-excel-download" class="btn btn-warning tx-13" > <i class='bi bi-file-earmark-arrow-down'></i> Download Candidate Results</button>
+        <button type="button" class="btn btn-dark tx-13" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

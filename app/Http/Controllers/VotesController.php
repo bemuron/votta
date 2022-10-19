@@ -219,14 +219,12 @@ class VotesController extends Controller
                     'elections.name AS election_name',
                     'candidates.candidate_name','elections.start_date','elections.end_date')
             ->join('posts', 'posts.id', '=', 'candidates.post_id')
-            ->join('votes', 'votes.id', '=', 'candidates.id')
+            ->join('votes', 'votes.candidate_id', '=', 'candidates.id')
             ->join('elections', 'elections.id', '=', 'candidates.election_id')
-            //->where('elections.end_date', '<', date('Y-m-d'))   
+            //->where('elections.end_date', '<', date('Y-m-d'))   //uncomment to get only elections that have closed
             ->groupBy('candidates.election_id')
             ->orderBy('elections.end_date','asc')
             ->get();
-
-            //TODO add condition to pick elections whose end date has passed
         }
     }
 

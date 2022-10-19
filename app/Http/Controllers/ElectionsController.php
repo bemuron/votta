@@ -6,6 +6,9 @@ use App\Models\Elections;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ElectionResultsExport;
+use App\Exports\CandidateResultsExport;
 
 class ElectionsController extends Controller
 {
@@ -363,5 +366,21 @@ class ElectionsController extends Controller
                                 ['id', '=', $electionId]
                             ])
                             ->delete();
+    }
+
+    //export the election results table to excel
+    public function exportElectionResults() {
+        return (new ElectionResultsExport())->download(date('YmdHis').'.xlsx');
+    }
+
+    //export the election results table to excel
+    public function exportCandidateResults($election_id) {
+        $election = DB::table('elections')
+            ->select('elections.name')
+            ->where([
+                ['id', '=', $election_id]
+            ]) 
+            ->first();
+        return (new CandidateResultsExport($election_id))->download($election->name.'.xlsx');
     }
 }

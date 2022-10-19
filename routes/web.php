@@ -11,6 +11,7 @@ use App\Http\Controllers\UserDivisionController;
 use App\Http\Controllers\UserSubDivisionController;
 use App\Http\Controllers\VoterBaseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ChangePasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,12 @@ use App\Http\Controllers\DashboardController;
 // });
 
 Auth::routes();
+
+//change password view
+Route::get('/changePassword', [ChangePasswordController::class, 'changePassword'])->name('changepassword');
+
+//handle the change password request
+Route::post('/changePassword',[ChangePasswordController::class, 'processPasswordChange'])->name('processPasswordChange');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -219,3 +226,9 @@ Route::get('/edit-election-details/{electionId}', [ElectionsController::class, '
 
 //save the edited election details
 Route::post('/save-edit-election-details/{electionId}', [ElectionsController::class, 'update']);
+
+//route to export election results table to excel file
+Route::get('/election/download_election_results_excel', [ElectionsController::class, 'exportElectionResults']);
+
+//route to export candidate results table to excel file
+Route::get('/election/download_candidate_results_excel/{election_id}', [ElectionsController::class, 'exportCandidateResults']);

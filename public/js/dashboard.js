@@ -1720,6 +1720,8 @@ function displayElectionResultsActionButtons(votesId,election_id){
 //show summary details of an election
 function getElectionResultsSummary(votesId, electionId){
 
+    document.getElementById("election_id").value = electionId;
+    
     $.ajax({
         url: "/election-summary-details/"+votesId+"/"+electionId,
         type: 'get',
@@ -1770,3 +1772,40 @@ function getElectionResultsSummary(votesId, electionId){
         }
     });
 }
+
+//download election results excel
+$('#election-res-excel-download').on('click',function(){
+
+    $.ajax({
+        url: "/election/download_election_results_excel",
+        type: 'get',
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        success: function(data) {
+            window.location = "/election/download_election_results_excel";
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+});
+
+//download candidate results excel
+$('#candidate-res-excel-download').on('click',function(){
+    var election_id = document.getElementById("election_id").value;
+
+    $.ajax({
+        url: "/election/download_candidate_results_excel/"+election_id,
+        type: 'get',
+        beforeSend: function () { // show loading spinner
+            $('#loader').removeClass('hidden');
+        },
+        success: function(data) {
+            window.location = "/election/download_candidate_results_excel/"+election_id;
+        },
+        complete: function () { // hiding the spinner.
+            $('#loader').addClass('hidden');
+        }
+    });
+});

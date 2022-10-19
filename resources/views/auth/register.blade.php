@@ -76,11 +76,14 @@
         </div><!-- media -->
       </div><!-- container -->
     </div><!-- content -->
-<footer class="footer">
-      <div>
-      <span><a href="mailto:contact@emtechint.com">Contact Support</a></span>
-      </div>
-    </footer>
+  <footer class="footer">
+    <div>
+      <span>Votta online voting system</span>
+    </div>
+    <div>
+      <span>Version 1.0.0</span>
+    </div>
+  </footer>
 
         <!-- Vendor JS Files -->
         <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

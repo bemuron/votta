@@ -101,7 +101,10 @@
 
     <footer class="footer">
       <div>
-      <span><a href="mailto:contact@emtechint.com">Contact Support</a></span>
+      <span>Votta online voting system</span>
+      </div>
+      <div>
+      <span>Version 1.0.0</span>
       </div>
     </footer>
 
